@@ -1,19 +1,18 @@
-package routes
+package api
 
 import (
-	"github.com/bakhodur-nazriev/Library/audioBooks"
-	"github.com/bakhodur-nazriev/Library/authors"
-	"github.com/bakhodur-nazriev/Library/books"
+	"github.com/bakhodur-nazriev/Library/pkg/audioBooks"
+	"github.com/bakhodur-nazriev/Library/pkg/authors"
 	"github.com/gofiber/fiber/v2"
 )
 
 func SetupRoutes(app *fiber.App) {
 	/* Books Section */
-	app.Get("/api/books", books.Books)g
-	app.Get("/api/book:id", books.GetBook)
-	app.Post("/api/book", books.NewBook)
-	app.Put("/api/book:id", books.UpdateBook)
-	app.Delete("/api/book:id", books.DeleteBook)
+	//app.Get("/api/books", books.Books)
+	//app.Get("/api/book:id", books.GetBook)
+	//app.Post("/api/book", books.NewBook)
+	//app.Put("/api/book:id", books.UpdateBook)
+	//app.Delete("/api/book:id", books.DeleteBook)
 
 	/* Authors Section */
 	app.Get("/api/authors", authors.GetAuthors)

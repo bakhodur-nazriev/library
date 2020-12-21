@@ -1,7 +1,7 @@
 package books
 
 import (
-	"github.com/bakhodur-nazriev/Library/database"
+	"github.com/bakhodur-nazriev/Library/pkg/database"
 	fiber2 "github.com/gofiber/fiber/v2"
 	"github.com/jinzhu/gorm"
 	"time"

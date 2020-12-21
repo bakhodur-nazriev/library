@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/bakhodur-nazriev/Library/authors"
-	"github.com/bakhodur-nazriev/Library/books"
-	"github.com/bakhodur-nazriev/Library/database"
-	"github.com/bakhodur-nazriev/Library/routes"
+	"github.com/bakhodur-nazriev/Library/pkg/api"
+	"github.com/bakhodur-nazriev/Library/pkg/authors"
+	"github.com/bakhodur-nazriev/Library/pkg/books"
+	"github.com/bakhodur-nazriev/Library/pkg/database"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jinzhu/gorm"
@@ -25,7 +25,7 @@ func InitialDatabase() {
 func main() {
 	app := fiber.New()
 	InitialDatabase()
-	routes.SetupRoutes(app)
+	api.SetupRoutes(app)
 	app.Listen(":8001")
 	defer database.DB.Close()
 }
