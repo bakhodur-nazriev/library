@@ -1,7 +1,7 @@
 package main
 
 import (
-	"ebook-service/routes"
+	routes2 "ebook-service/pkg/routes"
 	"github.com/gin-gonic/gin"
 	"os"
 )
@@ -16,8 +16,8 @@ func main() {
 	router := gin.New()
 	router.Use(gin.Logger())
 
-	routes.AuthRoutes(router)
-	routes.UserRoutes(router)
+	routes2.AuthRoutes(router)
+	routes2.UserRoutes(router)
 
 	router.GET("/api-1", func(c *gin.Context) {
 		c.JSON(200, gin.H{"success": ""})
