@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"ebook-service/helper"
+	"ebook-service/pkg/helper"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
