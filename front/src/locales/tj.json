@@ -1,6 +1,16 @@
 {
+  "lang": "tj",
+  "meta_title": {
+    "home": "Аcоси",
+    "authors": "Муаллифон",
+    "books": "Китобхо",
+    "contact": "Тамос",
+    "not_found": "Страница не доступна",
+    "login": "Логин",
+    "registration": "Регистратсия"
+  },
   "main_menu": {
-    "home": "Аоси",
+    "home": "Аcоси",
     "authors": "Муаллифон",
     "books": "Китобхо",
     "contact": "Тамос"

@@ -1,27 +1,21 @@
 <script setup>
+import {computed} from "vue";
+import AuthLayout from "./components/layouts/AuthLayout.vue";
+import MainLayout from "./components/layouts/MainLayout.vue";
+import {useRoute} from "vue-router";
 
-// import HomeView from "./views/HomeView.vue";
+const route = useRoute();
+const layout = computed(() => {
+  return route.meta.layout === "auth" ? AuthLayout : MainLayout;
+});
 </script>
 
 <template>
-  <ul>
-    <li>
-      <router-link to="/">{{ $t('main_menu.home') }}</router-link>
-    </li>
-    <li>
-      <router-link to="/books">{{ $t('main_menu.books') }}</router-link>
-    </li>
-    <li>
-      <router-link to="/authors">{{ $t('main_menu.authors') }}</router-link>
-    </li>
-    <li>
-      <router-link to="/contact">{{ $t('main_menu.contact') }}</router-link>
-    </li>
-  </ul>
-
-  <router-view/>
+  <component :is="layout">
+    <router-view></router-view>
+  </component>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 
 </style>

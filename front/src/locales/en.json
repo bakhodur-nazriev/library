@@ -1,4 +1,14 @@
 {
+  "lang": "en",
+  "meta_title": {
+    "home": "Home",
+    "authors": "Authors",
+    "books": "Books",
+    "contact": "Contact",
+    "not_found": "Page not found",
+    "login": "Login",
+    "registration": "Registration"
+  },
   "main_menu": {
     "home": "Home",
     "authors": "Authors",

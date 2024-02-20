@@ -1,8 +1,31 @@
 {
+  "lang": "ru",
+  "meta_title": {
+    "home": "Главная",
+    "authors": "Авторы",
+    "books": "Книги",
+    "contact": "Контакты",
+    "not_found": "Страница не доступна",
+    "login": "Вход",
+    "registration": "Регистрация"
+  },
   "main_menu": {
     "home": "Главная",
     "authors": "Авторы",
     "books": "Книги",
     "contact": "Контакты"
+  },
+  "titles": {
+    "login": "Вход"
+  },
+  "placeholders": {
+    "email": "Введите ваш email...",
+    "password": "Введите ваш пароль..."
+  },
+  "buttons": {
+    "login": "Вход"
+  },
+  "label": {
+    "have_account": "У вас есть аккаунт"
   }
 }
