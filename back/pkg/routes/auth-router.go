@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"ebook-service/pkg/controllers"
+	"back/pkg/controllers"
 	"github.com/gin-gonic/gin"
 )
 

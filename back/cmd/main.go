@@ -1,27 +1,23 @@
 package main
 
 import (
-	routes2 "ebook-service/pkg/routes"
+	"back/pkg/controllers"
+	"back/pkg/db"
+	"back/pkg/initializers"
 	"github.com/gin-gonic/gin"
-	"os"
 )
 
+func init() {
+	initializers.LoadEnvVariables()
+	db.ConnectToDb()
+	db.SyncDatabase()
+}
+
 func main() {
-	port := os.Getenv("PORT")
+	r := gin.Default()
 
-	if port == "" {
-		port = "8080"
-	}
+	r.POST("/signup", controllers.Signup1)
+	r.POST("/login", controllers.Login1)
 
-	router := gin.New()
-	router.Use(gin.Logger())
-
-	routes2.AuthRoutes(router)
-	routes2.UserRoutes(router)
-
-	router.GET("/api-1", func(c *gin.Context) {
-		c.JSON(200, gin.H{"success": ""})
-	})
-
-	router.Run(":" + port)
+	r.Run()
 }
