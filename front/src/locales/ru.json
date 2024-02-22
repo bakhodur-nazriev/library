@@ -7,7 +7,14 @@
     "contact": "Контакты",
     "not_found": "Страница не доступна",
     "login": "Вход",
-    "registration": "Регистрация"
+    "registration": "Регистрация",
+    "forgot_password": "Забыли пароль",
+    "dashboard": {
+      "home": "",
+      "authors": "",
+      "books": "",
+      "users": ""
+    }
   },
   "main_menu": {
     "home": "Главная",
@@ -16,16 +23,30 @@
     "contact": "Контакты"
   },
   "titles": {
-    "login": "Вход"
+    "login": "Вход",
+    "registration": "Регистрация",
+    "forgot_password": "Забыли пароль ?"
+  },
+  "subtitles": {
+    "we_will_send_password": "Мы отправим вам сообщение для изменения пароля"
   },
   "placeholders": {
+    "name": "Введите ваше имя...",
     "email": "Введите ваш email...",
     "password": "Введите ваш пароль..."
   },
   "buttons": {
-    "login": "Вход"
+    "login": "Вход",
+    "registration": "Регистрация",
+    "send": "Отправить"
   },
   "label": {
-    "have_account": "У вас есть аккаунт"
+    "create_account": "Создать аккаунт",
+    "have_account": "У вас есть аккаунт ?",
+    "forgot_password": "Забыл пароль ?",
+    "home": "Главная",
+    "authors": "Авторы",
+    "books": "Книги",
+    "users": "Ползователи"
   }
 }

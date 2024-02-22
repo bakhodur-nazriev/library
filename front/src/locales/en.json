@@ -7,12 +7,42 @@
     "contact": "Contact",
     "not_found": "Page not found",
     "login": "Login",
-    "registration": "Registration"
+    "registration": "Registration",
+    "forgot_password": "Forgot password ?",
+    "dashboard": {
+      "home": "Dashboard home",
+      "authors": "Dashboard authors",
+      "books": "Dashboard books",
+      "users": "Dashboard users"
+    }
   },
   "main_menu": {
     "home": "Home",
     "authors": "Authors",
     "books": "Books",
-    "contact": "Contact"
+    "contact": "Contacts"
+  },
+  "titles": {
+    "login": "Login",
+    "registration": "Registration",
+    "forgot_password": "Forgot password ?"
+  },
+  "subtitles": {
+    "we_will_send_password": "We will send you a message to change your password"
+  },
+  "placeholders": {
+    "name": "Enter your name...",
+    "email": "Enter your email...",
+    "password": "Enter your password..."
+  },
+  "buttons": {
+    "login": "Login",
+    "registration": "Registration",
+    "send": "Send"
+  },
+  "label": {
+    "create_account": "Create account",
+    "have_account": "You have an account ?",
+    "forgot_password": "Forgot password ?"
   }
 }
