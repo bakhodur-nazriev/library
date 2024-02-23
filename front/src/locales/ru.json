@@ -10,10 +10,10 @@
     "registration": "Регистрация",
     "forgot_password": "Забыли пароль",
     "dashboard": {
-      "home": "",
-      "authors": "",
-      "books": "",
-      "users": ""
+      "home": "Админ главная",
+      "authors": "Админ авторы",
+      "books": "Админ книги",
+      "users": "Админ пользователи"
     }
   },
   "main_menu": {
@@ -25,7 +25,24 @@
   "titles": {
     "login": "Вход",
     "registration": "Регистрация",
-    "forgot_password": "Забыли пароль ?"
+    "forgot_password": "Забыли пароль ?",
+    "table_titles": {
+      "books": {
+        "name": "Имя",
+        "description": "Описание",
+        "pages": "Страницы",
+        "publisher": "Издатель",
+        "publish_date": "Дата выхода",
+        "add_date": "Дата добавление",
+        "actions": "Действия"
+      },
+      "authors": {
+        "name": "Имя",
+        "date_of_birth": "День рождения",
+        "biography": "Биография",
+        "nationality": "Националность"
+      }
+    }
   },
   "subtitles": {
     "we_will_send_password": "Мы отправим вам сообщение для изменения пароля"
@@ -38,7 +55,12 @@
   "buttons": {
     "login": "Вход",
     "registration": "Регистрация",
-    "send": "Отправить"
+    "send": "Отправить",
+    "edit": "Изменить",
+    "delete": "Удалить",
+    "add": "+ Добавить",
+    "yes": "Да",
+    "no": "Нет"
   },
   "label": {
     "create_account": "Создать аккаунт",
@@ -48,5 +70,8 @@
     "authors": "Авторы",
     "books": "Книги",
     "users": "Ползователи"
+  },
+  "notifications": {
+    "remove_message": "Вы действительно хотите удалить этот запись!"
   }
 }

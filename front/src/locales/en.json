@@ -25,7 +25,24 @@
   "titles": {
     "login": "Login",
     "registration": "Registration",
-    "forgot_password": "Forgot password ?"
+    "forgot_password": "Forgot password ?",
+    "table_titles": {
+      "books": {
+        "name": "Name",
+        "description": "Description",
+        "pages": "Pages",
+        "publisher": "Publisher",
+        "publish_date": "Publisher date",
+        "add_date": "Add date",
+        "actions": "Actions"
+      },
+      "authors": {
+        "name": "Имя",
+        "date_of_birth": "День рождения",
+        "biography": "Биография",
+        "nationality": "Националность"
+      }
+    }
   },
   "subtitles": {
     "we_will_send_password": "We will send you a message to change your password"
@@ -38,7 +55,12 @@
   "buttons": {
     "login": "Login",
     "registration": "Registration",
-    "send": "Send"
+    "send": "Send",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "+ Add new item",
+    "yes": "Yes",
+    "no": "No"
   },
   "label": {
     "create_account": "Create account",

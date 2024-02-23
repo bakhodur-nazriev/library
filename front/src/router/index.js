@@ -114,7 +114,7 @@ const routes = [
                 name: 'dashboard-authors',
                 component: DashboardAuthorsView,
                 meta: {
-                    title: i18n.global.t('meta_title.dashboard.author'),
+                    title: i18n.global.t('meta_title.dashboard.authors'),
                     requiresAuth: true,
                     layout: 'dashboard'
                 }
