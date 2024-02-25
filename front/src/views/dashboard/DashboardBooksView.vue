@@ -1,7 +1,9 @@
 <script setup>
-import SampleTable from "../../components/SampleTable.vue";
 import {computed, ref} from "vue";
+import SampleTable from "../../components/SampleTable.vue";
 import i18n from "../../i18n.js";
+import DeleteModal from "../../components/modals/DeleteModal.vue";
+import AddBooksModal from "../../components/modals/AddBooksModal.vue";
 
 const tableHeaders = computed(() => {
   return [
@@ -20,7 +22,16 @@ const tableRows = ref([
 ]);
 
 const addBook = () => {
-  console.log('added book');
+  showAddModal.value = true;
+};
+
+const showDeleteModal = ref(false);
+const showAddModal = ref(false);
+const closeDeleteModal = () => {
+  showDeleteModal.value = true;
+};
+const cancelAddModal = () => {
+  showAddModal.value = false;
 }
 </script>
 
@@ -29,12 +40,14 @@ const addBook = () => {
     <h2 class="main-title">{{ $t('label.books') }}</h2>
     <button class="add-button" @click="addBook">{{ $t('buttons.add') }}</button>
     <SampleTable :rows="tableRows" :headers="tableHeaders"/>
+    <AddBooksModal v-if="showAddModal" @cancel="cancelAddModal"/>
+    <DeleteModal v-if="showDeleteModal" @close="closeDeleteModal"/>
   </div>
 </template>
 
 <style scoped lang="scss">
 .main-books__block {
-  padding: 15px;
+  padding: 20px;
 
   .main-title {
     margin-top: 0;

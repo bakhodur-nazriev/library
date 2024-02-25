@@ -2,7 +2,8 @@
 import {computed, ref} from 'vue';
 import SampleTable from "../../components/SampleTable.vue";
 import i18n from "../../i18n.js";
-import SampleDeleteModal from "../../components/modals/SampleDeleteModal.vue";
+import DeleteModal from "../../components/modals/DeleteModal.vue";
+import AddAuthorModal from "../../components/modals/AddAuthorModal.vue";
 
 const tableHeaders = computed(() => {
   return [
@@ -19,18 +20,27 @@ const tableRows = ref([
   ['Amilly Jackson', '10.10.1939', 'Just Test', 'Germany'],
   ['Shavkat Nazriev', '09.12.1956', 'Just Test', 'Tajikistan']
 ]);
+const showDeleteModal = ref(false);
+const showAddModal = ref(false);
 
 const addAuthor = () => {
-  console.log('added authors');
-}
+  showAddModal.value = true;
+};
+const cancelAddModal = () => {
+  showAddModal.value = false;
+};
+const closeModal = () => {
+  showDeleteModal.value = true;
+};
 </script>
 
 <template>
   <div class="main-authors__block">
     <h2 class="main-title">{{ $t('label.authors') }}</h2>
     <button class="add-button" @click="addAuthor">{{ $t('buttons.add') }}</button>
-    <SampleTable :rows="tableRows" :headers="tableHeaders"></SampleTable>
-    <SampleDeleteModal/>
+    <SampleTable :rows="tableRows" :headers="tableHeaders"/>
+    <AddAuthorModal v-if="showAddModal" @cancel="cancelAddModal"/>
+    <DeleteModal v-if="showDeleteModal" @close="closeModal"/>
   </div>
 </template>
 

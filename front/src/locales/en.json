@@ -50,7 +50,10 @@
   "placeholders": {
     "name": "Enter your name...",
     "email": "Enter your email...",
-    "password": "Enter your password..."
+    "password": "Enter your password...",
+    "search_book": "Enter book name",
+    "search_author": "Enter author name",
+    "search_publisher": "Enter publisher name"
   },
   "buttons": {
     "login": "Login",
@@ -60,7 +63,9 @@
     "delete": "Delete",
     "add": "+ Add new item",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "save": "Save",
+    "cancel": "Cancel"
   },
   "label": {
     "create_account": "Create account",

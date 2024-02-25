@@ -50,7 +50,10 @@
   "placeholders": {
     "name": "Введите ваше имя...",
     "email": "Введите ваш email...",
-    "password": "Введите ваш пароль..."
+    "password": "Введите ваш пароль...",
+    "search_book": "Enter book name",
+    "search_author": "Enter author name",
+    "search_publisher": "Enter publisher name"
   },
   "buttons": {
     "login": "Вход",
@@ -60,7 +63,9 @@
     "delete": "Удалить",
     "add": "+ Добавить",
     "yes": "Да",
-    "no": "Нет"
+    "no": "Нет",
+    "save": "Сохранить",
+    "cancel": "Отмена"
   },
   "label": {
     "create_account": "Создать аккаунт",
@@ -69,6 +74,7 @@
     "home": "Главная",
     "authors": "Авторы",
     "books": "Книги",
+    "publisher": "Издатель",
     "users": "Ползователи"
   },
   "notifications": {

@@ -1,17 +1,16 @@
 <script setup>
-import CloseIcon from "../icons/CloseIcon.vue";
+import {defineEmits} from 'vue';
 
-const closeModal = () => {
+const emit = defineEmits(['close']);
 
+const emitClose = () => {
+  emit('close');
 }
 </script>
 
 <template>
-  <div class="modal-overlay">
-    <div class="modal">
-<!--      <button @click="closeModal" class="close-button">-->
-<!--        <CloseIcon/>-->
-<!--      </button>-->
+  <div class="modal-overlay" @click="emitClose">
+    <div class="modal" @click.stop>
       <div>
         <h3>{{ $t('notifications.remove_message') }}</h3>
         <ul class="modal-list">
@@ -19,7 +18,7 @@ const closeModal = () => {
             <button>{{ $t('buttons.yes') }}</button>
           </li>
           <li class="modal-list__item">
-            <button>{{ $t('buttons.no') }}</button>
+            <button @click="emitClose">{{ $t('buttons.no') }}</button>
           </li>
         </ul>
       </div>

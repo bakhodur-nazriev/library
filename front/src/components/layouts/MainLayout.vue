@@ -8,7 +8,7 @@ import Navbar from "../Navbar.vue";
     <Navbar/>
 
     <main>
-
+      <router-view/>
     </main>
   </div>
 </template>
@@ -19,6 +19,6 @@ import Navbar from "../Navbar.vue";
   width: 100vw;
   overflow: hidden;
   box-sizing: border-box;
-  padding: 20px;
+  background-color: var(--bg-grey-color);
 }
 </style>
