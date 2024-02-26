@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -12,8 +13,34 @@ class BookController extends Controller
 {
     public function index(): JsonResponse
     {
-        $books = Book::all();
+        $books = Book::query()
+            ->paginate(10);
         return response()->json($books);
+    }
+
+    //todo optimize search
+    public function search(string $search_key): array
+    {
+          return  DB::select(
+                "select
+                        tab.author,
+                        tab.title,
+                        tab.description,
+                        tab.genre,
+                        tab.language,
+                        tab.publisher
+	                from (select
+	                        author,
+	                        title,
+	                        description,
+	                        genre,
+	                        language,
+	                        publisher,
+                            similarity(search_key, :search_key) as sim
+                        from books
+                        where search_key % :search_key) as tab;",
+                array('search_key' => $search_key)
+        );
     }
 
     public function store(Request $request): JsonResponse
@@ -33,6 +60,9 @@ class BookController extends Controller
             $book->genre = $request->input('genre');
             $book->language = $request->input('language');
             $book->publisher = $request->input('publisher');
+
+            $book->search_key = $book->title . $book->author;
+
             $book->save();
 
 
@@ -85,6 +115,9 @@ class BookController extends Controller
             }
         }
 
+        //reindex
+        $book->search_key = $book->title . $book->author;
+        //
         $book->save();
 
         return response()->json(['message' => 'Book updated successfully', 'book' => $book]);

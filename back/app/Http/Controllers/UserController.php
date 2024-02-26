@@ -2,130 +2,212 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Book;
+use App\Models\User;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-    public function index(): JsonResponse
+    public function index()
     {
-        $books = Book::all();
-        return response()->json($books);
+        try {
+            return User::query()
+                ->with(['roles', 'permissions'])
+                ->paginate();
+        } catch (\Exception $e) {
+            Log::info($e->getMessage());
+            return response()->json(['message' => 'error'], 500);
+        }
     }
 
     public function store(Request $request): JsonResponse
     {
-        try {
-            $request->validate([
-                'title' => 'required|string',
-                'author' => 'required|string',
-            ]);
+        // Validate the incoming request data
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required|string|min:8'],
+        ]);
 
-            $book = new Book();
-            $book->title = $request->input('title');
-            $book->author = $request->input('author');
-            $book->ISBN = $request->input('ISBN');
-            $book->description = $request->input('description');
-            $book->published_at = $request->input('published_at');
-            $book->genre = $request->input('genre');
-            $book->language = $request->input('language');
-            $book->publisher = $request->input('publisher');
-            $book->save();
+        // Create the new user with hashed password
+        $user = User::query()
+            ->create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
 
-
-            //
-            $request->validate([
-                'pdf' => 'required|file|mimes:pdf|max:2048',
-            ]);
-
-            if ($request->file('pdf')->isValid()) {
-                $path = $request->file('pdf')->store('pdfs');
-                $book->link = $path;
-                $book->save();
-
-                return response()->json(['message' => 'PDF uploaded successfully', 'path' => $path], 201);
-            } else {
-                return response()->json(['error' => 'Invalid file'], 400);
-            }
-        } catch (\Exception $e) {
-            Log::info($e->getMessage());
-            return response()->json(['error' => 'look logs'], 500);
-
-        }
+        return response()->json(['user' => $user], 201);
     }
 
-    public function showById(int $id): JsonResponse
+    public function update(Request $request, $id): JsonResponse
     {
-        return response()->json(Book::query()->find($id));
-    }
-
-    public function update(Request $request, int $id): JsonResponse
-    {
-        $book = Book::query()
+        // Find the user by ID
+        $user = User::query()
             ->findOrFail($id);
 
-        $validatedData = $request->validate([
-            'title' => 'string',
-            'author' => 'string',
-            'description' => 'string',
-            'ISBN' => 'string',
-            'published_at' => 'date',
-            'genre' => 'string',
-            'language' => 'string',
-            'pages' => 'nullable|integer',
-            'publisher' => 'string',
+        // Validate the incoming request data
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
+            'password' => ['required|string|min:8'],
         ]);
 
-        foreach ($validatedData as $key => $value) {
-            if ($request->has($key)) {
-                $book->$key = $value;
-            }
+        // Update user data
+        $user->name = $request->name;
+        $user->email = $request->email;
+
+        // Update password if provided
+        if ($request->has('password')) {
+            $user->password = Hash::make($request->password);
         }
 
-        $book->save();
+        // Save the changes
+        $user->save();
 
-        return response()->json(['message' => 'Book updated successfully', 'book' => $book]);
+        return response()->json(['user' => $user]);
     }
 
-
-    public function destroy(int $id): JsonResponse
+    public function destroy($id): JsonResponse
     {
-        Book::query()
-            ->find($id)
-            ->delete();
+        // Find the user by ID
+        $user = User::query()
+            ->findOrFail($id);
 
-        return response()->json(['message' => 'Book deleted successfully']);
+        // Delete the user
+        $user->delete();
+
+        return response()->json(null, 204);
     }
 
-    public function uploadPdf(Request $request): JsonResponse
+
+    // privileges
+    public function assignRoleToUser(int $roleId, int $userId): JsonResponse
+    {
+        $user = User::query()
+            ->findOrFail($userId);
+        $role = Role::query()
+            ->findOrFail($roleId);
+
+        $user->assignRole($role);
+
+        return response()->json(['message' => 'Role assigned to user successfully']);
+    }
+
+    public function assignPermissionToUser(int $permissionId, int $userId): JsonResponse
+    {
+        $user = User::query()->findOrFail($userId);
+        $permission = Permission::query()->findOrFail($permissionId);
+
+        $user->givePermissionTo($permission);
+
+        return response()->json(['message' => 'Permission assigned to user successfully']);
+
+    }
+
+    public function assignPermissionToRole(int $permissionId, int $roleId): JsonResponse
+    {
+        $role = Role::query()
+            ->findOrFail($roleId);
+        $permission = Permission::query()
+            ->findOrFail($permissionId);
+
+        $role->givePermissionTo($permission);
+
+        return response()->json(['message' => 'Permission assigned to role successfully']);
+
+    }
+
+    //roles
+    public function getRoles(): LengthAwarePaginator
+    {
+        return Role::query()
+            ->with('permissions')
+            ->paginate();
+
+    }
+
+    public function storeRole(Request $request): JsonResponse
     {
         $request->validate([
-            'pdf' => 'required|file|mimes:pdf|max:2048',
+            'name' => 'required|unique:roles,name',
         ]);
 
-        if ($request->file('pdf')->isValid()) {
-            $path = $request->file('pdf')->store('pdfs');
+        $role = Role::create(['name' => $request->name, 'guard_name' => $request->guard_name]);
 
-            $book = new Book();
-            $book->title = $request->input('title');
-            $book->author = $request->input('author');
-            $book->link = $path;
-            $book->save();
-
-            return response()->json(['message' => 'PDF uploaded successfully', 'path' => $path], 201);
-        } else {
-            return response()->json(['error' => 'Invalid file'], 400);
-        }
+        return response()->json(['role' => $role], 201);
     }
 
-    public function download(int $id): string
+    public function updateRole(Request $request, int $id): JsonResponse
     {
-        $book = Book::query()
-            ->find($id);
-        return config('proj_env.STORAGE_PATH'). $book->link;
+        $role = Role::query()
+            ->findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|unique:roles,name,' . $role->id,
+        ]);
+
+        $role->update(['name' => $request->name]);
+
+        return response()->json(['role' => $role]);
     }
 
+    public function destroyRole(int $id): JsonResponse
+    {
+        $role = Role::query()
+            ->findOrFail($id);
+
+        $role->delete();
+
+        return response()->json(null, 204);
+    }
+
+    //permissions
+    public function getPermission(): LengthAwarePaginator
+    {
+        return Permission::query()->paginate();
+    }
+
+    public function storePermission(Request $request): JsonResponse
+    {
+        $request->validate([
+            'name' => 'required|unique:roles,name',
+        ]);
+
+        $role = Permission::create([
+            'name' => $request->name,
+            'guard_name' => $request->guard_name
+        ]);
+
+        return response()->json(['role' => $role], 201);
+    }
+
+    public function updatePermission(Request $request, int $id): JsonResponse
+    {
+        $permission = Permission::query()
+            ->findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|unique:roles,name,' . $permission->id,
+        ]);
+
+        $permission->update(['name' => $request->name]);
+
+        return response()->json(['permission' => $permission]);
+    }
+
+    public function destroyPermission(int $id): JsonResponse
+    {
+        $permission = Permission::query()
+            ->findOrFail($id);
+
+        $permission->delete();
+
+        return response()->json(null, 204);
+    }
 }
