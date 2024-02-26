@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 //auth
@@ -29,10 +30,35 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
             Route::prefix('users')
                 ->group(function () {
-                    Route::resource('users', 'UserController');
-                    Route::resource('roles', 'RoleController');
-                    Route::resource('permissions', 'PermissionController');
-                    Route::post('roles/{role}/permissions', 'RolePermissionController@store');
+                    Route::get('', [UserController::class, 'index']);
+                    Route::post('', [UserController::class, 'store']);
+                    Route::put('', [UserController::class, 'update']);
+                    Route::delete('', [UserController::class, 'destroy']);
+                });
+
+            Route::prefix('privileges')
+                ->group(function () {
+
+                    Route::post('assign-role-to-user', [UserController::class, 'assignRoleToUser']);
+                    Route::post('assign-permission-to-user', [UserController::class, 'assignPermissionToUser']);
+                    Route::post('assign-permission-to-role', [UserController::class, 'assignPermissionToRole']);
+
+                    //
+                    Route::prefix('roles')
+                        ->group(function () {
+                            Route::get('', [UserController::class, 'getRoles']);
+                            Route::post('', [UserController::class, 'storeRole']);
+                            Route::put('', [UserController::class, 'updateRole']);
+                            Route::delete('', [UserController::class, 'destroyRole']);
+                        });
+                    //
+                    Route::prefix('permissions')
+                        ->group(function () {
+                            Route::get('', [UserController::class, 'getPermission']);
+                            Route::post('', [UserController::class, 'storePermission']);
+                            Route::put('', [UserController::class, 'updatePermission']);
+                            Route::delete('', [UserController::class, 'destroyPermission']);
+                        });
                 });
         });
 
@@ -42,6 +68,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('', [BookController::class, 'index']);
             Route::get('search/{search_key}', [BookController::class, 'search']);
             Route::get('/download/{id}', [BookController::class, 'download']);
-    });
+        });
 
 });
