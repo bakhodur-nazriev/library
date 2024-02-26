@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
                     ->where('id', '[0-9]+');
                 Route::delete('/{id}', [BookController::class, 'destroy']);
                 Route::get('/{id}', [BookController::class, 'showById']);
+            });
+
+
+            Route::prefix('authors')->group(function () {
+                Route::get('', [AuthorController::class, 'index']);
+                Route::post('', [AuthorController::class, 'store']);
+                Route::patch('/{id}', [AuthorController::class, 'update'])
+                    ->where('id', '[0-9]+');
+                Route::delete('/{id}', [AuthorController::class, 'destroy']);
+                Route::get('/{id}', [AuthorController::class, 'showById']);
             });
 
             Route::prefix('users')
