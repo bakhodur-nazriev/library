@@ -13,17 +13,29 @@ class BookController extends Controller
 {
     public function index(): JsonResponse
     {
-        $books = Book::all();
+        $books = Book::query()
+            ->paginate(10);
         return response()->json($books);
     }
 
+    //todo optimize search
     public function search(string $search_key): array
     {
           return  DB::select(
                 "select
-                        tab.author
+                        tab.author,
+                        tab.title,
+                        tab.description,
+                        tab.genre,
+                        tab.language,
+                        tab.publisher
 	                from (select
 	                        author,
+	                        title,
+	                        description,
+	                        genre,
+	                        language,
+	                        publisher,
                             similarity(search_key, :search_key) as sim
                         from books
                         where search_key % :search_key) as tab;",
