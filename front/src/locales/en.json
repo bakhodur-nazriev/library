@@ -70,6 +70,10 @@
   "label": {
     "create_account": "Create account",
     "have_account": "You have an account ?",
-    "forgot_password": "Forgot password ?"
+    "forgot_password": "Forgot password ?",
+    "authors": "Authors",
+    "books": "Books",
+    "publisher": "Publisher",
+    "users": "Users"
   }
 }

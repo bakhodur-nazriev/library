@@ -25,7 +25,7 @@ async function loadLocaleMessages() {
 }
 
 const i18n = createI18n({
-    locale: 'ru',
+    locale: 'en',
     fallbackLocale: 'en',
     messages: await loadLocaleMessages()
 })
