@@ -2,13 +2,12 @@
 
 body {
     margin: 0;
-    display: flex;
+    padding: 0;
     box-sizing: border-box;
-    min-width: 100vw;
-    min-height: 100vh;
     font-family: "Montserrat", sans-serif;
     font-optical-sizing: auto;
     font-style: normal;
+    overflow-x: hidden;
 }
 
 :root {

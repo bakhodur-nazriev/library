@@ -35,8 +35,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 12;
-  background: var(--primary-color);
+  z-index: 16;
 
   .container {
     display: flex;
@@ -56,6 +55,7 @@
       a {
         text-decoration: none;
         font-weight: 400;
+        font-size: 14px;
         color: var(--white-color);
       }
     }

@@ -53,8 +53,8 @@ let currentTab = ref(0);
   border-radius: 8px;
   width: 500px;
   z-index: 15;
-  position: fixed;
-  top: 300px;
+  position: absolute;
+  top: 220px;
 
   .tabs {
     width: inherit;

@@ -17,9 +17,7 @@ import Navbar from "../Navbar.vue";
 .container {
   height: 100vh;
   width: 100vw;
-  overflow: hidden;
   box-sizing: border-box;
-  background-color: var(--bg-grey-color);
   position: relative;
 }
 </style>
