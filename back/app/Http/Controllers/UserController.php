@@ -17,6 +17,7 @@ class UserController extends Controller
     {
         try {
             return User::query()
+                ->with(['roles', 'permissions'])
                 ->paginate();
         } catch (\Exception $e) {
             Log::info($e->getMessage());
@@ -86,7 +87,7 @@ class UserController extends Controller
 
 
     // privileges
-    public function assignRoleToUser(int $userId, int $roleId): JsonResponse
+    public function assignRoleToUser(int $roleId, int $userId): JsonResponse
     {
         $user = User::query()
             ->findOrFail($userId);
@@ -125,7 +126,9 @@ class UserController extends Controller
     //roles
     public function getRoles(): LengthAwarePaginator
     {
-        return Role::query()->paginate();
+        return Role::query()
+            ->with('permissions')
+            ->paginate();
 
     }
 

@@ -39,9 +39,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::prefix('privileges')
                 ->group(function () {
 
-                    Route::post('assign-role-to-user', [UserController::class, 'assignRoleToUser']);
-                    Route::post('assign-permission-to-user', [UserController::class, 'assignPermissionToUser']);
-                    Route::post('assign-permission-to-role', [UserController::class, 'assignPermissionToRole']);
+                    Route::post('assign-role-to-user/{role_id}/{user_id}', [UserController::class, 'assignRoleToUser']);
+                    Route::post('assign-permission-to-user/{permission_id}/{user_id}', [UserController::class, 'assignPermissionToUser']);
+                    Route::post('assign-permission-to-role/{permission_id}/{role_id}', [UserController::class, 'assignPermissionToRole']);
 
                     //
                     Route::prefix('roles')
