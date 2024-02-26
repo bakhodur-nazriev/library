@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Spatie\Permission\Models\Role;
 
 return new class extends Migration {
 
@@ -22,18 +22,12 @@ return new class extends Migration {
             $table->string('language')->nullable();
             $table->integer('pages')->nullable();
             $table->string('publisher')->nullable();
+            $table->string('search_key')->nullable();
             $table->timestamps();
         });
 
-
-        // Assign permissions to the admin role
-//        $adminRole = Role::findByName('admin');
-//        $adminRole->givePermissionTo(['manage_books']);
-//
-//// Assign permissions to the user role
-//        $userRole = Role::findByName('user');
-//        $userRole->givePermissionTo(['view_books']);
-
+        DB::statement('CREATE EXTENSION IF NOT EXISTS pg_trgm');
+        DB::statement('CREATE INDEX search_key_trgm_idx ON books USING GIN (search_key gin_trgm_ops)');
     }
 
     public function down(): void
