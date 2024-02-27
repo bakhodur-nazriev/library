@@ -6,7 +6,6 @@ use App\Http\Requests\AuthorRequests\AuthorStoreRequest;
 use App\Http\Requests\AuthorRequests\AuthorUpdateRequest;
 use App\Models\Author;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
