@@ -13,11 +13,15 @@ use Illuminate\Support\Facades\Log;
 
 class BookController extends Controller
 {
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $books = Book::query()
-            ->paginate(10);
-        return response()->json($books);
+        $perPage = $request->query('per_page', 10);
+        $page = $request->query('page', 1);
+
+        $authors = Book::with('authors')
+            ->paginate($perPage, ['*'], 'page', $page);
+
+        return response()->json($authors);
     }
 
     //todo optimize search
@@ -48,11 +52,6 @@ class BookController extends Controller
     public function store(BookStoreRequest $request): JsonResponse
     {
         try {
-            $request->validate([
-                'title' => 'required|string',
-                'author' => 'required|string',
-            ]);
-
             $book = new Book();
             $book->title = $request->input('title');
             $book->author = $request->input('author');

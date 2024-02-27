@@ -6,16 +6,21 @@ use App\Http\Requests\AuthorRequests\AuthorStoreRequest;
 use App\Http\Requests\AuthorRequests\AuthorUpdateRequest;
 use App\Models\Author;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class AuthorController extends Controller
 {
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $authors = Author::query()
-            ->with('books')
-            ->paginate(10);
+        $perPage = $request->query('per_page', 10);
+        $page = $request->query('page', 1);
+
+        // Query for the paginated data
+        $authors = Author::with('books')
+            ->paginate($perPage, ['*'], 'page', $page);
+
         return response()->json($authors);
     }
 
