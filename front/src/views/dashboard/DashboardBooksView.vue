@@ -4,6 +4,7 @@ import SampleTable from "../../components/SampleTable.vue";
 import i18n from "../../i18n.js";
 import DeleteModal from "../../components/modals/DeleteModal.vue";
 import AddBooksModal from "../../components/modals/AddBooksModal.vue";
+import axios from "axios";
 
 const tableHeaders = computed(() => {
   return [
@@ -32,6 +33,15 @@ const closeDeleteModal = () => {
 };
 const cancelAddModal = () => {
   showAddModal.value = false;
+}
+
+const getBooks = async () => {
+  const token = sessionStorage.getItem('token');
+
+  await axios
+      .get('/admin/books')
+      .then()
+      .catch()
 }
 </script>
 

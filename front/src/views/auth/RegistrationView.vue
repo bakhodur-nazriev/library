@@ -2,26 +2,66 @@
 import {ref} from "vue";
 import EyeIcon from "../../components/icons/EyeIcon.vue";
 import EyeSlashIcon from "../../components/icons/EyeSlashIcon.vue";
+import {getFormData} from "../../utils.js";
+import axios from "axios";
+import router from "../../router/index.js";
 
 let isPasswordVisible = ref(true);
+const name = ref('');
+const email = ref('');
+const password = ref('');
 
 const togglePasswordVisibility = () => {
   isPasswordVisible.value = !isPasswordVisible.value
+}
+
+const register = async (e) => {
+  e.preventDefault();
+  const payload = getFormData({
+    email: email.value,
+    password: password.value,
+    name: name.value
+  });
+
+  const headers = {'Content-Type': 'multipart/form-data'}
+
+  await axios
+      .post('/register', payload, {headers})
+      .then(res => {
+        console.log(res);
+        this.$router.push({name: 'login'});
+      })
+      .catch(err => {
+        console.log(err)
+      })
 }
 </script>
 
 <template>
   <main class="login-block">
-    <form action="" class="login-form">
+    <form class="login-form" @submit="register">
       <h1>{{ $t('titles.registration') }}</h1>
-      <input class="login-form-input" type="text" :placeholder="`${$t('placeholders.name')}`" required>
+      <input
+          required
+          type="text"
+          v-model="name"
+          class="login-form-input"
+          :placeholder="`${$t('placeholders.name')}`"
+      >
 
-      <input class="login-form-input" type="email" :placeholder="`${$t('placeholders.email')}`" required>
+      <input
+          required
+          type="email"
+          v-model="email"
+          class="login-form-input"
+          :placeholder="`${$t('placeholders.email')}`"
+      >
 
       <div class="input-with-eye">
         <input
             class="login-form-input" :type="isPasswordVisible ? 'password' : 'text'"
             :placeholder="`${$t('placeholders.password')}`"
+            v-model="password"
             required
         >
         <button type="button" class="eye-button" @click="togglePasswordVisibility">
@@ -31,7 +71,9 @@ const togglePasswordVisibility = () => {
       </div>
 
 
-      <button type="button" class="login-form-button">{{ $t('buttons.registration') }}</button>
+      <button type="submit" class="login-form-button">
+        {{ $t('buttons.registration') }}
+      </button>
       <router-link
           :to="`/${$i18n.locale}/login`"
           class="link create-account"
@@ -48,7 +90,7 @@ const togglePasswordVisibility = () => {
     box-shadow: 0 6px 10px -4px rgba(0, 0, 0, .15);
     background-color: var(--white-color);
     border-radius: 10px;
-    padding: 20px;
+    padding: 30px;
   }
 
   &-form {
@@ -61,9 +103,10 @@ const togglePasswordVisibility = () => {
 
     h1 {
       font-size: 40px;
-      margin: 10px 0;
+      margin: 0 0 10px;
       align-self: start;
       font-weight: 600;
+      line-height: 1;
     }
 
     .forgot-password {

@@ -18,7 +18,9 @@ const layout = computed(() => {
 </script>
 
 <template>
-  <component :is="layout"></component>
+  <component :is="layout">
+    <router-view/>
+  </component>
 </template>
 
 <style scoped lang="scss"></style>

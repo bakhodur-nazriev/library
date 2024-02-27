@@ -1,11 +1,12 @@
 import {createRouter, createWebHistory} from "vue-router";
 import i18n from "../i18n";
+import {supportedLanguages} from "../constants.js";
 import HomeView from "../views/HomeView.vue";
 import BooksView from "../views/BooksView.vue";
 import AuthorsView from "../views/AuthorsView.vue";
 import ContactView from "../views/ContactView.vue";
 import LoginView from "../views/auth/LoginView.vue";
-import RegistrationView from "../views/auth/RegistrationView.vue";
+import RegisterView from "../views/auth/RegistrationView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
 import ForgotPasswordView from "../views/auth/ForgotPasswordView.vue";
 import DashboardHomeView from "../views/dashboard/DashboardHomeView.vue";
@@ -25,9 +26,9 @@ const routes = [
         }
     },
     {
-        path: '/:lang?/registration',
-        name: 'registration',
-        component: RegistrationView,
+        path: '/:lang?/register',
+        name: 'register',
+        component: RegisterView,
         meta: {
             title: i18n.global.t('meta_title.registration'),
             requiresAuth: false,
@@ -140,6 +141,17 @@ const routes = [
                 }
             },
         ]
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        redirect: (to) => {
+            return {
+                name: router.currentRoute.value.name,
+                params: {
+                    lang: router.currentRoute.value.params.lang
+                }
+            }
+        }
     }
 ];
 
@@ -148,5 +160,43 @@ const router = new createRouter({
     routes,
     mode: 'history'
 });
+
+// router.beforeEach((to, from, next) => {
+//     const lang = to.params.lang || i18n.global.locale.value;
+//     const requiresAuth = to.matched.some((route) => route.meta.requiresAuth)
+//     const isUserAuthenticated = () => {
+//         const token = sessionStorage.getItem('token')
+//         return !!token
+//     };
+//
+//     if (supportedLanguages.includes(lang)) {
+//         i18n.global.locale = lang
+//     } else {
+//         const defaultLang = i18n.global.locale || 'ru'
+//         return next(`/${defaultLang}${to.path}`)
+//     }
+//
+//     if (to.params.lang !== lang) {
+//         const pathWithoutLang = to.path.replace(`/${to.params.lang}`, `/${lang}`)
+//         return next({
+//             path: `/${lang}${pathWithoutLang}`,
+//             params: {lang}
+//         })
+//     }
+//
+//     document.title = `${to.meta.title} | ${import.meta.env.VITE_TITLE}`
+//
+//     const isAuthenticated = isUserAuthenticated()
+//
+//     const allowedRoutes = ['login', 'register', 'forgot-password']
+//
+//     if (requiresAuth && !isAuthenticated) {
+//         return next({name: 'login'})
+//     }
+//
+//     if (!isAuthenticated && allowedRoutes.includes(to.name)) {
+//         return next();
+//     }
+// });
 
 export default router;

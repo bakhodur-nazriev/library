@@ -1,0 +1,1 @@
+export const supportedLanguages = ['tj', 'ru', 'en'];
