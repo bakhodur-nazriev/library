@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AuthorRequests\AuthorStoreRequest;
+use App\Http\Requests\AuthorRequests\AuthorUpdateRequest;
 use App\Models\Author;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -33,7 +35,7 @@ class AuthorController extends Controller
         );
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(AuthorStoreRequest $request): JsonResponse
     {
         try {
             $request->validate([
@@ -66,7 +68,7 @@ class AuthorController extends Controller
         );
     }
 
-    public function update(Request $request, int $id): JsonResponse
+    public function update(AuthorUpdateRequest $request, int $id): JsonResponse
     {
         $author = Author::query()
             ->findOrFail($id);

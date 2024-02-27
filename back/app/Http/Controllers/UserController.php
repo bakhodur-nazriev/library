@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserRequests\UserStoreRequest;
+use App\Http\Requests\UserRequests\UserUpdateRequest;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\JsonResponse;
@@ -25,16 +27,8 @@ class UserController extends Controller
         }
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(UserStoreRequest $request): JsonResponse
     {
-        // Validate the incoming request data
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required|string|min:8'],
-        ]);
-
-        // Create the new user with hashed password
         $user = User::query()
             ->create([
             'name' => $request->name,
@@ -45,29 +39,19 @@ class UserController extends Controller
         return response()->json(['user' => $user], 201);
     }
 
-    public function update(Request $request, $id): JsonResponse
+    public function update(UserUpdateRequest $request, $id): JsonResponse
     {
-        // Find the user by ID
         $user = User::query()
             ->findOrFail($id);
 
-        // Validate the incoming request data
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
-            'password' => ['required|string|min:8'],
-        ]);
 
-        // Update user data
         $user->name = $request->name;
         $user->email = $request->email;
 
-        // Update password if provided
         if ($request->has('password')) {
             $user->password = Hash::make($request->password);
         }
 
-        // Save the changes
         $user->save();
 
         return response()->json(['user' => $user]);

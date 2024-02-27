@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BookRequests\BookSearchRequest;
+use App\Http\Requests\BookRequests\BookStoreRequest;
+use App\Http\Requests\BookRequests\BookUpdateRequest;
 use App\Models\Book;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
 class BookController extends Controller
 {
@@ -19,7 +21,7 @@ class BookController extends Controller
     }
 
     //todo optimize search
-    public function search(string $search_key): array
+    public function search(BookSearchRequest $request, string $search_key): array
     {
           return  DB::select(
                 "select
@@ -43,7 +45,7 @@ class BookController extends Controller
         );
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(BookStoreRequest $request): JsonResponse
     {
         try {
             $request->validate([
@@ -92,7 +94,7 @@ class BookController extends Controller
         return response()->json(Book::query()->find($id));
     }
 
-    public function update(Request $request, int $id): JsonResponse
+    public function update(BookUpdateRequest $request, int $id): JsonResponse
     {
         $book = Book::query()
             ->findOrFail($id);
