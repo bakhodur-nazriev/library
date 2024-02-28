@@ -15,7 +15,7 @@ use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(): LengthAwarePaginator|JsonResponse
     {
         try {
             return User::query()

@@ -42,15 +42,11 @@ class AuthorController extends Controller
     public function store(AuthorStoreRequest $request): JsonResponse
     {
         try {
-            $request->validate([
-                'initials' => 'required|string',
-                'date_of_birth' => 'required|string',
-                'book_ids' => 'array',
-            ]);
-
             $author = new Author();
             $author->initials = $request->input('initials');
             $author->date_of_birth = $request->input('date_of_birth');
+            $author->nationality = $request->input('nationality');
+            $author->biography = $request->input('biography');
             $author->save();
 
             $author->books()->attach($request->input('book_ids'));

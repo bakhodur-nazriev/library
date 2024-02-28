@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -133,6 +135,14 @@ return new class extends Migration
 
         $role->givePermissionTo($permission);
 
+        //
+        $user = User::query()
+            ->create([
+                'name' => 'admin',
+                'email' => 'f.admin@mail.ru',
+                'password' => Hash::make('12345678'),
+            ]);
+        $user->givePermissionTo(['admin']);
     }
 
     /**

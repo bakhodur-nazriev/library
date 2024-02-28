@@ -20,6 +20,8 @@ class AuthorStoreRequest extends FormRequest
             'initials' => 'required|string|min:5|max:200',
             'date_of_birth' => 'required|date',
             'book_ids' => 'nullable|array',
+            'nationality' => 'nullable|string',
+            'biography' => 'nullable|string'
         ];
     }
 }
