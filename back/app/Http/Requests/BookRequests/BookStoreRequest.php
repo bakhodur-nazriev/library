@@ -19,7 +19,6 @@ class BookStoreRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:100|min:3',
-            'author' => 'required|string|max:100|min:3',
             'description' => 'nullable|string|max:300',
             'ISBN' => 'nullable|string|max:20',
             'published_at' => 'nullable|date',
