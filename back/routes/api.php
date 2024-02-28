@@ -23,22 +23,18 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::post('register', [AuthController::class, 'register']);
 
             Route::prefix('books')->group(function () {
-                Route::get('', [BookController::class, 'index']);
                 Route::post('', [BookController::class, 'store']);
                 Route::patch('/{id}', [BookController::class, 'update'])
                     ->where('id', '[0-9]+');
                 Route::delete('/{id}', [BookController::class, 'destroy']);
-                Route::get('/{id}', [BookController::class, 'showById']);
             });
 
 
             Route::prefix('authors')->group(function () {
-                Route::get('', [AuthorController::class, 'index']);
                 Route::post('', [AuthorController::class, 'store']);
                 Route::patch('/{id}', [AuthorController::class, 'update'])
                     ->where('id', '[0-9]+');
                 Route::delete('/{id}', [AuthorController::class, 'destroy']);
-                Route::get('/{id}', [AuthorController::class, 'showById']);
             });
 
             Route::prefix('users')
@@ -75,7 +71,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
                 });
         });
 
-    //users
+    // general routes
     Route::prefix('books')
         ->group(function () {
             Route::get('', [BookController::class, 'index']);
@@ -84,11 +80,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/{id}', [BookController::class, 'showById']);
         });
 
-    //users
     Route::prefix('authors')
         ->group(function () {
+            Route::get('', [AuthorController::class, 'index']);
+            Route::get('/{id}', [AuthorController::class, 'showById']);
             Route::get('search/{search_key}', [AuthorController::class, 'search']);
-           
+
         });
 
 });

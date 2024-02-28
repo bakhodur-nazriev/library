@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\BookRequests\BookSearchRequest;
 use App\Http\Requests\BookRequests\BookStoreRequest;
 use App\Http\Requests\BookRequests\BookUpdateRequest;
+use App\Jobs\IndexBookSearchKeysJob;
 use App\Models\Book;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -59,9 +60,14 @@ class BookController extends Controller
             $book->language = $request->input('language');
             $book->publisher = $request->input('publisher');
 
-            $book->search_key = $book->title . $book->author;
+            if ($request->filled('author_ids')) {
+                $authorIds = $request->input('author_ids');
 
-            $book->save();
+                if (is_array($authorIds)) {
+                    $book->authors()->attach($authorIds);
+                    dispatch(new IndexBookSearchKeysJob($book));
+                }
+            }
 
             //author
             if ($request->file('pdf')->isValid()) {
@@ -90,27 +96,20 @@ class BookController extends Controller
         $book = Book::query()
             ->findOrFail($id);
 
-        $validatedData = $request->validate([
-            'title' => 'string',
-            'description' => 'string',
-            'ISBN' => 'string',
-            'published_at' => 'date',
-            'genre' => 'string',
-            'language' => 'string',
-            'pages' => 'nullable|integer',
-            'publisher' => 'string',
-        ]);
-
-        foreach ($validatedData as $key => $value) {
+        foreach ($request->all() as $key => $value) {
             if ($request->has($key)) {
                 $book->$key = $value;
             }
         }
 
-        //reindex
-        $book->search_key = $book->title . $book->author;
-        //
-        $book->save();
+        if ($request->filled('author_ids')) {
+            $authorIds = $request->input('author_ids');
+
+            if (is_array($authorIds)) {
+                $book->authors()->attach($authorIds);
+                dispatch(new IndexBookSearchKeysJob($book));
+            }
+        }
 
         return response()->json(['message' => 'Book updated successfully', 'book' => $book]);
     }

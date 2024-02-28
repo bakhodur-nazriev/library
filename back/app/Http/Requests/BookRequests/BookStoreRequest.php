@@ -20,7 +20,7 @@ class BookStoreRequest extends FormRequest
         return [
             'title' => 'required|string|max:100|min:3',
             'description' => 'nullable|string|max:300',
-            'ISBN' => 'unique:books,ISBN|numeric|max:20000000000',
+            'ISBN' => 'nullable|unique:books,ISBN|numeric|max:20000000000',
             'published_at' => 'nullable|date',
             'genre' => 'nullable|string|max:20',
             'language' => 'nullable|string|max:20',
