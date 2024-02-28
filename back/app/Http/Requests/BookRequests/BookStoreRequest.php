@@ -6,9 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class BookStoreRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
@@ -26,7 +23,7 @@ class BookStoreRequest extends FormRequest
             'language' => 'nullable|string|max:20',
             'pages' => 'nullable|integer|max:1000',
             'publisher' => 'nullable|string|max:100',
-            'pdf' => 'file|mimes:pdf|max:14000'
+            'pdf' => 'file|mimes:pdf|max:51200'
         ];
     }
 }
