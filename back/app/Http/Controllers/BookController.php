@@ -63,12 +63,6 @@ class BookController extends Controller
 
             $book->save();
 
-
-            //
-            $request->validate([
-                'pdf' => 'required|file|mimes:pdf|max:2048',
-            ]);
-
             if ($request->file('pdf')->isValid()) {
                 $path = $request->file('pdf')->store('pdfs');
                 $book->link = $path;
@@ -79,8 +73,8 @@ class BookController extends Controller
                 return response()->json(['error' => 'Invalid file'], 400);
             }
         } catch (\Exception $e) {
-            Log::info($e->getMessage());
-            return response()->json(['error' => 'look logs'], 500);
+            Log::info('BookCOntroller store ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
 
         }
     }
