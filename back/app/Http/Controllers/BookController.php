@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\BookRequests\BookSearchRequest;
 use App\Http\Requests\BookRequests\BookStoreRequest;
 use App\Http\Requests\BookRequests\BookUpdateRequest;
+use App\Jobs\IndexBookSearchKeysJob;
 use App\Models\Book;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -58,29 +59,29 @@ class BookController extends Controller
             $book->genre = $request->input('genre');
             $book->language = $request->input('language');
             $book->publisher = $request->input('publisher');
+            $book->save();
 
-            $book->search_key = $book->title . $book->author;
+            //author
+            if ($request->file('pdf')?->isValid()) {
+                $path = $request->file('pdf')->store('pdfs');
+                $book->link = $path;
+            }
 
             $book->save();
 
+            if ($request->filled('author_ids')) {
+                $authorIds = $request->input('author_ids');
 
-            //
-            $request->validate([
-                'pdf' => 'required|file|mimes:pdf|max:2048',
-            ]);
-
-            if ($request->file('pdf')->isValid()) {
-                $path = $request->file('pdf')->store('pdfs');
-                $book->link = $path;
-                $book->save();
-
-                return response()->json(['message' => 'PDF uploaded successfully', 'path' => $path], 201);
-            } else {
-                return response()->json(['error' => 'Invalid file'], 400);
+                if (is_array($authorIds)) {
+                    $book->authors()->attach($authorIds);
+                    dispatch(new IndexBookSearchKeysJob($book));
+                }
             }
+
+            return response()->json(['message' => 'PDF uploaded successfully']);
         } catch (\Exception $e) {
-            Log::info($e->getMessage());
-            return response()->json(['error' => 'look logs'], 500);
+            Log::info('BookCOntroller store ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
 
         }
     }
@@ -95,27 +96,22 @@ class BookController extends Controller
         $book = Book::query()
             ->findOrFail($id);
 
-        $validatedData = $request->validate([
-            'title' => 'string',
-            'description' => 'string',
-            'ISBN' => 'string',
-            'published_at' => 'date',
-            'genre' => 'string',
-            'language' => 'string',
-            'pages' => 'nullable|integer',
-            'publisher' => 'string',
-        ]);
-
-        foreach ($validatedData as $key => $value) {
+        foreach ($request->all() as $key => $value) {
             if ($request->has($key)) {
                 $book->$key = $value;
             }
         }
 
-        //reindex
-        $book->search_key = $book->title . $book->author;
-        //
         $book->save();
+
+        if ($request->filled('author_ids')) {
+            $authorIds = $request->input('author_ids');
+
+            if (is_array($authorIds)) {
+                $book->authors()->attach($authorIds);
+                dispatch(new IndexBookSearchKeysJob($book));
+            }
+        }
 
         return response()->json(['message' => 'Book updated successfully', 'book' => $book]);
     }

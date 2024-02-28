@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->string('title');
             $table->string('link')->nullable();
             $table->text('description')->nullable();
-            $table->string('ISBN')->unique();
+            $table->string('ISBN')->nullable()->unique();
             $table->date('published_at')->nullable();
             $table->string('cover_image')->nullable();
             $table->string('genre')->nullable();

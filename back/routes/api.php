@@ -7,7 +7,6 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 //auth
-Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')
     ->group(function () {
@@ -16,27 +15,26 @@ Route::middleware('auth:sanctum')
 
 //
 Route::middleware(['auth:sanctum'])->group(function () {
-    //admin
+//admin
     Route::middleware(['can:admin'])
         ->prefix('admin')
         ->group(function () {
+// auth
+            Route::post('register', [AuthController::class, 'register']);
+
             Route::prefix('books')->group(function () {
-                Route::get('', [BookController::class, 'index']);
                 Route::post('', [BookController::class, 'store']);
                 Route::patch('/{id}', [BookController::class, 'update'])
                     ->where('id', '[0-9]+');
                 Route::delete('/{id}', [BookController::class, 'destroy']);
-                Route::get('/{id}', [BookController::class, 'showById']);
             });
 
 
             Route::prefix('authors')->group(function () {
-                Route::get('', [AuthorController::class, 'index']);
                 Route::post('', [AuthorController::class, 'store']);
                 Route::patch('/{id}', [AuthorController::class, 'update'])
                     ->where('id', '[0-9]+');
                 Route::delete('/{id}', [AuthorController::class, 'destroy']);
-                Route::get('/{id}', [AuthorController::class, 'showById']);
             });
 
             Route::prefix('users')
@@ -73,12 +71,21 @@ Route::middleware(['auth:sanctum'])->group(function () {
                 });
         });
 
-    //users
+    // general routes
     Route::prefix('books')
         ->group(function () {
             Route::get('', [BookController::class, 'index']);
             Route::get('search/{search_key}', [BookController::class, 'search']);
             Route::get('/download/{id}', [BookController::class, 'download']);
+            Route::get('/{id}', [BookController::class, 'showById']);
+        });
+
+    Route::prefix('authors')
+        ->group(function () {
+            Route::get('', [AuthorController::class, 'index']);
+            Route::get('/{id}', [AuthorController::class, 'showById']);
+            Route::get('search/{search_key}', [AuthorController::class, 'search']);
+
         });
 
 });
