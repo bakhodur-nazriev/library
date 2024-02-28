@@ -7,7 +7,6 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 //auth
-Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')
     ->group(function () {
@@ -16,10 +15,13 @@ Route::middleware('auth:sanctum')
 
 //
 Route::middleware(['auth:sanctum'])->group(function () {
-    //admin
+//admin
     Route::middleware(['can:admin'])
         ->prefix('admin')
         ->group(function () {
+// auth
+            Route::post('register', [AuthController::class, 'register']);
+
             Route::prefix('books')->group(function () {
                 Route::get('', [BookController::class, 'index']);
                 Route::post('', [BookController::class, 'store']);
@@ -79,6 +81,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('', [BookController::class, 'index']);
             Route::get('search/{search_key}', [BookController::class, 'search']);
             Route::get('/download/{id}', [BookController::class, 'download']);
+            Route::get('/{id}', [BookController::class, 'showById']);
+        });
+
+    //users
+    Route::prefix('authors')
+        ->group(function () {
+            Route::get('search/{search_key}', [AuthorController::class, 'search']);
+           
         });
 
 });

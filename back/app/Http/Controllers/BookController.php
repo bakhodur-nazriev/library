@@ -63,12 +63,13 @@ class BookController extends Controller
 
             $book->save();
 
+            //author
             if ($request->file('pdf')->isValid()) {
                 $path = $request->file('pdf')->store('pdfs');
                 $book->link = $path;
                 $book->save();
 
-                return response()->json(['message' => 'PDF uploaded successfully', 'path' => $path], 201);
+                return response()->json(['message' => 'PDF uploaded successfully', 'path' => $path]);
             } else {
                 return response()->json(['error' => 'Invalid file'], 400);
             }
