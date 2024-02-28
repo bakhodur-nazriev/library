@@ -29,14 +29,12 @@ class BookController extends Controller
     {
           return  DB::select(
                 "select
-                        tab.author,
                         tab.title,
                         tab.description,
                         tab.genre,
                         tab.language,
                         tab.publisher
 	                from (select
-	                        author,
 	                        title,
 	                        description,
 	                        genre,
@@ -54,7 +52,6 @@ class BookController extends Controller
         try {
             $book = new Book();
             $book->title = $request->input('title');
-            $book->author = $request->input('author');
             $book->ISBN = $request->input('ISBN');
             $book->description = $request->input('description');
             $book->published_at = $request->input('published_at');
@@ -100,7 +97,6 @@ class BookController extends Controller
 
         $validatedData = $request->validate([
             'title' => 'string',
-            'author' => 'string',
             'description' => 'string',
             'ISBN' => 'string',
             'published_at' => 'date',
