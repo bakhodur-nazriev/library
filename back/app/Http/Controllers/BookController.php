@@ -59,6 +59,15 @@ class BookController extends Controller
             $book->genre = $request->input('genre');
             $book->language = $request->input('language');
             $book->publisher = $request->input('publisher');
+            $book->save();
+
+            //author
+            if ($request->file('pdf')?->isValid()) {
+                $path = $request->file('pdf')->store('pdfs');
+                $book->link = $path;
+            }
+
+            $book->save();
 
             if ($request->filled('author_ids')) {
                 $authorIds = $request->input('author_ids');
@@ -69,16 +78,7 @@ class BookController extends Controller
                 }
             }
 
-            //author
-            if ($request->file('pdf')->isValid()) {
-                $path = $request->file('pdf')->store('pdfs');
-                $book->link = $path;
-                $book->save();
-
-                return response()->json(['message' => 'PDF uploaded successfully', 'path' => $path]);
-            } else {
-                return response()->json(['error' => 'Invalid file'], 400);
-            }
+            return response()->json(['message' => 'PDF uploaded successfully']);
         } catch (\Exception $e) {
             Log::info('BookCOntroller store ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
@@ -101,6 +101,8 @@ class BookController extends Controller
                 $book->$key = $value;
             }
         }
+
+        $book->save();
 
         if ($request->filled('author_ids')) {
             $authorIds = $request->input('author_ids');
