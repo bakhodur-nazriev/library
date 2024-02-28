@@ -1,42 +1,129 @@
 <script setup>
-import {defineEmits} from 'vue';
+import {defineEmits, ref} from 'vue';
+import {getFormData} from "../../utils.js";
+import axios from "axios";
 
+const book = ref({
+  title: '',
+  isbn: '',
+  description: '',
+  publish_date: '',
+  genre: '',
+  language: '',
+  publisher: '',
+  author: '',
+  pages: '',
+  pdfFile: ''
+});
 const emit = defineEmits(['cancel']);
-const save = () => {
-  console.log('saved');
+const handleFileChange = (event) => {
+  book.pdfFile = event.target.files[0];
 };
+const addBook = async () => {
+  const payload = getFormData(book.value);
+  if (book.pdfFile) {
+    payload.append('pdf', book.pdfFile, book.pdfFile.name);
+  }
+  const authToken = localStorage.getItem('token');
+  const headers = {
+    "Content-type": "application/json",
+    "Authorization": `Bearer ${authToken}`
+  };
 
+  await axios
+      .post('/admin/books', payload, {headers})
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+};
 const emitCancel = () => {
   emit('cancel');
-}
+};
 </script>
 
 <template>
   <div class="modal-overlay" @click="emitCancel">
     <div class="modal" @click.stop>
+      <h1 class="modal-title">{{ $t('label.add_book') }}</h1>
       <ul class="input-list">
         <li class="input-list__item">
-          <input type="text" :placeholder="`${$t('titles.table_titles.books.name')}`">
+          <input
+              type="text"
+              v-model="book.title"
+              :placeholder="`${$t('titles.table_titles.books.name')}`"
+          />
         </li>
         <li class="input-list__item">
-          <input type="text" :placeholder="`${$t('titles.table_titles.books.description')}`">
+          <input
+              type="text"
+              v-model="book.author"
+              :placeholder="`${$t('titles.table_titles.books.author')}`"
+          />
         </li>
         <li class="input-list__item">
-          <input type="text" :placeholder="`${$t('titles.table_titles.books.pages')}`">
+          <input
+              type="text"
+              v-model="book.description"
+              :placeholder="`${$t('titles.table_titles.books.description')}`"
+          />
         </li>
         <li class="input-list__item">
-          <input type="text" :placeholder="`${$t('titles.table_titles.books.publisher')}`">
+          <input
+              type="number"
+              v-model="book.isbn"
+              :placeholder="`${$t('titles.table_titles.books.isbn')}`"
+          />
         </li>
         <li class="input-list__item">
-          <input type="text" :placeholder="`${$t('titles.table_titles.books.publish_date')}`">
+          <input
+              type="number"
+              v-model="book.pages"
+              :placeholder="`${$t('titles.table_titles.books.pages')}`"
+          />
         </li>
         <li class="input-list__item">
-          <input type="text" :placeholder="`${$t('titles.table_titles.books.add_date')}`">
+          <input
+              v-model="book.publisher"
+              type="text"
+              :placeholder="`${$t('titles.table_titles.books.publisher')}`"
+          />
+        </li>
+        <li class="input-list__item">
+          <input
+              type="text"
+              v-model="book.genre"
+              :placeholder="`${$t('titles.table_titles.books.genre')}`"
+          />
+        </li>
+        <li class="input-list__item">
+          <input
+              type="text"
+              v-model="book.language"
+              :placeholder="`${$t('titles.table_titles.books.language')}`"
+          />
+        </li>
+        <li class="input-list__item">
+          <input
+              type="date"
+              v-model="book.publish_date"
+              :placeholder="`${$t('titles.table_titles.books.publish_date')}`"
+          />
+        </li>
+        <li class="input-list__item">
+          <input
+              type="file"
+              accept=".pdf"
+              @change="handleFileChange"
+              :placeholder="`${$t('titles.table_titles.books.file')}`"
+          />
         </li>
       </ul>
       <ul class="button-list">
         <li class="button-list__item">
-          <button @click="save">{{ $t('buttons.save') }}</button>
+          <button @click="addBook">{{ $t('buttons.save') }}</button>
         </li>
         <li class="button-list__item">
           <button @click="emitCancel">{{ $t('buttons.cancel') }}</button>
@@ -69,6 +156,11 @@ const emitCancel = () => {
   flex-direction: column;
   align-items: center;
   gap: 20px;
+
+  &-title {
+    font-size: 26px;
+    margin-top: 0;
+  }
 
   .input-list,
   .button-list {

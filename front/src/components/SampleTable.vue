@@ -9,13 +9,14 @@ const props = defineProps({
     required: true
   }
 });
+const emit = defineEmits(['edit', 'remove'])
 
 const editRow = (index) => {
-  console.log('Edit row:', index);
+  emit('edit');
 };
 
 const deleteRow = (index) => {
-  console.log('Delete row:', index);
+  emit('remove');
 };
 </script>
 
@@ -47,7 +48,7 @@ table {
   padding: 15px;
   border-radius: 10px;
   width: 100%;
-  box-shadow: 0 6px 10px -4px rgba(0,0,0,.15);
+  box-shadow: 0 6px 10px -4px rgba(0, 0, 0, .15);
 
   tr {
     //display: table-row;

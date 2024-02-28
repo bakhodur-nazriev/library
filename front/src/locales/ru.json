@@ -28,12 +28,18 @@
     "forgot_password": "Забыли пароль ?",
     "table_titles": {
       "books": {
-        "name": "Имя",
+        "id": "ID",
+        "name": "Название книги",
         "description": "Описание",
+        "isbn": "ISBN",
         "pages": "Страницы",
         "publisher": "Издатель",
+        "author": "Автор",
+        "genre": "Жанр",
+        "language": "Язык",
         "publish_date": "Дата выхода",
-        "add_date": "Дата добавление",
+        "added_date": "Дата добавление",
+        "file": "PDF",
         "actions": "Действия"
       },
       "authors": {
@@ -76,7 +82,9 @@
     "authors": "Авторы",
     "books": "Книги",
     "publisher": "Издатель",
-    "users": "Ползователи"
+    "users": "Ползователи",
+    "add_book": "Добавить книгу",
+    "add_author": "Добавить автора"
   },
   "notifications": {
     "remove_message": "Вы действительно хотите удалить этот запись!"

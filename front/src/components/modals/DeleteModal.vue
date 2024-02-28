@@ -1,10 +1,13 @@
 <script setup>
 import {defineEmits} from 'vue';
 
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close', 'remove']);
 
 const emitClose = () => {
   emit('close');
+}
+const emitRemove = () => {
+  emit('remove');
 }
 </script>
 
@@ -15,7 +18,7 @@ const emitClose = () => {
         <h3>{{ $t('notifications.remove_message') }}</h3>
         <ul class="modal-list">
           <li class="modal-list__item">
-            <button>{{ $t('buttons.yes') }}</button>
+            <button @click="emitRemove">{{ $t('buttons.yes') }}</button>
           </li>
           <li class="modal-list__item">
             <button @click="emitClose">{{ $t('buttons.no') }}</button>

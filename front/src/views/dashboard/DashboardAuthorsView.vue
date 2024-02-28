@@ -1,9 +1,10 @@
 <script setup>
-import {computed, ref} from 'vue';
+import {computed, ref, onMounted} from 'vue';
 import SampleTable from "../../components/SampleTable.vue";
 import i18n from "../../i18n.js";
 import DeleteModal from "../../components/modals/DeleteModal.vue";
 import AddAuthorModal from "../../components/modals/AddAuthorModal.vue";
+import axios from "axios";
 
 const tableHeaders = computed(() => {
   return [
@@ -23,6 +24,23 @@ const tableRows = ref([
 const showDeleteModal = ref(false);
 const showAddModal = ref(false);
 
+const getAuthor = async () => {
+  const authToken = localStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${authToken}`
+  };
+
+  console.log(headers);
+  axios
+      .get('/admin/authors?per_page=2&page=1', {headers})
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+};
 const addAuthor = () => {
   showAddModal.value = true;
 };
@@ -32,6 +50,10 @@ const cancelAddModal = () => {
 const closeModal = () => {
   showDeleteModal.value = true;
 };
+
+onMounted(() => {
+  getAuthor();
+})
 </script>
 
 <template>
