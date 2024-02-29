@@ -23,7 +23,11 @@ const login = async (e) => {
     password: password.value
   });
 
-  const headers = {'Content-Type': 'multipart/form-data'};
+  const headers = {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': '*'
+  };
 
   await axios
       .post('/login', payload, {headers})
