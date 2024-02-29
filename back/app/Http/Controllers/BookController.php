@@ -63,7 +63,7 @@ class BookController extends Controller
             //author
             if ($request->file('pdf')?->isValid()) {
                 $path = $request->file('pdf')->store('pdfs');
-                $book->link = $path;
+                $book->link = config('proj_env.STORAGE_PATH') . $path;
             }
 
             $book->save();
@@ -164,7 +164,7 @@ class BookController extends Controller
     {
         $book = Book::query()
             ->find($id);
-        return config('proj_env.STORAGE_PATH'). $book->link;
+        return $book->link;
     }
 
 }
