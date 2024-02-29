@@ -3,6 +3,7 @@ import {defineEmits, ref} from 'vue';
 import {getFormData} from "../../utils.js";
 import axios from "axios";
 
+const emit = defineEmits(['cancel']);
 const book = ref({
   title: '',
   isbn: '',
@@ -15,9 +16,8 @@ const book = ref({
   pages: '',
   file: ''
 });
-const emit = defineEmits(['cancel']);
-const handleFileChange = (event) => {
-  book.value.file = event.target.files[0];
+const handleFileChange = (e) => {
+  book.value.file = e.target.files[0];
 };
 const addBook = async () => {
   const payload = getFormData(book.value);

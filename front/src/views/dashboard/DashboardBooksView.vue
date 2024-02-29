@@ -37,7 +37,6 @@ const openDeleteModal = (bookId) => {
   isDeleteOpen.value = true;
 };
 const openEditModal = () => {
-
   isEditOpen.value = true;
 }
 const closeDeleteModal = () => {

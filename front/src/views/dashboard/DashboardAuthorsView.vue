@@ -8,19 +8,15 @@ import axios from "axios";
 
 const tableHeaders = computed(() => {
   return [
+    i18n.global.t('titles.table_titles.authors.id'),
     i18n.global.t('titles.table_titles.authors.name'),
-    i18n.global.t('titles.table_titles.authors.date_of_birth'),
+    i18n.global.t('titles.table_titles.authors.nationality'),
     i18n.global.t('titles.table_titles.authors.biography'),
-    i18n.global.t('titles.table_titles.authors.nationality')
+    i18n.global.t('titles.table_titles.authors.date_of_birth'),
+    i18n.global.t('titles.table_titles.authors.photo_link'),
   ];
 });
-const tableRows = ref([
-  ['John Jackson', '30.12.1932', 'Just Test', 'American'],
-  ['Anna Watson', '32.12.1990', 'Just Test', 'Canadian'],
-  ['Mike London', '11.11.1979', 'Just Test', 'Russian'],
-  ['Amilly Jackson', '10.10.1939', 'Just Test', 'Germany'],
-  ['Shavkat Nazriev', '09.12.1956', 'Just Test', 'Tajikistan']
-]);
+const tableRows = ref([]);
 const showDeleteModal = ref(false);
 const showAddModal = ref(false);
 
@@ -31,11 +27,19 @@ const getAuthor = async () => {
     'Authorization': `Bearer ${authToken}`
   };
 
-  console.log(headers);
-  axios
-      .get('/admin/authors?per_page=2&page=1', {headers})
+  await axios
+      .get('/authors?per_page=15&page=1', {headers})
       .then(res => {
-        console.log(res);
+        // if (res.data === 200) {
+        tableRows.value = res.data.data.map(author => ({
+          id: author.id,
+          initials: author.initials,
+          nationality: author.nationality,
+          biography: author.biography,
+          date_of_birth: author.date_of_birth,
+          photo_link: author.photo_link
+        }));
+        // }
       })
       .catch(err => {
         console.log(err);

@@ -37,10 +37,12 @@
         "actions": "Actions"
       },
       "authors": {
-        "name": "Имя",
-        "date_of_birth": "День рождения",
-        "biography": "Биография",
-        "nationality": "Националность"
+        "id": "ID",
+        "name": "Name",
+        "date_of_birth": "Date of birth",
+        "biography": "Biography",
+        "nationality": "Nationality",
+        "photo_link": "Photo"
       }
     }
   },

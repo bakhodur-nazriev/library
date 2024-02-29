@@ -43,10 +43,12 @@
         "actions": "Действия"
       },
       "authors": {
+        "id": "ID",
         "name": "Имя",
         "date_of_birth": "День рождения",
         "biography": "Биография",
-        "nationality": "Националность"
+        "nationality": "Националность",
+        "photo_link": "Фото"
       }
     }
   },

@@ -1,14 +1,46 @@
 <script setup>
 import {defineEmits, ref} from 'vue';
+import {getFormData} from "../../utils.js";
+import axios from "axios";
 
 const emit = defineEmits(['cancel']);
 const author = ref({
-
+  initials: '',
+  nationality: '',
+  biography: '',
+  date_of_birth: '',
+  photo_link: ''
 });
-const save = () => {
-
+const handleFileChange = (e) => {
+  author.value.photo_link = e.target.files[0];
 };
+const addAuthor = async () => {
+  // Update the author object with the formatted date_of_birth
+  author.value.date_of_birth = new Date(author.value.date_of_birth)
+      .toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      })
+      .replace(/\//g, '-');
 
+  const payload = getFormData(author.value);
+  const authToken = sessionStorage.getItem('token');
+  const headers = {
+    'Authorization': `Bearer ${authToken}`
+  };
+
+  await axios
+      .post('/admin/authors', payload, {headers})
+      .then(res => {
+        if (res.status === 200 || res.status === 201) {
+          emitCancel();
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+};
 const emitCancel = () => {
   emit('cancel');
 }
@@ -20,50 +52,43 @@ const emitCancel = () => {
       <ul class="input-list">
         <li class="input-list__item">
           <input
-              v-model=""
+              v-model="author.initials"
               type="text"
-              :placeholder="`${$t('titles.table_titles.books.name')}`"
+              :placeholder="`${$t('titles.table_titles.authors.name')}`"
           />
         </li>
         <li class="input-list__item">
           <input
-              v-model=""
+              v-model="author.nationality"
               type="text"
-              :placeholder="`${$t('titles.table_titles.books.description')}`"
+              :placeholder="`${$t('titles.table_titles.authors.nationality')}`"
           />
         </li>
         <li class="input-list__item">
           <input
-              v-model=""
+              v-model="author.biography"
               type="text"
-              :placeholder="`${$t('titles.table_titles.books.pages')}`"
+              :placeholder="`${$t('titles.table_titles.authors.biography')}`"
           />
         </li>
         <li class="input-list__item">
           <input
-              v-model=""
-              type="text"
-              :placeholder="`${$t('titles.table_titles.books.publisher')}`"
+              v-model="author.date_of_birth"
+              type="date"
+              :placeholder="`${$t('titles.table_titles.authors.date_of_birth')}`"
           />
         </li>
         <li class="input-list__item">
           <input
-              v-model=""
-              type="text"
-              :placeholder="`${$t('titles.table_titles.books.publish_date')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              v-model=""
-              type="text"
-              :placeholder="`${$t('titles.table_titles.books.add_date')}`"
+              @change="handleFileChange"
+              type="file"
+              :placeholder="`${$t('titles.table_titles.authors.photo_link')}`"
           />
         </li>
       </ul>
       <ul class="button-list">
         <li class="button-list__item">
-          <button @click="save">{{ $t('buttons.save') }}</button>
+          <button @click="addAuthor">{{ $t('buttons.save') }}</button>
         </li>
         <li class="button-list__item">
           <button @click="emitCancel">{{ $t('buttons.cancel') }}</button>
