@@ -1,4 +1,4 @@
-import { createI18n } from 'vue-i18n'
+import {createI18n} from 'vue-i18n'
 
 async function loadLocaleMessages() {
     const localesContext = import.meta.glob('./locales/*.json')
@@ -27,7 +27,7 @@ async function loadLocaleMessages() {
 const i18n = createI18n({
     locale: 'ru',
     fallbackLocale: 'en',
-    messages: await loadLocaleMessages()
+    messages: loadLocaleMessages()
 })
 
 export default i18n

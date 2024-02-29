@@ -9,14 +9,14 @@ const props = defineProps({
     required: true
   }
 });
-const emit = defineEmits(['edit', 'remove'])
+const emit = defineEmits(['edit', 'remove', 'open'])
 
 const editRow = (index) => {
   emit('edit');
 };
 
-const deleteRow = (index) => {
-  emit('remove');
+const emitOpen = (index) => {
+  emit('open');
 };
 </script>
 
@@ -35,7 +35,7 @@ const deleteRow = (index) => {
       </td>
       <td class="actions-column">
         <button class="edit-button" @click="editRow(rowIndex)">{{ $t('buttons.edit') }}</button>
-        <button class="remove-button" @click="deleteRow(rowIndex)">{{ $t('buttons.delete') }}</button>
+        <button class="remove-button" @click="emitOpen(rowIndex)">{{ $t('buttons.delete') }}</button>
       </td>
     </tr>
     </tbody>

@@ -1,14 +1,31 @@
 <script setup>
 import {defineEmits} from 'vue';
+import axios from "axios";
 
 const emit = defineEmits(['close', 'remove']);
-
+const props = defineProps(['']);
 const emitClose = () => {
   emit('close');
+};
+const emitOpen = () => {
+
 }
-const emitRemove = () => {
-  emit('remove');
-}
+const removeBook = async (id) => {
+  const authorToken = localStorage.getItem('token');
+  const headers = {
+    "Content-type": "applications/json",
+    "Authorization": `Bearer ${authorToken}`
+  };
+
+  await axios
+      .delete('/admin/books' + id, {headers})
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+};
 </script>
 
 <template>
@@ -18,7 +35,7 @@ const emitRemove = () => {
         <h3>{{ $t('notifications.remove_message') }}</h3>
         <ul class="modal-list">
           <li class="modal-list__item">
-            <button @click="emitRemove">{{ $t('buttons.yes') }}</button>
+            <button @click="removeBook">{{ $t('buttons.yes') }}</button>
           </li>
           <li class="modal-list__item">
             <button @click="emitClose">{{ $t('buttons.no') }}</button>

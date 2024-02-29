@@ -27,8 +27,10 @@ const showDeleteModal = ref(false);
 const showAddModal = ref(false);
 const openAddBookModal = () => {
   showAddModal.value = true;
-
 };
+const openDeleteModal = () => {
+  showDeleteModal.value = true;
+}
 const closeDeleteModal = () => {
   showDeleteModal.value = true;
 };
@@ -43,7 +45,7 @@ const getBooks = async () => {
   };
 
   await axios
-      .get('/admin/books?per_page=2&page=1', {headers})
+      .get('/books?per_page=10&page=1', {headers})
       .then(res => {
         tableRows.value = res.data.data.map(book => ({
           id: book.id,
@@ -81,22 +83,6 @@ const editBook = async (id) => {
         console.log(err);
       })
 }
-const removeBook = async (id) => {
-  const authorToken = localStorage.getItem('token');
-  const headers = {
-    "Content-type": "applications/json",
-    "Authorization": `Bearer ${authorToken}`
-  };
-
-  await axios
-      .delete('/admin/books' + id, {headers})
-      .then(res => {
-        console.log(res);
-      })
-      .catch(err => {
-        console.log(err);
-      })
-};
 
 onMounted(() => {
   getBooks();
@@ -109,7 +95,7 @@ onMounted(() => {
     <button class="add-button" @click="openAddBookModal">{{ $t('buttons.add') }}</button>
     <SampleTable :rows="tableRows" :headers="tableHeaders"/>
     <AddBooksModal v-if="showAddModal" @cancel="cancelAddModal"/>
-    <DeleteModal v-if="showDeleteModal" @close="closeDeleteModal"/>
+    <DeleteModal v-if="showDeleteModal" @close="closeDeleteModal" :id="tableRows.id" @open="openDeleteModal"/>
   </div>
 </template>
 
