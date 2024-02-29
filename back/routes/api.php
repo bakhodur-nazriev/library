@@ -27,6 +27,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
                 Route::patch('/{id}', [BookController::class, 'update'])
                     ->where('id', '[0-9]+');
                 Route::delete('/{id}', [BookController::class, 'destroy']);
+                //
+                Route::post('/upload/{id}', [BookController::class, 'uploadPdf']);
             });
 
 
