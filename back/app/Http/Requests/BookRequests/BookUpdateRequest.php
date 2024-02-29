@@ -20,13 +20,13 @@ class BookUpdateRequest extends FormRequest
         return [
             'title' => 'required|string|max:100|min:3',
             'description' => 'nullable|string|max:300',
-            'ISBN' => 'unique:books,ISBN|numeric|max:20',
+            'ISBN' => 'nullable|unique:books,ISBN|numeric|max:200000000',
             'published_at' => 'nullable|date',
             'genre' => 'nullable|string|max:20',
             'language' => 'nullable|string|max:20',
             'pages' => 'nullable|integer|max:1000',
             'publisher' => 'nullable|string|max:100',
-            'pdf' => 'file|mimes:pdf|max:2048'
+            'pdf' => 'file|mimes:pdf|max:51200'
         ];
     }
 }

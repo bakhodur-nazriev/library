@@ -59,7 +59,6 @@ class BookController extends Controller
             $book->genre = $request->input('genre');
             $book->language = $request->input('language');
             $book->publisher = $request->input('publisher');
-            $book->save();
 
             //author
             if ($request->file('pdf')?->isValid()) {
@@ -74,7 +73,14 @@ class BookController extends Controller
 
                 if (is_array($authorIds)) {
                     $book->authors()->attach($authorIds);
-                    dispatch(new IndexBookSearchKeysJob($book));
+//                    dispatch(new IndexBookSearchKeysJob($book));
+
+                    $searchKey = $book->title;
+                    foreach ($book->authors as $author) {
+                        $searchKey .= $author->initials;
+                    }
+                    $book->search_key = $searchKey;
+                    $book->save();
                 }
             }
 
@@ -109,7 +115,14 @@ class BookController extends Controller
 
             if (is_array($authorIds)) {
                 $book->authors()->attach($authorIds);
-                dispatch(new IndexBookSearchKeysJob($book));
+//                    dispatch(new IndexBookSearchKeysJob($book));
+
+                $searchKey = $book->title;
+                foreach ($book->authors as $author) {
+                    $searchKey .= $author->initials;
+                }
+                $book->search_key = $searchKey;
+                $book->save();
             }
         }
 
