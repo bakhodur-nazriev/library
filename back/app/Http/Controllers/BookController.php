@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\BookRequests\BookSearchRequest;
 use App\Http\Requests\BookRequests\BookStoreRequest;
 use App\Http\Requests\BookRequests\BookUpdateRequest;
-use App\Jobs\IndexBookSearchKeysJob;
 use App\Models\Book;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class BookController extends Controller
 {
@@ -108,6 +108,11 @@ class BookController extends Controller
             }
         }
 
+        if ($request->file('pdf')?->isValid()) {
+            $path = $request->file('pdf')->store('pdfs');
+            $book->link = $path;
+        }
+
         $book->save();
 
         if ($request->filled('author_ids')) {
@@ -115,7 +120,6 @@ class BookController extends Controller
 
             if (is_array($authorIds)) {
                 $book->authors()->attach($authorIds);
-//                    dispatch(new IndexBookSearchKeysJob($book));
 
                 $searchKey = $book->title;
                 foreach ($book->authors as $author) {
@@ -139,18 +143,12 @@ class BookController extends Controller
         return response()->json(['message' => 'Book deleted successfully']);
     }
 
-    public function uploadPdf(Request $request): JsonResponse
+    public function uploadPdf(Request $request, int $bookId): JsonResponse
     {
-        $request->validate([
-            'pdf' => 'required|file|mimes:pdf|max:2048',
-        ]);
-
-        if ($request->file('pdf')->isValid()) {
+        if ($request->file('pdf')?->isValid()) {
             $path = $request->file('pdf')->store('pdfs');
 
-            $book = new Book();
-            $book->title = $request->input('title');
-            $book->author = $request->input('author');
+            $book = Book::query()->findOrFail($bookId);
             $book->link = $path;
             $book->save();
 
@@ -160,11 +158,21 @@ class BookController extends Controller
         }
     }
 
-    public function download(int $id): string
+    public function download(int $id): BinaryFileResponse
     {
         $book = Book::query()
-            ->find($id);
-        return config('proj_env.STORAGE_PATH'). $book->link;
+            ->findOrFail($id);
+
+        $filePath = config('proj_env.STORAGE_PATH') . $book->link;
+
+        if (!file_exists($filePath)) {
+            abort(404, 'File not found.');
+        }
+
+        $fileSize = filesize($filePath);
+
+        return response()->download($filePath, $book->title . '.pdf', ['Content-Length' => $fileSize]);
     }
+
 
 }
