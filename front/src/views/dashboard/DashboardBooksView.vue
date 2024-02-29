@@ -41,7 +41,9 @@ const getBooks = async () => {
   const authToken = localStorage.getItem("token");
   const headers = {
     "Content-type": "applications/json",
-    'Authorization': `Bearer ${authToken}`
+    'Authorization': `Bearer ${authToken}`,
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': '*'
   };
 
   await axios
