@@ -2,10 +2,10 @@
 import {computed, onMounted, ref} from "vue";
 import axios from "axios";
 import i18n from "../../i18n.js";
-import {getFormData} from "../../utils.js";
 import SampleTable from "../../components/SampleTable.vue";
 import DeleteModal from "../../components/modals/DeleteModal.vue";
-import AddBooksModal from "../../components/modals/AddBooksModal.vue";
+import AddBookModal from "../../components/modals/AddBookModal.vue";
+import EditBookModal from "../../components/modals/EditBookModal.vue";
 
 const tableHeaders = computed(() => {
   return [
@@ -19,26 +19,38 @@ const tableHeaders = computed(() => {
     i18n.global.t('titles.table_titles.books.language'),
     i18n.global.t('titles.table_titles.books.pages'),
     i18n.global.t('titles.table_titles.books.publish_date'),
-    i18n.global.t('titles.table_titles.books.add_date'),
+    i18n.global.t('titles.table_titles.books.added_date'),
   ];
 });
 const tableRows = ref([]);
-const showDeleteModal = ref(false);
+
+const isDeleteOpen = ref(false);
+const isEditOpen = ref(false);
+
 const showAddModal = ref(false);
+const selectedBookId = ref(0);
 const openAddBookModal = () => {
   showAddModal.value = true;
 };
-const openDeleteModal = () => {
-  showDeleteModal.value = true;
+const openDeleteModal = (bookId) => {
+  selectedBookId.value = bookId;
+  isDeleteOpen.value = true;
+};
+const openEditModal = () => {
+
+  isEditOpen.value = true;
 }
 const closeDeleteModal = () => {
-  showDeleteModal.value = true;
+  isDeleteOpen.value = false;
+};
+const closeEditModal = () => {
+  isEditOpen.value = false;
 };
 const cancelAddModal = () => {
   showAddModal.value = false;
-}
+};
 const getBooks = async () => {
-  const authToken = localStorage.getItem("token");
+  const authToken = sessionStorage.getItem("token");
   const headers = {
     'Content-type': 'applications/json',
     'Authorization': `Bearer ${authToken}`,
@@ -47,7 +59,7 @@ const getBooks = async () => {
   };
 
   await axios
-      .get('/books?per_page=10&page=1', {headers})
+      .get('/books?per_page=15&page=1', {headers})
       .then(res => {
         tableRows.value = res.data.data.map(book => ({
           id: book.id,
@@ -62,29 +74,11 @@ const getBooks = async () => {
           published_at: book.published_at,
           create_at: book.created_at
         }));
-        console.log(res.data.data);
       })
       .catch(err => {
         console.log(err);
       })
-}
-const editBook = async (id) => {
-  const payload = getFormData({});
-  const authToken = localStorage.getItem('token');
-  const headers = {
-    "Content-type": "application/json",
-    "Authorization": `Bearer ${authToken}`
-  };
-
-  await axios
-      .patch('/admin/book' + id, payload, {headers})
-      .then(res => {
-        console.log(res);
-      })
-      .catch(err => {
-        console.log(err);
-      })
-}
+};
 
 onMounted(() => {
   getBooks();
@@ -95,9 +89,26 @@ onMounted(() => {
   <div class="main-books__block">
     <h2 class="main-title">{{ $t('label.books') }}</h2>
     <button class="add-button" @click="openAddBookModal">{{ $t('buttons.add') }}</button>
-    <SampleTable :rows="tableRows" :headers="tableHeaders"/>
-    <AddBooksModal v-if="showAddModal" @cancel="cancelAddModal"/>
-    <DeleteModal v-if="showDeleteModal" @close="closeDeleteModal" :id="tableRows.id" @open="openDeleteModal"/>
+    <SampleTable
+        :rows="tableRows"
+        :headers="tableHeaders"
+        @openEditModal="openEditModal"
+        @openDeleteModal="openDeleteModal"
+    />
+    <AddBookModal
+        v-if="showAddModal"
+        @cancel="cancelAddModal"
+    />
+    <EditBookModal
+        v-if=isEditOpen
+        @close="closeEditModal"
+        :book="selectedBookId"
+    />
+    <DeleteModal
+        v-if="isDeleteOpen"
+        @close="closeDeleteModal"
+        :book-id="selectedBookId"
+    />
   </div>
 </template>
 

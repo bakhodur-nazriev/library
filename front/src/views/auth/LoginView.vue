@@ -32,9 +32,8 @@ const login = async (e) => {
   await axios
       .post('/login', payload, {headers})
       .then(res => {
-        console.log(res)
         if (res.status === 200) {
-          localStorage.setItem('token', res.data.token);
+          sessionStorage.setItem('token', res.data.token);
           router.push({name: 'home'});
         }
       })

@@ -23,7 +23,7 @@ class BookStoreRequest extends FormRequest
             'language' => 'nullable|string|max:20',
             'pages' => 'nullable|integer|max:1000',
             'publisher' => 'nullable|string|max:100',
-            'pdf' => 'file|mimes:pdf|max:51200'
+//            'pdf' => 'file|mimes:pdf,docx|max:51200'
         ];
     }
 }

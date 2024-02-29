@@ -28,8 +28,9 @@ const register = async (e) => {
   await axios
       .post('/register', payload, {headers})
       .then(res => {
-        console.log(res);
-        this.$router.push({name: 'login'});
+        if (res.status === 200) {
+          router.push({name: 'login'});
+        }
       })
       .catch(err => {
         console.log(err)

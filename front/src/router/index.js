@@ -157,46 +157,45 @@ const routes = [
 
 const router = new createRouter({
     history: createWebHistory(import.meta.env.VITE_BASE_URL),
-    routes,
-    mode: 'history'
+    mode: 'history',
+    routes
 });
 
-// router.beforeEach((to, from, next) => {
-//     const lang = to.params.lang || i18n.global.locale.value;
-//     const requiresAuth = to.matched.some((route) => route.meta.requiresAuth)
-//     const isUserAuthenticated = () => {
-//         const token = sessionStorage.getItem('token')
-//         return !!token
-//     };
-//
-//     if (supportedLanguages.includes(lang)) {
-//         i18n.global.locale = lang
-//     } else {
-//         const defaultLang = i18n.global.locale || 'ru'
-//         return next(`/${defaultLang}${to.path}`)
-//     }
-//
-//     if (to.params.lang !== lang) {
-//         const pathWithoutLang = to.path.replace(`/${to.params.lang}`, `/${lang}`)
-//         return next({
-//             path: `/${lang}${pathWithoutLang}`,
-//             params: {lang}
-//         })
-//     }
-//
-//     document.title = `${to.meta.title} | ${import.meta.env.VITE_TITLE}`
-//
-//     const isAuthenticated = isUserAuthenticated()
-//
-//     const allowedRoutes = ['login', 'register', 'forgot-password']
-//
-//     if (requiresAuth && !isAuthenticated) {
-//         return next({name: 'login'})
-//     }
-//
-//     if (!isAuthenticated && allowedRoutes.includes(to.name)) {
-//         return next();
-//     }
-// });
+const isUserAuthenticated = () => {
+    const accessToken = sessionStorage.getItem('token');
+    return !!accessToken;
+}
+router.beforeEach((to, from, next) => {
+    const lang = to.params.lang || i18n.global.locale.value;
+
+    if (supportedLanguages.includes(lang)) {
+        i18n.global.locale = lang;
+    } else {
+        const defaultLang = i18n.global.locale || 'ru'
+        return next(`/${defaultLang}${to.path}`);
+    }
+
+    if (to.params.lang !== lang) {
+        const pathWithoutLang = to.path.replace(`/${to.params.lang}`, `/${lang}`)
+        return next({
+            path: `/${lang}${pathWithoutLang}`,
+            params: {lang}
+        })
+    }
+
+    if (to.meta.requiresAuth) {
+        if (!isUserAuthenticated()) {
+            next({
+                name: 'login',
+                params: {
+                    lang: to.params.lang
+                }
+            });
+            return;
+        }
+    }
+
+    next();
+});
 
 export default router;

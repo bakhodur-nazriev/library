@@ -57,7 +57,7 @@ import SearchInput from "./SearchInput.vue";
 
   .list {
     list-style: none;
-    padding: 15px;
+    padding: 20px;
     margin: 0;
     display: flex;
     flex-direction: column;

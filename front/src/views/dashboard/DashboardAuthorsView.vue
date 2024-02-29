@@ -25,7 +25,7 @@ const showDeleteModal = ref(false);
 const showAddModal = ref(false);
 
 const getAuthor = async () => {
-  const authToken = localStorage.getItem('token');
+  const authToken = sessionStorage.getItem('token');
   const headers = {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${authToken}`

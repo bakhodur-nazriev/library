@@ -13,27 +13,27 @@ const book = ref({
   publisher: '',
   author: '',
   pages: '',
-  pdfFile: ''
+  file: ''
 });
 const emit = defineEmits(['cancel']);
 const handleFileChange = (event) => {
-  book.pdfFile = event.target.files[0];
+  book.value.file = event.target.files[0];
 };
 const addBook = async () => {
   const payload = getFormData(book.value);
-  if (book.pdfFile) {
-    payload.append('pdf', book.pdfFile, book.pdfFile.name);
-  }
-  const authToken = localStorage.getItem('token');
+
+  const authToken = sessionStorage.getItem('token');
   const headers = {
-    "Content-type": "application/json",
     "Authorization": `Bearer ${authToken}`
   };
 
   await axios
       .post('/admin/books', payload, {headers})
       .then(res => {
-        console.log(res);
+        if (res.status === 200) {
+          emitCancel();
+        }
+        // console.log(res);
       })
       .catch(err => {
         console.log(err);
@@ -159,7 +159,7 @@ const emitCancel = () => {
 
   &-title {
     font-size: 26px;
-    margin-top: 0;
+    margin: 0;
   }
 
   .input-list,

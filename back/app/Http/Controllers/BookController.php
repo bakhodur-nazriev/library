@@ -61,8 +61,8 @@ class BookController extends Controller
             $book->publisher = $request->input('publisher');
 
             //author
-            if ($request->file('pdf')?->isValid()) {
-                $path = $request->file('pdf')->store('pdfs');
+            if ($request->file('file')?->isValid()) {
+                $path = $request->file('file')->store('pdfs');
                 $book->link = $path;
             }
 

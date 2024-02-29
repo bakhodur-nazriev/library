@@ -1,22 +1,12 @@
 <script setup>
-const props = defineProps({
-  headers: {
-    type: Array,
-    required: true
-  },
-  rows: {
-    type: Array,
-    required: true
-  }
-});
-const emit = defineEmits(['edit', 'remove', 'open'])
+const props = defineProps(['headers', 'rows']);
+const emit = defineEmits(['edit', 'remove', 'openDeleteModal', 'openEditModal']);
 
-const editRow = (index) => {
-  emit('edit');
+const openEditModal = () => {
+  emit('openEditModal');
 };
-
-const emitOpen = (index) => {
-  emit('open');
+const openDeleteModal = (bookId) => {
+  emit('openDeleteModal', bookId);
 };
 </script>
 
@@ -34,8 +24,8 @@ const emitOpen = (index) => {
         {{ cell }}
       </td>
       <td class="actions-column">
-        <button class="edit-button" @click="editRow(rowIndex)">{{ $t('buttons.edit') }}</button>
-        <button class="remove-button" @click="emitOpen(rowIndex)">{{ $t('buttons.delete') }}</button>
+        <button class="edit-button" @click="openEditModal()">{{ $t('buttons.edit') }}</button>
+        <button class="remove-button" @click="openDeleteModal(row.id)">{{ $t('buttons.delete') }}</button>
       </td>
     </tr>
     </tbody>

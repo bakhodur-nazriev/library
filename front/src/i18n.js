@@ -1,4 +1,5 @@
-import {createI18n} from 'vue-i18n'
+import {createI18n} from 'vue-i18n';
+import {supportedLanguages} from "./constants.js";
 
 async function loadLocaleMessages() {
     const localesContext = import.meta.glob('./locales/*.json')
@@ -24,8 +25,17 @@ async function loadLocaleMessages() {
     return messages
 }
 
+const getUserLanguage = () => {
+    const userLang = navigator.language.substring(0, 2);
+    if (supportedLanguages.includes(userLang)) {
+        return userLang;
+    }
+    return null;
+}
+
+
 const i18n = createI18n({
-    locale: 'ru',
+    locale: getUserLanguage(),
     fallbackLocale: 'en',
     messages: await loadLocaleMessages()
 });
