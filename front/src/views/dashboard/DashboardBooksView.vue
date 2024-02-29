@@ -40,7 +40,7 @@ const cancelAddModal = () => {
 const getBooks = async () => {
   const authToken = localStorage.getItem("token");
   const headers = {
-    "Content-type": "applications/json",
+    'Content-type': 'applications/json',
     'Authorization': `Bearer ${authToken}`
   };
 
