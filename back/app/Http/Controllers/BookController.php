@@ -6,6 +6,7 @@ use App\Http\Requests\BookRequests\BookSearchRequest;
 use App\Http\Requests\BookRequests\BookStoreRequest;
 use App\Http\Requests\BookRequests\BookUpdateRequest;
 use App\Http\Requests\BookRequests\UploadFileRequest;
+use App\Models\Author;
 use App\Models\Book;
 use App\Services\BookService;
 use Exception;
@@ -50,6 +51,24 @@ class BookController extends Controller
     public function update(BookUpdateRequest $request, int $id): JsonResponse
     {
        return $this->bookService->update($request->all(), $request->file('file'), $id);
+    }
+
+    public function detachFromBookAuthor(int $bookId, int $authorId): JsonResponse
+    {
+        $book =  Book::query()
+            ->find($bookId);
+        $book->authors()->detach(Author::query()->find($authorId));
+
+        return response()->json(['message' => 'detached', 'book' => $book]);
+    }
+
+    public function detachFromAuthorBook(int $authorId, int $bookId): JsonResponse
+    {
+        $author =  Author::query()
+            ->find($authorId);
+        $author->books()->detach(Book::query()->find($bookId));
+
+        return response()->json(['message' => 'detached', 'author' => $author]);
     }
 
 

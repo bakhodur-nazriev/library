@@ -30,6 +30,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
                 Route::delete('/{id}', [BookController::class, 'destroy']);
                 //
                 Route::post('/upload/{id}', [BookController::class, 'uploadPdf']);
+
+                Route::post('/detach-from-book-author/{book_id}/{author_id}', [BookController::class, 'detachFromBookAuthor']);
+                Route::post('/detach-from-author-book/{author_id}/{book_id}', [BookController::class, 'detachFromAuthorBook']);
+
             });
 
 
