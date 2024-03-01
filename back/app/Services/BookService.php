@@ -58,20 +58,21 @@ class BookService
     {
         $book = new Book();
         $book->title = $attributes['title'];
-        $book->ISBN = $attributes['ISBN'];
-        $book->description = $attributes['description'];
-        $book->published_at = $attributes['published_at'];
-        $book->genre = $attributes['genre'];
-        $book->language = $attributes['language'];
-        $book->publisher = $attributes['publisher'];
+        $book->ISBN = $attributes['ISBN']?? null;
+        $book->description = $attributes['description']?? null;
+        $book->published_at = $attributes['published_at']?? null;
+        $book->genre = $attributes['genre']??null;
+        $book->language = $attributes['language']??null;
+        $book->publisher = $attributes['publisher']??null;
+        $book->search_key = $attributes['title'];
         $book->save();
 
         return $book;
     }
 
-    public function uploadFile(UploadedFile $file, Book $book): JsonResponse
+    public function uploadFile(UploadedFile|null $file, Book $book): JsonResponse
     {
-        if ($file->isValid()) {
+        if ($file?->isValid()) {
             $path = $file->store('pdfs');
             $book->link = $path;
             $book->save();
@@ -84,7 +85,7 @@ class BookService
 
     public function addAuthors(array $attributes, $book): void
     {
-        if (count($attributes['author_ids']) > 0) {
+        if (isset($attributes['author_ids']) &&  count($attributes['author_ids']) > 0) {
             $authorIds = $attributes['author_ids'];
             $book->authors()->attach($authorIds);
             $this->reindexAuthor($book);
@@ -111,6 +112,9 @@ class BookService
     {
         $book = Book::query()
             ->findOrFail($bookId);
+
+        //todo use tdo
+        unset($attributes['author_ids']);
 
         foreach ($attributes as $key => $value) {
             if (isset($value)) {
@@ -147,7 +151,7 @@ class BookService
         return response()->json(['error' => 'Book fetching exception'], 404);
     }
 
-    public function update(array $attributes, UploadedFile $file, int $id)
+    public function update(array $attributes, UploadedFile|null $file, int $id)
     {
         return DB::transaction(function () use ($attributes, $file, $id) {
 
@@ -159,7 +163,7 @@ class BookService
         });
     }
 
-    public function store(array $attributes, UploadedFile $file)
+    public function store(array $attributes, UploadedFile|null $file)
     {
         return DB::transaction(function () use ($attributes, $file) {
             $book = $this->storeBook($attributes);

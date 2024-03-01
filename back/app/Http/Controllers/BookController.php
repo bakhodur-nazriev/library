@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\BookRequests\BookSearchRequest;
 use App\Http\Requests\BookRequests\BookStoreRequest;
 use App\Http\Requests\BookRequests\BookUpdateRequest;
+use App\Http\Requests\BookRequests\UploadFileRequest;
 use App\Models\Book;
 use App\Services\BookService;
 use Exception;
@@ -62,13 +63,13 @@ class BookController extends Controller
     }
 
     //todo
-    public function uploadPdf(Request $request, int $bookId): JsonResponse
+    public function uploadPdf(UploadFileRequest $request, int $bookId): JsonResponse
     {
         $book = Book::query()
             ->find($bookId);
 
         if ($book instanceof Book) {
-            return $this->bookService->uploadFile($request->file('file'), $book);
+            return $this->bookService->uploadFile($request->file('pdf'), $book);
         }
 
         return response()->json(['error' => 'Book fetching exception'], 400);

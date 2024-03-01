@@ -23,16 +23,12 @@ class AuthorService
 
     public function fuzzySearch(array $attributes): array
     {
-        $initials = $attributes['attributes'];
+        $initials = $attributes['initials'];
 
         return DB::select(
-            "select
-                        tab.initials,
-	                from (select
-	                        initials
-                            similarity(initials, :initials) as sim
-                        from authors
-                        where initials % :initials) as tab;",
+            "select *
+                   from authors
+                   where initials % :initials;",
             array('initials' => $initials)
         );
     }
