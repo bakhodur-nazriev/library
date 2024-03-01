@@ -1,10 +1,11 @@
 <script setup>
-import {computed, ref, onMounted} from 'vue';
+import {computed, ref, onMounted, watch} from 'vue';
 import SampleTable from "../../components/SampleTable.vue";
 import i18n from "../../i18n.js";
-import DeleteModal from "../../components/modals/DeleteModal.vue";
-import AddAuthorModal from "../../components/modals/AddAuthorModal.vue";
+import DeleteAuthorModal from "../../components/modals/authors/DeleteAuthorModal.vue";
+import AddAuthorModal from "../../components/modals/authors/AddAuthorModal.vue";
 import axios from "axios";
+// import EditAuthorModal from "../../components/modals/authors/EditAuthorModal.vue";
 
 const tableHeaders = computed(() => {
   return [
@@ -19,8 +20,10 @@ const tableHeaders = computed(() => {
 const tableRows = ref([]);
 const showDeleteModal = ref(false);
 const showAddModal = ref(false);
+const showEditModal = ref(false);
+const selectedAuthorId = ref(0);
 
-const getAuthor = async () => {
+const getAuthors = async () => {
   const authToken = sessionStorage.getItem('token');
   const headers = {
     'Content-Type': 'application/json',
@@ -30,43 +33,72 @@ const getAuthor = async () => {
   await axios
       .get('/authors?per_page=15&page=1', {headers})
       .then(res => {
-        // if (res.data === 200) {
-        tableRows.value = res.data.data.map(author => ({
-          id: author.id,
-          initials: author.initials,
-          nationality: author.nationality,
-          biography: author.biography,
-          date_of_birth: author.date_of_birth,
-          photo_link: author.photo_link
-        }));
-        // }
+        if (res.status === 200 || res.status === 201) {
+          tableRows.value = res.data.data.map(author => ({
+            id: author.id,
+            initials: author.initials,
+            nationality: author.nationality,
+            biography: author.biography,
+            date_of_birth: author.date_of_birth,
+            photo_link: author.photo_link
+          }));
+        }
       })
       .catch(err => {
         console.log(err);
       })
 };
-const addAuthor = () => {
+const openAddAuthor = () => {
   showAddModal.value = true;
 };
-const cancelAddModal = () => {
-  showAddModal.value = false;
-};
-const closeModal = () => {
+const openDeleteModal = (authorId) => {
+  selectedAuthorId.value = authorId;
   showDeleteModal.value = true;
+};
+const closeDeleteModal = () => {
+  showDeleteModal.value = false;
+};
+const openEditModal = () => {
+  showEditModal.value = true;
+};
+const closeEditModal = () => {
+  showEditModal.value = false;
+};
+const closeAddModal = () => {
+  showAddModal.value = false;
 };
 
 onMounted(() => {
-  getAuthor();
+  getAuthors();
 })
 </script>
 
 <template>
   <div class="main-authors__block">
     <h2 class="main-title">{{ $t('label.authors') }}</h2>
-    <button class="add-button" @click="addAuthor">{{ $t('buttons.add') }}</button>
-    <SampleTable :rows="tableRows" :headers="tableHeaders"/>
-    <AddAuthorModal v-if="showAddModal" @cancel="cancelAddModal"/>
-    <DeleteModal v-if="showDeleteModal" @close="closeModal"/>
+    <button class="add-button" @click="openAddAuthor">{{ $t('buttons.add') }}</button>
+    <SampleTable
+        :rows="tableRows"
+        :headers="tableHeaders"
+        @openEditModal="openEditModal"
+        @openDeleteModal="openDeleteModal"
+    />
+    <AddAuthorModal
+        v-if="showAddModal"
+        @close="closeAddModal"
+        @reloadData="getAuthors"
+    />
+    <!--    <EditAuthorModal-->
+    <!--        v-if="showEditModal"-->
+    <!--        @close="closeEditModal"-->
+    <!--        :author="selectedAuthorId"-->
+    <!--    />-->
+    <DeleteAuthorModal
+        v-if="showDeleteModal"
+        @close="closeDeleteModal"
+        @reloadData="getAuthors"
+        :authorId="selectedAuthorId"
+    />
   </div>
 </template>
 

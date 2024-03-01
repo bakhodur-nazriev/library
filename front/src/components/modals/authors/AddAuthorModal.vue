@@ -1,118 +1,89 @@
 <script setup>
-import {defineEmits} from 'vue';
-import {getFormData} from "../../utils.js";
+import {defineEmits, ref} from 'vue';
+import {getFormData} from "../../../utils.js";
 import axios from "axios";
 
-const emit = defineEmits(['close']);
-const props = defineProps(['book']);
-// const handleFileChange = (event) => {
-//   book.value.file = event.target.files[0];
-// };
-const save = async () => {
-  // const payload = getFormData(book.value);
-
+const emit = defineEmits(['close', 'reloadData']);
+const author = ref({
+  initials: '',
+  nationality: '',
+  biography: '',
+  date_of_birth: '',
+  photo_link: ''
+});
+const handleFileChange = (e) => {
+  author.value.photo_link = e.target.files[0];
+};
+const addAuthor = async () => {
+  const payload = getFormData(author.value);
   const authToken = sessionStorage.getItem('token');
   const headers = {
-    "Authorization": `Bearer ${authToken}`
+    'Authorization': `Bearer ${authToken}`
   };
 
   await axios
-      .patch('/admin/books/' + props.book.id, payload, {headers})
+      .post('/admin/authors', payload, {headers})
       .then(res => {
-        if (res.status === 200) {
-          emitCancel();
+        if (res.status === 200 || res.status === 201) {
+          emit('reloadData', true);
+          emitClose();
         }
-        console.log(res);
       })
       .catch(err => {
         console.log(err);
       })
 };
+// const emitReloadData = () => {
+//   emit('reloadData');
+// }
 const emitClose = () => {
   emit('close');
-};
+}
 </script>
 
 <template>
   <div class="modal-overlay" @click="emitClose">
     <div class="modal" @click.stop>
-      <h1 class="modal-title">{{ $t('label.add_book') }}</h1>
       <ul class="input-list">
         <li class="input-list__item">
           <input
+              v-model="author.initials"
               type="text"
-              v-model="book.title"
-              :placeholder="`${$t('titles.table_titles.books.name')}`"
+              :placeholder="`${$t('titles.table_titles.authors.name')}`"
           />
         </li>
         <li class="input-list__item">
           <input
+              v-model="author.nationality"
               type="text"
-              v-model="book.author"
-              :placeholder="`${$t('titles.table_titles.books.author')}`"
+              :placeholder="`${$t('titles.table_titles.authors.nationality')}`"
           />
         </li>
         <li class="input-list__item">
           <input
+              v-model="author.biography"
               type="text"
-              v-model="book.description"
-              :placeholder="`${$t('titles.table_titles.books.description')}`"
+              :placeholder="`${$t('titles.table_titles.authors.biography')}`"
           />
         </li>
         <li class="input-list__item">
           <input
-              type="number"
-              v-model="book.isbn"
-              :placeholder="`${$t('titles.table_titles.books.isbn')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              type="number"
-              v-model="book.pages"
-              :placeholder="`${$t('titles.table_titles.books.pages')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              v-model="book.publisher"
-              type="text"
-              :placeholder="`${$t('titles.table_titles.books.publisher')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              type="text"
-              v-model="book.genre"
-              :placeholder="`${$t('titles.table_titles.books.genre')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              type="text"
-              v-model="book.language"
-              :placeholder="`${$t('titles.table_titles.books.language')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
+              v-model="author.date_of_birth"
               type="date"
-              v-model="book.publish_date"
-              :placeholder="`${$t('titles.table_titles.books.publish_date')}`"
+              :placeholder="`${$t('titles.table_titles.authors.date_of_birth')}`"
           />
         </li>
         <li class="input-list__item">
           <input
-              type="file"
-              accept=".pdf"
               @change="handleFileChange"
-              :placeholder="`${$t('titles.table_titles.books.file')}`"
+              type="file"
+              :placeholder="`${$t('titles.table_titles.authors.photo_link')}`"
           />
         </li>
       </ul>
       <ul class="button-list">
         <li class="button-list__item">
-          <button @click="save">{{ $t('buttons.save') }}</button>
+          <button @click="addAuthor">{{ $t('buttons.save') }}</button>
         </li>
         <li class="button-list__item">
           <button @click="emitClose">{{ $t('buttons.cancel') }}</button>
@@ -145,11 +116,6 @@ const emitClose = () => {
   flex-direction: column;
   align-items: center;
   gap: 20px;
-
-  &-title {
-    font-size: 26px;
-    margin: 0;
-  }
 
   .input-list,
   .button-list {

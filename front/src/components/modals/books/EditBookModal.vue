@@ -1,26 +1,15 @@
 <script setup>
-import {defineEmits, ref} from 'vue';
-import {getFormData} from "../../utils.js";
+import {defineEmits} from 'vue';
+import {getFormData} from "../../../utils.js";
 import axios from "axios";
 
-const emit = defineEmits(['cancel']);
-const book = ref({
-  title: '',
-  isbn: '',
-  description: '',
-  publish_date: '',
-  genre: '',
-  language: '',
-  publisher: '',
-  author: '',
-  pages: '',
-  file: ''
-});
-const handleFileChange = (e) => {
-  book.value.file = e.target.files[0];
-};
-const addBook = async () => {
-  const payload = getFormData(book.value);
+const emit = defineEmits(['close']);
+const props = defineProps(['book']);
+// const handleFileChange = (event) => {
+//   book.value.file = event.target.files[0];
+// };
+const save = async () => {
+  // const payload = getFormData(book.value);
 
   const authToken = sessionStorage.getItem('token');
   const headers = {
@@ -28,24 +17,24 @@ const addBook = async () => {
   };
 
   await axios
-      .post('/admin/books', payload, {headers})
+      .patch('/admin/books/' + props.book.id, payload, {headers})
       .then(res => {
         if (res.status === 200) {
           emitCancel();
         }
-        // console.log(res);
+        console.log(res);
       })
       .catch(err => {
         console.log(err);
       })
 };
-const emitCancel = () => {
-  emit('cancel');
+const emitClose = () => {
+  emit('close');
 };
 </script>
 
 <template>
-  <div class="modal-overlay" @click="emitCancel">
+  <div class="modal-overlay" @click="emitClose">
     <div class="modal" @click.stop>
       <h1 class="modal-title">{{ $t('label.add_book') }}</h1>
       <ul class="input-list">
@@ -123,10 +112,10 @@ const emitCancel = () => {
       </ul>
       <ul class="button-list">
         <li class="button-list__item">
-          <button @click="addBook">{{ $t('buttons.save') }}</button>
+          <button @click="save">{{ $t('buttons.save') }}</button>
         </li>
         <li class="button-list__item">
-          <button @click="emitCancel">{{ $t('buttons.cancel') }}</button>
+          <button @click="emitClose">{{ $t('buttons.cancel') }}</button>
         </li>
       </ul>
     </div>

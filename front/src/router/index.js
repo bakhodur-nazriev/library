@@ -141,17 +141,6 @@ const routes = [
                 }
             },
         ]
-    },
-    {
-        path: '/:pathMatch(.*)*',
-        redirect: (to) => {
-            return {
-                name: router.currentRoute.value.name,
-                params: {
-                    lang: router.currentRoute.value.params.lang
-                }
-            }
-        }
     }
 ];
 

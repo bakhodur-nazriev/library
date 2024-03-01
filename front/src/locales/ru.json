@@ -59,9 +59,9 @@
     "name": "Введите ваше имя...",
     "email": "Введите ваш email...",
     "password": "Введите ваш пароль...",
-    "search_book": "Enter book name",
-    "search_author": "Enter author name",
-    "search_publisher": "Enter publisher name"
+    "search_book": "Введите название книги",
+    "search_author": "Введите имя автора",
+    "search_publisher": "Введите название издателя"
   },
   "buttons": {
     "login": "Вход",

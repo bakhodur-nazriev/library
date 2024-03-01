@@ -3,9 +3,9 @@ import {computed, onMounted, ref} from "vue";
 import axios from "axios";
 import i18n from "../../i18n.js";
 import SampleTable from "../../components/SampleTable.vue";
-import DeleteModal from "../../components/modals/DeleteModal.vue";
-import AddBookModal from "../../components/modals/AddBookModal.vue";
-import EditBookModal from "../../components/modals/EditBookModal.vue";
+import BookDeleteModal from "../../components/modals/books/DeleteBookModal.vue";
+import AddBookModal from "../../components/modals/books/AddBookModal.vue";
+import EditBookModal from "../../components/modals/books/EditBookModal.vue";
 
 const tableHeaders = computed(() => {
   return [
@@ -24,8 +24,8 @@ const tableHeaders = computed(() => {
 });
 const tableRows = ref([]);
 
-const isDeleteOpen = ref(false);
-const isEditOpen = ref(false);
+const showDeleteModal = ref(false);
+const showEditModal = ref(false);
 
 const showAddModal = ref(false);
 const selectedBookId = ref(0);
@@ -34,16 +34,16 @@ const openAddBookModal = () => {
 };
 const openDeleteModal = (bookId) => {
   selectedBookId.value = bookId;
-  isDeleteOpen.value = true;
+  showDeleteModal.value = true;
 };
 const openEditModal = () => {
-  isEditOpen.value = true;
+  showEditModal.value = true;
 }
 const closeDeleteModal = () => {
-  isDeleteOpen.value = false;
+  showDeleteModal.value = false;
 };
 const closeEditModal = () => {
-  isEditOpen.value = false;
+  showEditModal.value = false;
 };
 const cancelAddModal = () => {
   showAddModal.value = false;
@@ -97,15 +97,18 @@ onMounted(() => {
     <AddBookModal
         v-if="showAddModal"
         @cancel="cancelAddModal"
+        @reloadData="getBooks"
     />
     <EditBookModal
-        v-if=isEditOpen
+        v-if=showEditModal
         @close="closeEditModal"
+        @reloadData="getBooks"
         :book="selectedBookId"
     />
-    <DeleteModal
-        v-if="isDeleteOpen"
+    <BookDeleteModal
+        v-if="showDeleteModal"
         @close="closeDeleteModal"
+        @reloadData="getBooks"
         :book-id="selectedBookId"
     />
   </div>

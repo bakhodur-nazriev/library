@@ -1,13 +1,13 @@
 <script setup>
-import {defineEmits, onMounted} from 'vue';
+import {defineEmits} from 'vue';
 import axios from "axios";
 
-const emit = defineEmits(['close', 'remove']);
-const props = defineProps(['bookId']);
+const emit = defineEmits(['close', 'reloadData']);
+const props = defineProps(['authorId']);
 const emitClose = () => {
   emit('close');
-};
-const deleteBook = async () => {
+}
+const deleteAuthor = async () => {
   const authorToken = sessionStorage.getItem('token');
   const headers = {
     "Content-type": "applications/json",
@@ -15,10 +15,11 @@ const deleteBook = async () => {
   };
 
   await axios
-      .delete('/admin/books/' + props.bookId, {headers})
+      .delete('/admin/authors/' + props.authorId, {headers})
       .then(res => {
-        if (res.status === 200) {
-          emitClose();
+        if (res.status === 200 || res.status === 201) {
+          emit('reloadData', true);
+          emit('close');
         }
       })
       .catch(err => {
@@ -34,7 +35,7 @@ const deleteBook = async () => {
         <h3>{{ $t('notifications.remove_message') }}</h3>
         <ul class="modal-list">
           <li class="modal-list__item">
-            <button @click="deleteBook">{{ $t('buttons.yes') }}</button>
+            <button @click="deleteAuthor">{{ $t('buttons.yes') }}</button>
           </li>
           <li class="modal-list__item">
             <button @click="emitClose">{{ $t('buttons.no') }}</button>
@@ -94,19 +95,4 @@ const deleteBook = async () => {
     }
   }
 }
-
-//.close-button {
-//  background: none;
-//  border: none;
-//  cursor: pointer;
-//  display: flex;
-//  padding: 0;
-//  margin-bottom: 5px;
-//
-//  svg {
-//    width: 24px;
-//    height: 24px;
-//    color: var(--primary-color);
-//  }
-//}
 </style>

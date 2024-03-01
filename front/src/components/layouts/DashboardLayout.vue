@@ -7,7 +7,7 @@ import NavbarDashboard from "../NavbarDashboard.vue";
     <NavbarDashboard/>
 
     <div class="container">
-      <router-view/>
+      <slot></slot>
     </div>
   </div>
 </template>
