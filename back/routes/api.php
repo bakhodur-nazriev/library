@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\PrivilegeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,6 +30,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
                 Route::delete('/{id}', [BookController::class, 'destroy']);
                 //
                 Route::post('/upload/{id}', [BookController::class, 'uploadPdf']);
+
+                Route::post('/detach-from-book-author/{book_id}/{author_id}', [BookController::class, 'detachFromBookAuthor']);
+                Route::post('/detach-from-author-book/{author_id}/{book_id}', [BookController::class, 'detachFromAuthorBook']);
+
             });
 
 
@@ -50,25 +55,25 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::prefix('privileges')
                 ->group(function () {
 
-                    Route::post('assign-role-to-user/{role_id}/{user_id}', [UserController::class, 'assignRoleToUser']);
-                    Route::post('assign-permission-to-user/{permission_id}/{user_id}', [UserController::class, 'assignPermissionToUser']);
-                    Route::post('assign-permission-to-role/{permission_id}/{role_id}', [UserController::class, 'assignPermissionToRole']);
+                    Route::post('assign-role-to-user/{role_id}/{user_id}', [PrivilegeController::class, 'assignRoleToUser']);
+                    Route::post('assign-permission-to-user/{permission_id}/{user_id}', [PrivilegeController::class, 'assignPermissionToUser']);
+                    Route::post('assign-permission-to-role/{permission_id}/{role_id}', [PrivilegeController::class, 'assignPermissionToRole']);
 
                     //
                     Route::prefix('roles')
                         ->group(function () {
-                            Route::get('', [UserController::class, 'getRoles']);
-                            Route::post('', [UserController::class, 'storeRole']);
-                            Route::put('', [UserController::class, 'updateRole']);
-                            Route::delete('', [UserController::class, 'destroyRole']);
+                            Route::get('', [PrivilegeController::class, 'getRoles']);
+                            Route::post('', [PrivilegeController::class, 'storeRole']);
+                            Route::put('', [PrivilegeController::class, 'updateRole']);
+                            Route::delete('', [PrivilegeController::class, 'destroyRole']);
                         });
                     //
                     Route::prefix('permissions')
                         ->group(function () {
-                            Route::get('', [UserController::class, 'getPermission']);
-                            Route::post('', [UserController::class, 'storePermission']);
-                            Route::put('', [UserController::class, 'updatePermission']);
-                            Route::delete('', [UserController::class, 'destroyPermission']);
+                            Route::get('', [PrivilegeController::class, 'getPermission']);
+                            Route::post('', [PrivilegeController::class, 'storePermission']);
+                            Route::put('', [PrivilegeController::class, 'updatePermission']);
+                            Route::delete('', [PrivilegeController::class, 'destroyPermission']);
                         });
                 });
         });

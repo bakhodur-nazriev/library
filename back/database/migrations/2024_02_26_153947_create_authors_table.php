@@ -1,9 +1,8 @@
 <?php
 
-use App\Models\Author;
-use App\Models\Book;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
@@ -21,6 +20,9 @@ return new class extends Migration {
             $table->string('photo_link')->nullable();
             $table->timestamps();
         });
+
+        DB::statement('CREATE EXTENSION IF NOT EXISTS pg_trgm');
+        DB::statement('CREATE INDEX author_initials_trgm_indx ON authors USING GIN (initials gin_trgm_ops)');
     }
 
     /**
