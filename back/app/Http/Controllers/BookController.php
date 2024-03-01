@@ -6,90 +6,36 @@ use App\Http\Requests\BookRequests\BookSearchRequest;
 use App\Http\Requests\BookRequests\BookStoreRequest;
 use App\Http\Requests\BookRequests\BookUpdateRequest;
 use App\Models\Book;
+use App\Services\BookService;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class BookController extends Controller
 {
+
+    public function __construct(private readonly BookService $bookService)
+    {
+    }
+
     public function index(Request $request): JsonResponse
     {
-        $perPage = $request->query('per_page', 10);
-        $page = $request->query('page', 1);
-
-        $authors = Book::with('authors')
-            ->paginate($perPage, ['*'], 'page', $page);
-
-        return response()->json($authors);
+        return $this->bookService->get($request->all());
     }
 
-    //todo optimize search
     public function search(BookSearchRequest $request, string $search_key): array
     {
-          return  DB::select(
-                "select
-                        tab.title,
-                        tab.description,
-                        tab.genre,
-                        tab.language,
-                        tab.publisher
-	                from (select
-	                        title,
-	                        description,
-	                        genre,
-	                        language,
-	                        publisher,
-                            similarity(search_key, :search_key) as sim
-                        from books
-                        where search_key % :search_key) as tab;",
-                array('search_key' => $search_key)
-        );
+        //todo
+        $arguments = $request->all();
+        $arguments['search_key'] = $search_key;
+
+        return $this->bookService->fuzzySearch($arguments);
     }
 
-    public function store(BookStoreRequest $request): JsonResponse
+    public function store(BookStoreRequest $request)
     {
-        try {
-            $book = new Book();
-            $book->title = $request->input('title');
-            $book->ISBN = $request->input('ISBN');
-            $book->description = $request->input('description');
-            $book->published_at = $request->input('published_at');
-            $book->genre = $request->input('genre');
-            $book->language = $request->input('language');
-            $book->publisher = $request->input('publisher');
-
-            //author
-            if ($request->file('file')?->isValid()) {
-                $path = $request->file('file')->store('pdfs');
-                $book->link = $path;
-            }
-
-            $book->save();
-
-            if ($request->filled('author_ids')) {
-                $authorIds = $request->input('author_ids');
-
-                if (is_array($authorIds)) {
-                    $book->authors()->attach($authorIds);
-//                    dispatch(new IndexBookSearchKeysJob($book));
-
-                    $searchKey = $book->title;
-                    foreach ($book->authors as $author) {
-                        $searchKey .= $author->initials;
-                    }
-                    $book->search_key = $searchKey;
-                    $book->save();
-                }
-            }
-
-            return response()->json(['message' => 'PDF uploaded successfully']);
-        } catch (\Exception $e) {
-            Log::info('BookCOntroller store ' . $e->getMessage());
-            return response()->json(['error' => $e->getMessage()], 500);
-
-        }
+        return $this->bookService->store($request->all(), $request->file('file'));
     }
 
     public function showById(int $id): JsonResponse
@@ -97,40 +43,12 @@ class BookController extends Controller
         return response()->json(Book::query()->find($id));
     }
 
+    /**
+     * @throws Exception
+     */
     public function update(BookUpdateRequest $request, int $id): JsonResponse
     {
-        $book = Book::query()
-            ->findOrFail($id);
-
-        foreach ($request->all() as $key => $value) {
-            if ($request->has($key)) {
-                $book->$key = $value;
-            }
-        }
-
-        if ($request->file('pdf')?->isValid()) {
-            $path = $request->file('pdf')->store('pdfs');
-            $book->link = $path;
-        }
-
-        $book->save();
-
-        if ($request->filled('author_ids')) {
-            $authorIds = $request->input('author_ids');
-
-            if (is_array($authorIds)) {
-                $book->authors()->attach($authorIds);
-
-                $searchKey = $book->title;
-                foreach ($book->authors as $author) {
-                    $searchKey .= $author->initials;
-                }
-                $book->search_key = $searchKey;
-                $book->save();
-            }
-        }
-
-        return response()->json(['message' => 'Book updated successfully', 'book' => $book]);
+       return $this->bookService->update($request->all(), $request->file('file'), $id);
     }
 
 
@@ -143,35 +61,22 @@ class BookController extends Controller
         return response()->json(['message' => 'Book deleted successfully']);
     }
 
+    //todo
     public function uploadPdf(Request $request, int $bookId): JsonResponse
     {
-        if ($request->file('pdf')?->isValid()) {
-            $path = $request->file('pdf')->store('pdfs');
+        $book = Book::query()
+            ->find($bookId);
 
-            $book = Book::query()->findOrFail($bookId);
-            $book->link = $path;
-            $book->save();
-
-            return response()->json(['message' => 'PDF uploaded successfully', 'path' => $path], 201);
-        } else {
-            return response()->json(['error' => 'Invalid file'], 400);
+        if ($book instanceof Book) {
+            return $this->bookService->uploadFile($request->file('file'), $book);
         }
+
+        return response()->json(['error' => 'Book fetching exception'], 400);
     }
 
-    public function download(int $id): BinaryFileResponse
+    public function download(int $id): BinaryFileResponse|JsonResponse
     {
-        $book = Book::query()
-            ->findOrFail($id);
-
-        $filePath = config('proj_env.STORAGE_PATH') . $book->link;
-
-        if (!file_exists($filePath)) {
-            abort(404, 'File not found.');
-        }
-
-        $fileSize = filesize($filePath);
-
-        return response()->download($filePath, $book->title . '.pdf', ['Content-Length' => $fileSize]);
+       return $this->bookService->downloadFile($id);
     }
 
 
