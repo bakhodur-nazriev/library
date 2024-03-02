@@ -53,7 +53,7 @@ class BookController extends Controller
        return $this->bookService->update($request->all(), $request->file('file'), $id);
     }
 
-    public function detachFromBookAuthor(int $bookId, int $authorId): JsonResponse
+    public function detachFromBookTheAuthor(int $bookId, int $authorId): JsonResponse
     {
         $book =  Book::query()
             ->find($bookId);
@@ -62,7 +62,7 @@ class BookController extends Controller
         return response()->json(['message' => 'detached', 'book' => $book]);
     }
 
-    public function detachFromAuthorBook(int $authorId, int $bookId): JsonResponse
+    public function detachFromAuthorTheBook(int $authorId, int $bookId): JsonResponse
     {
         $author =  Author::query()
             ->find($authorId);

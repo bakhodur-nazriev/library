@@ -12,13 +12,6 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 class BookService
 {
 
-    public static function attachAuthors($author, array $bookIds): void
-    {
-        if(count($bookIds) > 0) {
-            $author->books()->attach($bookIds);
-        }
-    }
-
     public function get(array $attributes): JsonResponse
     {
         $perPage = $attributes['per_page'];
