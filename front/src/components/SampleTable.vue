@@ -2,8 +2,8 @@
 const props = defineProps(['headers', 'rows']);
 const emit = defineEmits(['edit', 'remove', 'openDeleteModal', 'openEditModal']);
 
-const openEditModal = () => {
-  emit('openEditModal');
+const openEditModal = (selectedBook) => {
+  emit('openEditModal', selectedBook);
 };
 const openDeleteModal = (bookId) => {
   emit('openDeleteModal', bookId);

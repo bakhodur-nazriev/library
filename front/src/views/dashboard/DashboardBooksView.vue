@@ -29,6 +29,7 @@ const showEditModal = ref(false);
 
 const showAddModal = ref(false);
 const selectedBookId = ref(0);
+const selectedBook = ref({});
 const openAddBookModal = () => {
   showAddModal.value = true;
 };
@@ -36,7 +37,20 @@ const openDeleteModal = (bookId) => {
   selectedBookId.value = bookId;
   showDeleteModal.value = true;
 };
-const openEditModal = () => {
+const openEditModal = (selectedItem) => {
+  selectedBook.value = {
+    id: selectedItem.id,
+    title: selectedItem.title,
+    author: selectedItem.author,
+    description: selectedItem.description,
+    isbn: selectedItem.isbn,
+    publisher: selectedItem.publisher,
+    genre: selectedItem.genre,
+    language: selectedItem.language,
+    pages: selectedItem.pages,
+    published_at: selectedItem.published_at,
+    created_at: selectedItem.create_at
+  };
   showEditModal.value = true;
 }
 const closeDeleteModal = () => {
@@ -103,7 +117,7 @@ onMounted(() => {
         v-if=showEditModal
         @close="closeEditModal"
         @reloadData="getBooks"
-        :book="selectedBookId"
+        :book="selectedBook"
     />
     <BookDeleteModal
         v-if="showDeleteModal"

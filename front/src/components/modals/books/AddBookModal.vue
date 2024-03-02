@@ -30,10 +30,9 @@ const addBook = async () => {
   await axios
       .post('/admin/books', payload, {headers})
       .then(res => {
-        if (res.status === 200) {
+        if (res.status === 200 || res.status === 201) {
           emitCancel();
         }
-        // console.log(res);
       })
       .catch(err => {
         console.log(err);

@@ -1,26 +1,35 @@
 <script setup>
-import {defineEmits} from 'vue';
+import {defineEmits, onMounted} from 'vue';
 import {getFormData} from "../../../utils.js";
 import axios from "axios";
 
 const emit = defineEmits(['close']);
 const props = defineProps(['book']);
-// const handleFileChange = (event) => {
-//   book.value.file = event.target.files[0];
-// };
+const handleFileChange = (event) => {
+  if (props.book.value) {
+    props.book.value.file = event.target.files[0];
+  }
+};
+const emitClose = () => {
+  emit('close');
+};
 const save = async () => {
-  // const payload = getFormData(book.value);
+  if (!props.book.value || !props.book.value.id) {
+    console.error("Book information is missing or incomplete");
+    return;
+  }
 
+  const payload = getFormData(props.book.value);
   const authToken = sessionStorage.getItem('token');
   const headers = {
     "Authorization": `Bearer ${authToken}`
   };
 
   await axios
-      .patch('/admin/books/' + props.book.id, payload, {headers})
+      .patch('/admin/books/' + props.book.value.id, payload, {headers})
       .then(res => {
         if (res.status === 200) {
-          emitCancel();
+          emitClose();
         }
         console.log(res);
       })
@@ -28,9 +37,7 @@ const save = async () => {
         console.log(err);
       })
 };
-const emitClose = () => {
-  emit('close');
-};
+console.log(props.book);
 </script>
 
 <template>
@@ -41,41 +48,41 @@ const emitClose = () => {
         <li class="input-list__item">
           <input
               type="text"
-              v-model="book.title"
+              v-model="props.book.title"
               :placeholder="`${$t('titles.table_titles.books.name')}`"
           />
         </li>
         <li class="input-list__item">
           <input
               type="text"
-              v-model="book.author"
+              v-model="props.book.author"
               :placeholder="`${$t('titles.table_titles.books.author')}`"
           />
         </li>
         <li class="input-list__item">
           <input
               type="text"
-              v-model="book.description"
+              v-model="props.book.description"
               :placeholder="`${$t('titles.table_titles.books.description')}`"
           />
         </li>
         <li class="input-list__item">
           <input
               type="number"
-              v-model="book.isbn"
+              v-model="props.book.isbn"
               :placeholder="`${$t('titles.table_titles.books.isbn')}`"
           />
         </li>
         <li class="input-list__item">
           <input
               type="number"
-              v-model="book.pages"
+              v-model="props.book.pages"
               :placeholder="`${$t('titles.table_titles.books.pages')}`"
           />
         </li>
         <li class="input-list__item">
           <input
-              v-model="book.publisher"
+              v-model="props.book.publisher"
               type="text"
               :placeholder="`${$t('titles.table_titles.books.publisher')}`"
           />
@@ -83,21 +90,21 @@ const emitClose = () => {
         <li class="input-list__item">
           <input
               type="text"
-              v-model="book.genre"
+              v-model="props.book.genre"
               :placeholder="`${$t('titles.table_titles.books.genre')}`"
           />
         </li>
         <li class="input-list__item">
           <input
               type="text"
-              v-model="book.language"
+              v-model="props.book.language"
               :placeholder="`${$t('titles.table_titles.books.language')}`"
           />
         </li>
         <li class="input-list__item">
           <input
               type="date"
-              v-model="book.publish_date"
+              v-model="props.book.publish_date"
               :placeholder="`${$t('titles.table_titles.books.publish_date')}`"
           />
         </li>
