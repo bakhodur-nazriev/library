@@ -14,10 +14,14 @@ class AuthorUpdateRequest extends FormRequest
 
     public function rules(): array
     {
+        $authorId = $this->route('id');
+        $this->merge(['author_id' => $authorId]);
+
         return [
             'initials' => 'nullable|string|min:5|max:200',
             'date_of_birth' => 'nullable|date',
             'book_ids' => 'nullable|array',
+            'author_id' => ['nullable', 'exists:authors,id'],
         ];
     }
 }

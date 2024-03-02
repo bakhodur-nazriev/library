@@ -18,10 +18,11 @@ class AuthorStoreRequest extends FormRequest
     {
         return [
             'initials' => 'required|string|min:5|max:200',
-            'date_of_birth' => 'required|date',
+            'date_of_birth' => 'nullable|date',
             'book_ids' => 'nullable|array',
             'nationality' => 'nullable|string',
-            'biography' => 'nullable|string'
+            'biography' => 'nullable|string',
+            'photo' => 'file|mimes:png|max:100'
         ];
     }
 }
