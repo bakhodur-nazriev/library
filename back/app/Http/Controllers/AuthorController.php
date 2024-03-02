@@ -29,7 +29,7 @@ class AuthorController extends Controller
 
     public function store(AuthorStoreRequest $request): JsonResponse
     {
-        return $this->authorService->store($request->all(), $request->file('photo'));
+        return $this->authorService->store($request->all(), $request->file('photo_link'));
     }
 
     public function showById(int $id): JsonResponse
@@ -43,7 +43,7 @@ class AuthorController extends Controller
 
     public function update(AuthorUpdateRequest $request, int $id): JsonResponse
     {
-        return $this->authorService->update($request->all(), $request->file('photo'), $id);
+        return $this->authorService->update($request->all(), $request->file('photo_link'), $id);
     }
 
     public function destroy(int $id): JsonResponse
