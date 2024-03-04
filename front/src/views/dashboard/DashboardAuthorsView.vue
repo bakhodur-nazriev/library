@@ -5,7 +5,7 @@ import i18n from "../../i18n.js";
 import DeleteAuthorModal from "../../components/modals/authors/DeleteAuthorModal.vue";
 import AddAuthorModal from "../../components/modals/authors/AddAuthorModal.vue";
 import axios from "axios";
-// import EditAuthorModal from "../../components/modals/authors/EditAuthorModal.vue";
+import EditAuthorModal from "../../components/modals/authors/EditAuthorModal.vue";
 
 const tableHeaders = computed(() => {
   return [
@@ -22,11 +22,13 @@ const showDeleteModal = ref(false);
 const showAddModal = ref(false);
 const showEditModal = ref(false);
 const selectedAuthorId = ref(0);
+const selectedAuthor = ref(null);
 
 const getAuthors = async () => {
   const authToken = sessionStorage.getItem('token');
   const headers = {
     'Content-Type': 'application/json',
+    'Access-Control-Allow-Methods': '*',
     'Authorization': `Bearer ${authToken}`
   };
 
@@ -58,7 +60,8 @@ const openDeleteModal = (authorId) => {
 const closeDeleteModal = () => {
   showDeleteModal.value = false;
 };
-const openEditModal = () => {
+const openEditModal = (author) => {
+  selectedAuthor.value = author;
   showEditModal.value = true;
 };
 const closeEditModal = () => {
@@ -88,11 +91,12 @@ onMounted(() => {
         @close="closeAddModal"
         @reloadData="getAuthors"
     />
-    <!--    <EditAuthorModal-->
-    <!--        v-if="showEditModal"-->
-    <!--        @close="closeEditModal"-->
-    <!--        :author="selectedAuthorId"-->
-    <!--    />-->
+    <EditAuthorModal
+        v-if="showEditModal"
+        @close="closeEditModal"
+        @reloadData="getAuthors"
+        :selectedAuthor="selectedAuthor"
+    />
     <DeleteAuthorModal
         v-if="showDeleteModal"
         @close="closeDeleteModal"
@@ -111,10 +115,10 @@ onMounted(() => {
   }
 
   .add-button {
-    background-color: var(--primary-color);
+    background-color: var(--color-primary);
     border: none;
     font-size: 14px;
-    color: var(--white-color);
+    color: var(--color-white);
     margin-bottom: 10px;
     padding: 10px 15px;
     border-radius: 6px;

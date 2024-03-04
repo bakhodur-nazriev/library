@@ -61,7 +61,7 @@ const deleteBook = async () => {
 }
 
 .modal {
-  background-color: var(--white-color);
+  background-color: var(--color-white);
   border-radius: 10px;
   max-width: 400px;
   padding: 25px;
@@ -86,10 +86,10 @@ const deleteBook = async () => {
       button {
         font-size: 16px;
         border: none;
-        background-color: var(--primary-color);
+        background-color: var(--color-primary);
         border-radius: 8px;
         padding: 8px 15px;
-        color: var(--white-color);
+        color: var(--color-white);
         cursor: pointer;
       }
     }

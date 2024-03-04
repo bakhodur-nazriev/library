@@ -1,88 +1,92 @@
 <script setup>
-import {defineEmits, onMounted} from 'vue';
+import {defineEmits, ref} from 'vue';
 import {getFormData} from "../../../utils.js";
 import axios from "axios";
 
 const emit = defineEmits(['close']);
-const props = defineProps(['book']);
-const handleFileChange = (event) => {
-  if (props.book.value) {
-    props.book.value.file = event.target.files[0];
-  }
-};
-const emitClose = () => {
-  emit('close');
-};
-const save = async () => {
-  if (!props.book.value || !props.book.value.id) {
-    console.error("Book information is missing or incomplete");
-    return;
-  }
+const props = defineProps(['selectedBook']);
 
-  const payload = getFormData(props.book.value);
+const book = ref({
+  title: props.selectedBook.title,
+  author_ids: props.selectedBook.author_ids,
+  description: props.selectedBook.description,
+  ISBN: props.selectedBook.ISBN,
+  publisher: props.selectedBook.publisher,
+  genre: props.selectedBook.genre,
+  language: props.selectedBook.language,
+  pages: props.selectedBook.pages,
+  published_at: props.selectedBook.published_at
+});
+
+const editData = async () => {
+  const payload = getFormData(book.value);
   const authToken = sessionStorage.getItem('token');
   const headers = {
-    "Authorization": `Bearer ${authToken}`
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${authToken}`
   };
 
   await axios
-      .patch('/admin/books/' + props.book.value.id, payload, {headers})
+      .patch('/admin/books/' + props.selectedBook.id, payload, {headers})
       .then(res => {
-        if (res.status === 200) {
+        if (res.status === 200 || res.status === 201) {
+          emit('reloadData', true);
           emitClose();
         }
-        console.log(res);
       })
       .catch(err => {
         console.log(err);
       })
 };
-console.log(props.book);
+const emitClose = () => {
+  emit('close');
+};
 </script>
 
 <template>
   <div class="modal-overlay" @click="emitClose">
+    <h1 style="color: white">{{ props.selectedBook.publish_date }}</h1>
     <div class="modal" @click.stop>
-      <h1 class="modal-title">{{ $t('label.add_book') }}</h1>
+      <h1 class="modal-title">{{ $t('label.edit_book') }}</h1>
       <ul class="input-list">
         <li class="input-list__item">
           <input
               type="text"
-              v-model="props.book.title"
+              v-model="book.title"
               :placeholder="`${$t('titles.table_titles.books.name')}`"
           />
         </li>
         <li class="input-list__item">
           <input
               type="text"
-              v-model="props.book.author"
+              v-model="book.author_ids"
               :placeholder="`${$t('titles.table_titles.books.author')}`"
           />
         </li>
         <li class="input-list__item">
           <input
               type="text"
-              v-model="props.book.description"
+              v-model="book.description"
               :placeholder="`${$t('titles.table_titles.books.description')}`"
           />
         </li>
         <li class="input-list__item">
           <input
               type="number"
-              v-model="props.book.isbn"
+              v-model="book.ISBN"
               :placeholder="`${$t('titles.table_titles.books.isbn')}`"
           />
         </li>
         <li class="input-list__item">
           <input
               type="number"
-              v-model="props.book.pages"
+              v-model="book.pages"
               :placeholder="`${$t('titles.table_titles.books.pages')}`"
           />
         </li>
         <li class="input-list__item">
           <input
-              v-model="props.book.publisher"
+              v-model="book.publisher"
               type="text"
               :placeholder="`${$t('titles.table_titles.books.publisher')}`"
           />
@@ -90,36 +94,28 @@ console.log(props.book);
         <li class="input-list__item">
           <input
               type="text"
-              v-model="props.book.genre"
+              v-model="book.genre"
               :placeholder="`${$t('titles.table_titles.books.genre')}`"
           />
         </li>
         <li class="input-list__item">
           <input
               type="text"
-              v-model="props.book.language"
+              v-model="book.language"
               :placeholder="`${$t('titles.table_titles.books.language')}`"
           />
         </li>
         <li class="input-list__item">
           <input
               type="date"
-              v-model="props.book.publish_date"
-              :placeholder="`${$t('titles.table_titles.books.publish_date')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              type="file"
-              accept=".pdf"
-              @change="handleFileChange"
-              :placeholder="`${$t('titles.table_titles.books.file')}`"
+              v-model="book.published_at"
+              :placeholder="`${$t('titles.table_titles.books.language')}`"
           />
         </li>
       </ul>
       <ul class="button-list">
         <li class="button-list__item">
-          <button @click="save">{{ $t('buttons.save') }}</button>
+          <button @click="editData">{{ $t('buttons.save') }}</button>
         </li>
         <li class="button-list__item">
           <button @click="emitClose">{{ $t('buttons.cancel') }}</button>
@@ -144,7 +140,7 @@ console.log(props.book);
 }
 
 .modal {
-  background-color: var(--white-color);
+  background-color: var(--color-white);
   border-radius: 12px;
   width: 400px;
   padding: 30px;
@@ -173,11 +169,11 @@ console.log(props.book);
 
     &__item {
       input {
-        background-color: var(--white-color);
+        background-color: var(--color-white);
         border-radius: 8px;
-        border: 1px solid var(--secondary-color);
+        border: 1px solid var(--color-gray);
         box-sizing: border-box;
-        color: var(--secondary-color);
+        color: var(--color-gray);
         font-size: 14px;
         outline: none;
         padding: 12px 15px;
@@ -196,10 +192,10 @@ console.log(props.book);
       button {
         font-size: 16px;
         border: none;
-        background-color: var(--primary-color);
+        background-color: var(--color-primary);
         border-radius: 8px;
         padding: 8px 15px;
-        color: var(--white-color);
+        color: var(--color-white);
         cursor: pointer;
       }
     }

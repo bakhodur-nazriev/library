@@ -40,6 +40,7 @@
         "publish_date": "Дата выхода",
         "added_date": "Дата добавление",
         "file": "PDF",
+        "cover_image": "Обложка книги",
         "actions": "Действия"
       },
       "authors": {
@@ -49,6 +50,13 @@
         "biography": "Биография",
         "nationality": "Националность",
         "photo_link": "Фото"
+      },
+      "users": {
+        "id": "ID",
+        "name": "Имя",
+        "email": "Email",
+        "role": "Роль",
+        "password": "Пароль"
       }
     }
   },
@@ -86,7 +94,11 @@
     "publisher": "Издатель",
     "users": "Ползователи",
     "add_book": "Добавить книгу",
-    "add_author": "Добавить автора"
+    "add_author": "Добавить автора",
+    "edit_book": "Изменить книгу",
+    "edit_author": "Изменить автора",
+    "add_user": "Добавить пользователья",
+    "edit_user": "Езменить пользователья"
   },
   "notifications": {
     "remove_message": "Вы действительно хотите удалить этот запись!"

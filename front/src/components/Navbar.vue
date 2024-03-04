@@ -56,7 +56,7 @@
         text-decoration: none;
         font-weight: 400;
         font-size: 14px;
-        color: var(--white-color);
+        color: var(--color-white);
       }
     }
   }

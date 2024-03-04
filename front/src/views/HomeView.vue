@@ -1,84 +1,35 @@
 <script setup>
 import SampleTab from "../components/SampleTab.vue";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
+import axios from "axios";
 
-const books = ref([
-  {
-    name: "Just Test!",
-    author: "Odam",
-    description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor",
-    img: 'src/assets/books_cover/img.png'
-  },
-  {
-    name: "Just Test!",
-    author: "Odam",
-    description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor",
-    img: 'src/assets/books_cover/img.png'
-  },
-  {
-    name: "Just Test!",
-    author: "Odam",
-    description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor",
-    img: 'src/assets/books_cover/img.png'
-  },
-  {
-    name: "Just Test!",
-    author: "Odam",
-    description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor",
-    img: 'src/assets/books_cover/img.png'
-  },
-  {
-    name: "Just Test!",
-    author: "Odam",
-    description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor",
-    img: 'src/assets/books_cover/img.png'
-  },
-  {
-    name: "Just Test!",
-    author: "Odam",
-    description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor",
-    img: 'src/assets/books_cover/img.png'
-  }, {
-    name: "Just Test!",
-    author: "Odam",
-    description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor",
-    img: 'src/assets/books_cover/img.png'
-  },
-  {
-    name: "Just Test!",
-    author: "Odam",
-    description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor",
-    img: 'src/assets/books_cover/img.png'
-  },
-  {
-    name: "Just Test!",
-    author: "Odam",
-    description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor",
-    img: 'src/assets/books_cover/img.png'
-  },
-  {
-    name: "Just Test!",
-    author: "Odam",
-    description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor",
-    img: 'src/assets/books_cover/img.png'
-  },
-  {
-    name: "Just Test!",
-    author: "Odam",
-    description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor",
-    img: 'src/assets/books_cover/img.png'
-  },
-  {
-    name: "Just Test!",
-    author: "Odam",
-    description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor",
-    img: 'src/assets/books_cover/img.png'
-  },
-]);
+const books = ref(null);
 
-const readMore = () => {
-  console.log();
+const getBooks = async () => {
+  const authToken = sessionStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${authToken}`
+  };
+
+  await axios
+      .get('/books/?per_page=10&page=1', {headers})
+      .then(res => {
+        console.log(res);
+        if (res.status === 200 || res.status === 201) {
+          books.value = res.data.data;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
 }
+const readMore = () => {
+}
+
+onMounted(() => {
+  getBooks();
+});
 </script>
 
 <template>
@@ -91,14 +42,21 @@ const readMore = () => {
     <section class="books-section">
       <ul class="books-list">
         <li v-for="(book, i) in books" :key="i" class="books-list_item">
+          <!--{{ book }}-->
           <img :src="book.img" :alt="book.name">
           <div class="right-block">
-            <h3 class="book-name">{{ book.name }}</h3>
+            <h3 class="book-name">{{ book.title }}</h3>
             <h4 class="book-author">{{ $t('label.authors') }}: {{ book.author }}</h4>
 
             <p class="book-description">{{ book.description }}</p>
 
-            <button type="button" @click="readMore" class="read-more_btn">{{ $t('buttons.read_more') }}</button>
+            <button
+                type="button"
+                @click="readMore"
+                class="read-more_btn"
+            >
+              {{ $t('buttons.read_more') }}
+            </button>
           </div>
         </li>
       </ul>
@@ -124,7 +82,13 @@ const readMore = () => {
       width: 100vw;
       height: auto;
       filter: brightness(0.4);
+      position: absolute;
+      //left: 0;
     }
+  }
+
+  .books-section {
+    margin-top: 600px;
   }
 
   .books-list {
@@ -149,8 +113,8 @@ const readMore = () => {
       }
 
       .read-more_btn {
-        background-color: var(--primary-color);
-        color: var(--white-color);
+        background-color: var(--color-primary);
+        color: var(--color-white);
         border-radius: 5px;
         border: none;
         padding: 10px 15px;

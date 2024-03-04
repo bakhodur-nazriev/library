@@ -21,7 +21,7 @@
 .forgot-password {
   &-block {
     box-shadow: 0 6px 10px -4px rgba(0,0,0,.15);
-    background-color: var(--white-color);
+    background-color: var(--color-white);
     border-radius: 10px;
     padding: 20px;
   }
@@ -58,8 +58,8 @@
     &-button {
       border: none;
       border-radius: 10px;
-      background-color: var(--primary-color);
-      color: var(--white-color);
+      background-color: var(--color-primary);
+      color: var(--color-white);
       width: 100%;
       padding: 14px;
       font-size: 16px;

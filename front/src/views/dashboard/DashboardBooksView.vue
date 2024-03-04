@@ -18,6 +18,7 @@ const tableHeaders = computed(() => {
     i18n.global.t('titles.table_titles.books.genre'),
     i18n.global.t('titles.table_titles.books.language'),
     i18n.global.t('titles.table_titles.books.pages'),
+    i18n.global.t('titles.table_titles.books.cover_image'),
     i18n.global.t('titles.table_titles.books.publish_date'),
     i18n.global.t('titles.table_titles.books.added_date'),
   ];
@@ -29,7 +30,7 @@ const showEditModal = ref(false);
 
 const showAddModal = ref(false);
 const selectedBookId = ref(0);
-const selectedBook = ref({});
+const selectedBook = ref(null);
 const openAddBookModal = () => {
   showAddModal.value = true;
 };
@@ -37,20 +38,8 @@ const openDeleteModal = (bookId) => {
   selectedBookId.value = bookId;
   showDeleteModal.value = true;
 };
-const openEditModal = (selectedItem) => {
-  selectedBook.value = {
-    id: selectedItem.id,
-    title: selectedItem.title,
-    author: selectedItem.author,
-    description: selectedItem.description,
-    isbn: selectedItem.isbn,
-    publisher: selectedItem.publisher,
-    genre: selectedItem.genre,
-    language: selectedItem.language,
-    pages: selectedItem.pages,
-    published_at: selectedItem.published_at,
-    created_at: selectedItem.create_at
-  };
+const openEditModal = (book) => {
+  selectedBook.value = book;
   showEditModal.value = true;
 }
 const closeDeleteModal = () => {
@@ -61,6 +50,11 @@ const closeEditModal = () => {
 };
 const cancelAddModal = () => {
   showAddModal.value = false;
+};
+const getFormattedDate = (timestamp) => {
+  const date = new Date(timestamp);
+  const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+  return date.toLocaleDateString(undefined, options).replace(/\./g, '-');
 };
 const getBooks = async () => {
   const authToken = sessionStorage.getItem("token");
@@ -84,8 +78,9 @@ const getBooks = async () => {
           genre: book.genre,
           language: book.language,
           pages: book.pages,
+          cover_image: book.cover_image,
           published_at: book.published_at,
-          create_at: book.created_at
+          create_at: getFormattedDate(book.created_at)
         }));
       })
       .catch(err => {
@@ -117,7 +112,7 @@ onMounted(() => {
         v-if=showEditModal
         @close="closeEditModal"
         @reloadData="getBooks"
-        :book="selectedBook"
+        :selectedBook="selectedBook"
     />
     <BookDeleteModal
         v-if="showDeleteModal"
@@ -137,11 +132,11 @@ onMounted(() => {
   }
 
   .add-button {
-    background-color: var(--primary-color);
+    background-color: var(--color-primary);
     border: none;
     font-size: 14px;
-    color: var(--white-color);
-    margin-bottom: 10px;
+    color: var(--color-white);
+    margin-bottom: 30px;
     padding: 10px 15px;
     border-radius: 6px;
     cursor: pointer;

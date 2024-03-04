@@ -3,7 +3,7 @@ import {defineEmits, ref} from 'vue';
 import {getFormData} from "../../../utils.js";
 import axios from "axios";
 
-const emit = defineEmits(['cancel']);
+const emit = defineEmits(['cancel', 'reloadData']);
 const book = ref({
   title: '',
   isbn: '',
@@ -14,6 +14,7 @@ const book = ref({
   publisher: '',
   author: '',
   pages: '',
+  cover_image: '',
   file: ''
 });
 const handleFileChange = (e) => {
@@ -31,6 +32,7 @@ const addBook = async () => {
       .post('/admin/books', payload, {headers})
       .then(res => {
         if (res.status === 200 || res.status === 201) {
+          emit('reloadData', true);
           emitCancel();
         }
       })
@@ -85,6 +87,13 @@ const emitCancel = () => {
         </li>
         <li class="input-list__item">
           <input
+              type="text"
+              v-model="book.cover_image"
+              :placeholder="`${$t('titles.table_titles.books.cover_image')}`"
+          />
+        </li>
+        <li class="input-list__item">
+          <input
               v-model="book.publisher"
               type="text"
               :placeholder="`${$t('titles.table_titles.books.publisher')}`"
@@ -107,7 +116,7 @@ const emitCancel = () => {
         <li class="input-list__item">
           <input
               type="date"
-              v-model="book.publish_date"
+              v-model="book.published_at"
               :placeholder="`${$t('titles.table_titles.books.publish_date')}`"
           />
         </li>
@@ -147,7 +156,7 @@ const emitCancel = () => {
 }
 
 .modal {
-  background-color: var(--white-color);
+  background-color: var(--color-white);
   border-radius: 12px;
   width: 400px;
   padding: 30px;
@@ -176,11 +185,11 @@ const emitCancel = () => {
 
     &__item {
       input {
-        background-color: var(--white-color);
+        background-color: var(--color-white);
         border-radius: 8px;
-        border: 1px solid var(--secondary-color);
+        border: 1px solid var(--color-gray);
         box-sizing: border-box;
-        color: var(--secondary-color);
+        color: var(--color-gray);
         font-size: 14px;
         outline: none;
         padding: 12px 15px;
@@ -199,10 +208,10 @@ const emitCancel = () => {
       button {
         font-size: 16px;
         border: none;
-        background-color: var(--primary-color);
+        background-color: var(--color-primary);
         border-radius: 8px;
         padding: 8px 15px;
-        color: var(--white-color);
+        color: var(--color-white);
         cursor: pointer;
       }
     }

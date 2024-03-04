@@ -92,7 +92,7 @@ const routes = [
         meta: {
             title: i18n.global.t('meta_title.not_found'),
             requiresAuth: false,
-            layout: 'auth'
+            layout: 'main'
         }
     },
 

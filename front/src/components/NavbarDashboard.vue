@@ -1,6 +1,16 @@
 <script setup>
 import MenuIcon from "./icons/MenuIcon.vue";
 import SearchInput from "./SearchInput.vue";
+import {onMounted, ref} from "vue";
+
+const user = ref(null);
+const getUser = async () => {
+
+}
+
+onMounted(() => {
+  getUser();
+})
 </script>
 
 <template>
@@ -38,7 +48,12 @@ import SearchInput from "./SearchInput.vue";
       <SearchInput/>
 
       <div class="user-block">
-        <router-link class="link" :to="`/${$i18n.locale}/user`">Bakhodur</router-link>
+        <router-link
+            class="link"
+            :to="`/${$i18n.locale}/dashboard/users`"
+        >
+          Bakhodur
+        </router-link>
         <img src="../assets/users/img.png" alt="">
       </div>
     </nav>
@@ -47,7 +62,7 @@ import SearchInput from "./SearchInput.vue";
 
 <style scoped lang="scss">
 .sidebar {
-  background-color: var(--primary-color);
+  background-color: var(--color-primary);
   height: 100vh;
   width: 240px;
   position: fixed;
@@ -67,7 +82,7 @@ import SearchInput from "./SearchInput.vue";
       a {
         transition: all 0.1s ease-in-out;
         text-decoration: none;
-        color: var(--white-color);
+        color: var(--color-white);
         font-size: 14px;
         font-weight: 500;
 
@@ -84,7 +99,7 @@ import SearchInput from "./SearchInput.vue";
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--white-color);
+  background-color: var(--color-white);
   height: 70px;
   padding: 0 15px 0 260px;
   width: -webkit-fill-available;

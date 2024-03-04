@@ -33,9 +33,6 @@ const addAuthor = async () => {
         console.log(err);
       })
 };
-// const emitReloadData = () => {
-//   emit('reloadData');
-// }
 const emitClose = () => {
   emit('close');
 }
@@ -108,7 +105,7 @@ const emitClose = () => {
 }
 
 .modal {
-  background-color: var(--white-color);
+  background-color: var(--color-white);
   border-radius: 12px;
   width: 400px;
   padding: 30px;
@@ -132,11 +129,11 @@ const emitClose = () => {
 
     &__item {
       input {
-        background-color: var(--white-color);
+        background-color: var(--color-white);
         border-radius: 8px;
-        border: 1px solid var(--secondary-color);
+        border: 1px solid var(--color-gray);
         box-sizing: border-box;
-        color: var(--secondary-color);
+        color: var(--color-gray);
         font-size: 14px;
         outline: none;
         padding: 12px 15px;
@@ -155,10 +152,10 @@ const emitClose = () => {
       button {
         font-size: 16px;
         border: none;
-        background-color: var(--primary-color);
+        background-color: var(--color-primary);
         border-radius: 8px;
         padding: 8px 15px;
-        color: var(--white-color);
+        color: var(--color-white);
         cursor: pointer;
       }
     }

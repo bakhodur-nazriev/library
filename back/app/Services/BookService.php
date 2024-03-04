@@ -51,12 +51,12 @@ class BookService
     {
         $book = new Book();
         $book->title = $attributes['title'];
-        $book->ISBN = $attributes['ISBN']?? null;
-        $book->description = $attributes['description']?? null;
-        $book->published_at = $attributes['published_at']?? null;
-        $book->genre = $attributes['genre']??null;
-        $book->language = $attributes['language']??null;
-        $book->publisher = $attributes['publisher']??null;
+        $book->ISBN = $attributes['ISBN'] ?? null;
+        $book->description = $attributes['description'] ?? null;
+        $book->published_at = $attributes['published_at'] ?? null;
+        $book->genre = $attributes['genre'] ?? null;
+        $book->language = $attributes['language'] ?? null;
+        $book->publisher = $attributes['publisher'] ?? null;
         $book->search_key = $attributes['title'];
         $book->save();
 
@@ -78,7 +78,7 @@ class BookService
 
     public function addAuthors(array $attributes, $book): void
     {
-        if (isset($attributes['author_ids']) &&  count($attributes['author_ids']) > 0) {
+        if (isset($attributes['author_ids']) && count($attributes['author_ids']) > 0) {
             $authorIds = $attributes['author_ids'];
             $book->authors()->attach($authorIds);
             $this->reindexAuthor($book);

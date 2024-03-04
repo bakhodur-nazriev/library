@@ -49,7 +49,7 @@ let currentTab = ref(0);
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--white-color);
+  background-color: var(--color-white);
   border-radius: 8px;
   width: 500px;
   z-index: 15;
@@ -77,7 +77,7 @@ let currentTab = ref(0);
       }
 
       .active {
-        color: var(--secondary-color);
+        color: var(--color-gray);
         position: relative;
 
         &::after {
@@ -101,7 +101,7 @@ let currentTab = ref(0);
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: var(--primary-color);
+        background-color: var(--color-primary);
         height: 40px;
         min-width: 80px;
         padding: 5px;
@@ -112,7 +112,7 @@ let currentTab = ref(0);
         cursor: pointer;
 
         svg {
-          color: var(--white-color);
+          color: var(--color-white);
         }
       }
 

@@ -11,15 +11,31 @@ body {
 }
 
 :root {
-    --primary-color: #3d67cf;
-    --secondary-color: #5b5b5b;
-    --white-color: #fff;
+    --color-primary: #3d67cf;
+    --color-gray: #5f656f;
+    --color-white: #fff;
     --bg-grey-color: #f1f1f1;
+    --color-seashell: #0e0e0f;
+    --color-toggle: #f1f1f1;
+
+    ::-webkit-scrollbar-track {
+        background-color: var(--color-toggle);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: var(--color-primary);
+        border-radius: 20px;
+    }
+
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 6px;
+    }
 }
 
 .link {
     width: max-content;
     text-decoration: none;
-    color: var(--primary-color);
+    color: var(--color-primary);
     font-weight: 500;
 }
