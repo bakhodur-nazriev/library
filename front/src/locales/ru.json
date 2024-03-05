@@ -1,5 +1,13 @@
 {
   "lang": "ru",
+  "languages": {
+    "title": "Русский",
+    "name": {
+      "english": "English",
+      "russian": "Русский",
+      "tajik": "Тоҷики"
+    }
+  },
   "meta_title": {
     "home": "Главная",
     "authors": "Авторы",
@@ -17,10 +25,10 @@
     }
   },
   "main_menu": {
-    "home": "ГЛАВНАЯ",
-    "authors": "АВТОРЫ",
-    "books": "КНИГИ",
-    "contact": "КОНТАКТЫ"
+    "home": "Главная",
+    "authors": "Авторы",
+    "books": "Книги",
+    "contact": "Контакты"
   },
   "titles": {
     "login": "Вход",
@@ -98,9 +106,11 @@
     "edit_book": "Изменить книгу",
     "edit_author": "Изменить автора",
     "add_user": "Добавить пользователья",
-    "edit_user": "Езменить пользователья"
+    "edit_user": "Езменить пользователья",
+    "books_latest": "Новые книги",
+    "authors_latest": "Новые авторы"
   },
   "notifications": {
-    "remove_message": "Вы действительно хотите удалить этот запись!"
+    "remove_message": "Вы действительно хотите удалить этот запись ?"
   }
 }

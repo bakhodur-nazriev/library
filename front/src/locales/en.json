@@ -1,5 +1,13 @@
 {
   "lang": "en",
+  "languages": {
+    "title": "English",
+    "name": {
+      "english": "English",
+      "russian": "Русский",
+      "tajik": "Тоҷики"
+    }
+  },
   "meta_title": {
     "home": "Home",
     "authors": "Authors",
@@ -30,10 +38,16 @@
       "books": {
         "name": "Name",
         "description": "Description",
+        "isbn": "ISBN",
         "pages": "Pages",
         "publisher": "Publisher",
+        "author": "Author",
+        "genre": "Genre",
+        "language": "Language",
         "publish_date": "Publisher date",
         "add_date": "Add date",
+        "file": "PDF",
+        "cover_image": "Cover image",
         "actions": "Actions"
       },
       "authors": {
@@ -43,6 +57,13 @@
         "biography": "Biography",
         "nationality": "Nationality",
         "photo_link": "Photo"
+      },
+      "users": {
+        "id": "ID",
+        "name": "Name",
+        "email": "Email",
+        "role": "Role",
+        "password": "Password"
       }
     }
   },
@@ -77,6 +98,17 @@
     "authors": "Authors",
     "books": "Books",
     "publisher": "Publisher",
-    "users": "Users"
+    "users": "Users",
+    "add_book": "Add book",
+    "add_author": "Add author",
+    "edit_book": "Edit book",
+    "edit_author": "Edit author",
+    "add_user": "Add user",
+    "edit_user": "Edit user",
+    "books_latest": "Latest Books",
+    "authors_latest": "Latest Author"
+  },
+  "notifications": {
+    "remove_message": "Are you sure you want to delete this entry ?"
   }
 }

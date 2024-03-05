@@ -1,25 +1,29 @@
 <script setup>
 
+import LocalesDropdown from "./LocalesDropdown.vue";
 </script>
 
 <template>
   <nav class="main-navbar">
     <div class="container">
       <div class="navbar-left">
-        <img src="../assets/logo.png" alt="лого">
+        <img src="../assets/main-logo-1.png" alt="лого">
       </div>
-      <ul>
-        <li>
+      <ul class="navbar-list">
+        <li class="navbar-list_item">
           <router-link :to="`/${$i18n.locale}`">{{ $t('main_menu.home') }}</router-link>
         </li>
-        <li>
+        <li class="navbar-list_item">
           <router-link :to="`/${$i18n.locale}/books`">{{ $t('main_menu.books') }}</router-link>
         </li>
-        <li>
+        <li class="navbar-list_item">
           <router-link :to="`/${$i18n.locale}/authors`">{{ $t('main_menu.authors') }}</router-link>
         </li>
-        <li>
+        <li class="navbar-list_item">
           <router-link :to="`/${$i18n.locale}/contact`">{{ $t('main_menu.contact') }}</router-link>
+        </li>
+        <li>
+          <LocalesDropdown/>
         </li>
       </ul>
     </div>
@@ -42,21 +46,30 @@
     align-items: center;
     width: 1280px;
     justify-content: space-between;
-  }
 
-  ul {
-    list-style: none;
-    display: flex;
-    justify-content: space-around;
-    padding: 0;
-    gap: 30px;
+    .navbar-left {
+      display: flex;
 
-    li {
-      a {
-        text-decoration: none;
-        font-weight: 400;
-        font-size: 14px;
-        color: var(--color-white);
+      img {
+        width: 210px;
+      }
+    }
+
+    .navbar-list {
+      list-style: none;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0;
+      gap: 30px;
+
+      &_item {
+        a {
+          text-decoration: none;
+          font-weight: 400;
+          font-size: 14px;
+          color: var(--color-white);
+        }
       }
     }
   }

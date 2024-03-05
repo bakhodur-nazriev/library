@@ -4,7 +4,6 @@ import {onMounted, ref} from "vue";
 import axios from "axios";
 
 const books = ref(null);
-
 const getBooks = async () => {
   const authToken = sessionStorage.getItem('token');
   const headers = {
@@ -13,7 +12,7 @@ const getBooks = async () => {
   };
 
   await axios
-      .get('/books/?per_page=10&page=1', {headers})
+      .get('/books/?per_page=2&page=1&order=asc', {headers})
       .then(res => {
         console.log(res);
         if (res.status === 200 || res.status === 201) {
@@ -39,6 +38,7 @@ onMounted(() => {
       <SampleTab/>
     </section>
 
+    <p class="book-section_title">{{ $t('label.books_latest') }}</p>
     <section class="books-section">
       <ul class="books-list">
         <li v-for="(book, i) in books" :key="i" class="books-list_item">
@@ -61,6 +61,9 @@ onMounted(() => {
         </li>
       </ul>
     </section>
+
+    <p class="author-section_title">{{ $t('label.authors_latest') }}</p>
+    <section class=""></section>
   </div>
 </template>
 
@@ -72,6 +75,15 @@ onMounted(() => {
   width: 1280px;
   margin: 0 auto;
 
+  .book-section_title,
+  .author-section_title {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 30px;
+    font-size: 32px;
+    font-weight: bold;
+  }
+
   .header {
     position: relative;
     display: flex;
@@ -82,13 +94,9 @@ onMounted(() => {
       width: 100vw;
       height: auto;
       filter: brightness(0.4);
-      position: absolute;
+      //position: absolute;
       //left: 0;
     }
-  }
-
-  .books-section {
-    margin-top: 600px;
   }
 
   .books-list {
