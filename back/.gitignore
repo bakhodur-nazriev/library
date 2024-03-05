@@ -19,3 +19,4 @@ yarn-error.log
 /.vscode
 /docker/pgdata
 /storage/app/pdfs
+/docker/pgdata
