@@ -17,6 +17,7 @@ body {
     --bg-grey-color: #f1f1f1;
     --color-seashell: #0e0e0f;
     --color-toggle: #f1f1f1;
+    --color-active-link: #fec826;
 
     ::-webkit-scrollbar-track {
         background-color: var(--color-toggle);

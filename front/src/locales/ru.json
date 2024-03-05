@@ -66,6 +66,25 @@
         "role": "Роль",
         "password": "Пароль"
       }
+    },
+    "banner": {
+      "books": "Выберите свою книгу и наслаждайтесь",
+      "authors": ""
+    },
+    "filter": {
+      "books": {
+        "title": "Сортировать по",
+        "subtitle": "Категории",
+        "items": {
+          "music": "Музыка",
+          "marketing": "Маркетинг",
+          "politics": "Политика",
+          "creative": "Креатив",
+          "mathematics": "Математика",
+          "geography": "География",
+          "technology": "Технология"
+        }
+      }
     }
   },
   "subtitles": {
@@ -90,7 +109,8 @@
     "no": "Нет",
     "save": "Сохранить",
     "cancel": "Отмена",
-    "read_more": "Читать далее..."
+    "read_more": "Читать далее...",
+    "see_all": "Просмотреть все"
   },
   "label": {
     "create_account": "Создать аккаунт",

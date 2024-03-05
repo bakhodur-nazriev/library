@@ -116,6 +116,10 @@ export default {
     z-index: 2;
   }
 
+  &__title {
+    color: #5b5b5b;
+  }
+
   &__button {
     display: flex;
     align-items: center;
@@ -219,6 +223,10 @@ export default {
     z-index: 5;
     font-size: 14px;
     line-height: 1;
+
+    svg {
+      color: #5b5b5b;
+    }
   }
 
   .locales__list {

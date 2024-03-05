@@ -65,6 +65,25 @@
         "role": "Role",
         "password": "Password"
       }
+    },
+    "banner": {
+      "books": "Choose Your Book and Enjoy",
+      "authors": ""
+    },
+    "filter": {
+      "books": {
+        "title": "Filter by",
+        "subtitle": "Category",
+        "items": {
+          "music": "Music",
+          "marketing": "Marketing",
+          "politics": "Politics",
+          "creative": "Creative",
+          "mathematics": "Mathematics",
+          "geography": "Geography",
+          "technology": "Technology"
+        }
+      }
     }
   },
   "subtitles": {
@@ -89,7 +108,8 @@
     "no": "No",
     "save": "Save",
     "cancel": "Cancel",
-    "read_more": "Read more..."
+    "read_more": "Read more...",
+    "see_all": "See All"
   },
   "label": {
     "create_account": "Create account",
