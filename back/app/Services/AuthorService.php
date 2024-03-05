@@ -13,10 +13,13 @@ class AuthorService
 
     public function get(array $attributes): JsonResponse
     {
-        $perPage = $attributes['per_page'];
-        $page = $attributes['page'];
+        $perPage = $attributes['per_page']?? 10;
+        $page = $attributes['page']?? 1 ;
+        $order = $attributes['order']?? 'asc';
+
 
         $authors = Author::with('books')
+            ->orderBy('created_at', $order)
             ->paginate($perPage, ['*'], 'page', $page);
 
         return response()->json($authors);
