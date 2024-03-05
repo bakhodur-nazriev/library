@@ -123,8 +123,8 @@ return new class extends Migration
 
 
         // default role admin
-        Role::create(['name' => 'admin', 'guard_name' => 'api']);
-        Permission::create(['name' => 'admin', 'guard_name' => 'api']);
+        //Role::create(['name' => 'admin', 'guard_name' => 'api']);
+        //Permission::create(['name' => 'admin', 'guard_name' => 'api']);
 
         $role = Role::query()
             ->where('name', 'admin')
