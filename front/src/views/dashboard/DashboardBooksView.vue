@@ -25,6 +25,11 @@ const tableHeaders = computed(() => {
 });
 const tableRows = ref([]);
 
+const itemsPerPage = 15;
+const currentPage = ref(1);
+const totalItems = ref(0);
+const loading = ref(false);
+
 const showDeleteModal = ref(false);
 const showEditModal = ref(false);
 
@@ -53,10 +58,11 @@ const cancelAddModal = () => {
 };
 const getFormattedDate = (timestamp) => {
   const date = new Date(timestamp);
-  const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+  const options = {year: 'numeric', month: '2-digit', day: '2-digit'};
   return date.toLocaleDateString(undefined, options).replace(/\./g, '-');
 };
 const getBooks = async () => {
+  loading.value = true;
   const authToken = sessionStorage.getItem("token");
   const headers = {
     'Content-type': 'applications/json',
@@ -66,7 +72,7 @@ const getBooks = async () => {
   };
 
   await axios
-      .get('/books?per_page=15&page=1', {headers})
+      .get(`/books?per_page=${itemsPerPage}&page=${currentPage.value}`, {headers})
       .then(res => {
         tableRows.value = res.data.data.map(book => ({
           id: book.id,
@@ -82,10 +88,16 @@ const getBooks = async () => {
           published_at: book.published_at,
           create_at: getFormattedDate(book.created_at)
         }));
+        totalItems.value = res.data.total;
       })
       .catch(err => {
         console.log(err);
       })
+      .finally(() => loading.value = false);
+};
+const handleCurrentPageChange = (newPage) => {
+  currentPage.value = newPage;
+  getBooks();
 };
 
 onMounted(() => {
@@ -98,6 +110,8 @@ onMounted(() => {
     <h2 class="main-title">{{ $t('label.books') }}</h2>
     <button class="add-button" @click="openAddBookModal">{{ $t('buttons.add') }}</button>
     <SampleTable
+        v-loading="loading"
+        :element-loading-text="$t('loading')"
         :rows="tableRows"
         :headers="tableHeaders"
         @openEditModal="openEditModal"
@@ -120,6 +134,16 @@ onMounted(() => {
         @reloadData="getBooks"
         :book-id="selectedBookId"
     />
+    <div class="pagination-block">
+      <el-pagination
+          background
+          layout="prev, pager, next"
+          :total="totalItems"
+          :current-page.sync="currentPage"
+          @current-change="handleCurrentPageChange"
+          type="warning"
+      />
+    </div>
   </div>
 </template>
 
@@ -145,6 +169,20 @@ onMounted(() => {
 
     &:hover {
       opacity: 0.9;
+    }
+  }
+
+  .pagination-block {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 30px 0;
+
+
+    .el-pagination__button.is-current {
+      background-color: red; /* Change this to your desired button color */
+      border-color: red; /* Change this to your desired border color */
+      color: #fff; /* Change this to your desired text color */
     }
   }
 }

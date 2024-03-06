@@ -17,10 +17,12 @@ const book = ref({
   cover_image: '',
   file: ''
 });
+const loading = ref(false);
 const handleFileChange = (e) => {
   book.value.file = e.target.files[0];
 };
 const addBook = async () => {
+  loading.value = true;
   const payload = getFormData(book.value);
 
   const authToken = sessionStorage.getItem('token');
@@ -39,6 +41,7 @@ const addBook = async () => {
       .catch(err => {
         console.log(err);
       })
+      .finally(() => loading.value = false);
 };
 const emitCancel = () => {
   emit('cancel');
@@ -47,7 +50,7 @@ const emitCancel = () => {
 
 <template>
   <div class="modal-overlay" @click="emitCancel">
-    <div class="modal" @click.stop>
+    <div class="modal" @click.stop v-loading="loading" :element-loading-text="$t('loading')">
       <h1 class="modal-title">{{ $t('label.add_book') }}</h1>
       <ul class="input-list">
         <li class="input-list__item">

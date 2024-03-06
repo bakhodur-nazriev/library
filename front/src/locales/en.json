@@ -8,6 +8,7 @@
       "tajik": "Тоҷики"
     }
   },
+  "loading": "Loading...",
   "meta_title": {
     "home": "Home",
     "authors": "Authors",
@@ -36,6 +37,7 @@
     "forgot_password": "Forgot password ?",
     "table_titles": {
       "books": {
+        "id": "ID",
         "name": "Name",
         "description": "Description",
         "isbn": "ISBN",
@@ -45,7 +47,7 @@
         "genre": "Genre",
         "language": "Language",
         "publish_date": "Publisher date",
-        "add_date": "Add date",
+        "added_date": "Add date",
         "file": "PDF",
         "cover_image": "Cover image",
         "actions": "Actions"

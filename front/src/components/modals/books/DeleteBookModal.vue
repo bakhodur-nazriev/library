@@ -1,13 +1,15 @@
 <script setup>
-import {defineEmits} from 'vue';
+import {defineEmits, ref} from 'vue';
 import axios from "axios";
 
 const emit = defineEmits(['close', 'reloadData']);
 const props = defineProps(['bookId']);
+const loading = ref(false);
 const emitClose = () => {
   emit('close');
 };
 const deleteBook = async () => {
+  loading.value = true;
   const authorToken = sessionStorage.getItem('token');
   const headers = {
     "Content-type": "applications/json",
@@ -25,12 +27,13 @@ const deleteBook = async () => {
       .catch(err => {
         console.log(err);
       })
+      .finally(() => loading.value = false);
 };
 </script>
 
 <template>
   <div class="modal-overlay" @click="emitClose">
-    <div class="modal" @click.stop>
+    <div class="modal" @click.stop v-loading="loading" :element-loading-text="$t('loading')">
       <div>
         <h3>{{ $t('notifications.remove_message') }}</h3>
         <ul class="modal-list">

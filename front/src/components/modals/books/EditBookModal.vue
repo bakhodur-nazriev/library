@@ -1,5 +1,5 @@
 <script setup>
-import {defineEmits, ref} from 'vue';
+import {defineEmits, onMounted, ref} from 'vue';
 import {getFormData} from "../../../utils.js";
 import axios from "axios";
 
@@ -17,8 +17,11 @@ const book = ref({
   pages: props.selectedBook.pages,
   published_at: props.selectedBook.published_at
 });
+const loading = ref(false);
+const authors = ref(null);
 
 const editData = async () => {
+  loading.value = true;
   const payload = getFormData(book.value);
   const authToken = sessionStorage.getItem('token');
   const headers = {
@@ -37,16 +40,40 @@ const editData = async () => {
       .catch(err => {
         console.log(err);
       })
+      .finally(() => loading.value = false);
+};
+const getAuthors = async () => {
+  const authToken = sessionStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Methods': '*',
+    'Authorization': `Bearer ${authToken}`
+  };
+
+  await axios
+      .get('/authors?per_page=15&page=1', {headers})
+      .then(res => {
+        if (res.status === 200 || res.status === 201) {
+          authors.value = res.data.data;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
 };
 const emitClose = () => {
   emit('close');
 };
+
+onMounted(() => {
+  getAuthors();
+})
 </script>
 
 <template>
   <div class="modal-overlay" @click="emitClose">
     <h1 style="color: white">{{ props.selectedBook.publish_date }}</h1>
-    <div class="modal" @click.stop>
+    <div class="modal" @click.stop :element-loading-text="$t('loading')">
       <h1 class="modal-title">{{ $t('label.edit_book') }}</h1>
       <ul class="input-list">
         <li class="input-list__item">
@@ -72,6 +99,7 @@ const emitClose = () => {
         </li>
         <li class="input-list__item">
           <input
+              required
               type="number"
               v-model="book.ISBN"
               :placeholder="`${$t('titles.table_titles.books.isbn')}`"
@@ -79,6 +107,7 @@ const emitClose = () => {
         </li>
         <li class="input-list__item">
           <input
+              required
               type="number"
               v-model="book.pages"
               :placeholder="`${$t('titles.table_titles.books.pages')}`"
@@ -107,6 +136,7 @@ const emitClose = () => {
         </li>
         <li class="input-list__item">
           <input
+              required
               type="date"
               v-model="book.published_at"
               :placeholder="`${$t('titles.table_titles.books.language')}`"
