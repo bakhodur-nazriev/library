@@ -25,7 +25,7 @@ const tableHeaders = computed(() => {
 });
 const tableRows = ref([]);
 
-const itemsPerPage = 15;
+const itemsPerPage = ref(15);
 const currentPage = ref(1);
 const totalItems = ref(0);
 const loading = ref(false);
@@ -72,12 +72,12 @@ const getBooks = async () => {
   };
 
   await axios
-      .get(`/books?per_page=${itemsPerPage}&page=${currentPage.value}`, {headers})
+      .get(`/books?per_page=${itemsPerPage.value}&page=${currentPage.value}`, {headers})
       .then(res => {
         tableRows.value = res.data.data.map(book => ({
           id: book.id,
           title: book.title,
-          author: book.author,
+          author: book.authors.map(author => author.initials).join(', '),
           description: book.description,
           isbn: book.ISBN,
           publisher: book.publisher,
@@ -88,6 +88,7 @@ const getBooks = async () => {
           published_at: book.published_at,
           create_at: getFormattedDate(book.created_at)
         }));
+        console.log(res.data.data);
         totalItems.value = res.data.total;
       })
       .catch(err => {
@@ -141,7 +142,6 @@ onMounted(() => {
           :total="totalItems"
           :current-page.sync="currentPage"
           @current-change="handleCurrentPageChange"
-          type="warning"
       />
     </div>
   </div>
@@ -177,13 +177,6 @@ onMounted(() => {
     justify-content: center;
     width: 100%;
     margin: 30px 0;
-
-
-    .el-pagination__button.is-current {
-      background-color: red; /* Change this to your desired button color */
-      border-color: red; /* Change this to your desired border color */
-      color: #fff; /* Change this to your desired text color */
-    }
   }
 }
 </style>

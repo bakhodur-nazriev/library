@@ -1,5 +1,5 @@
 <script setup>
-import {defineEmits, onMounted, ref} from 'vue';
+import {defineEmits, onMounted, ref, computed} from 'vue';
 import {getFormData} from "../../../utils.js";
 import axios from "axios";
 
@@ -8,7 +8,9 @@ const props = defineProps(['selectedBook']);
 
 const book = ref({
   title: props.selectedBook.title,
-  author_ids: props.selectedBook.author_ids,
+  author_ids: Array.isArray(props.selectedBook.author_ids)
+      ? [...props.selectedBook.author_ids]
+      : [props.selectedBook.author_ids],
   description: props.selectedBook.description,
   ISBN: props.selectedBook.ISBN,
   publisher: props.selectedBook.publisher,
@@ -18,7 +20,23 @@ const book = ref({
   published_at: props.selectedBook.published_at
 });
 const loading = ref(false);
-const authors = ref(null);
+const authors = ref([]);
+const formRules = {
+  title: [
+    {required: true, message: 'Please enter the title', trigger: 'blur'},
+  ],
+  author_ids: [
+    {required: true, message: 'Please select at least one author', trigger: 'change'},
+  ],
+  ISBN: [
+    {required: true, message: 'Please enter the ISBN', trigger: 'blur'},
+    {pattern: /^[0-9]*$/, message: 'ISBN must contain only numbers', trigger: 'blur'},
+  ],
+  pages: [
+    {required: true, message: 'Please enter the number of pages', trigger: 'blur'},
+    {pattern: /^[0-9]*$/, message: 'Pages must contain only numbers', trigger: 'blur'},
+  ]
+};
 
 const editData = async () => {
   loading.value = true;
@@ -67,91 +85,81 @@ const emitClose = () => {
 
 onMounted(() => {
   getAuthors();
-})
+});
 </script>
 
 <template>
   <div class="modal-overlay" @click="emitClose">
-    <h1 style="color: white">{{ props.selectedBook.publish_date }}</h1>
-    <div class="modal" @click.stop :element-loading-text="$t('loading')">
+    <el-form
+        ref="ruleFormRef"
+        style="max-width: 600px"
+        :model="book"
+        :rules="formRules"
+        status-icon
+        label-width="auto"
+        class="modal demo-ruleForm"
+        label-position="top"
+        @click.stop
+        :element-loading-text="$t('loading')"
+    >
       <h1 class="modal-title">{{ $t('label.edit_book') }}</h1>
-      <ul class="input-list">
-        <li class="input-list__item">
-          <input
-              type="text"
-              v-model="book.title"
-              :placeholder="`${$t('titles.table_titles.books.name')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              type="text"
-              v-model="book.author_ids"
-              :placeholder="`${$t('titles.table_titles.books.author')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              type="text"
-              v-model="book.description"
-              :placeholder="`${$t('titles.table_titles.books.description')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              required
-              type="number"
-              v-model="book.ISBN"
-              :placeholder="`${$t('titles.table_titles.books.isbn')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              required
-              type="number"
-              v-model="book.pages"
-              :placeholder="`${$t('titles.table_titles.books.pages')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              v-model="book.publisher"
-              type="text"
-              :placeholder="`${$t('titles.table_titles.books.publisher')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              type="text"
-              v-model="book.genre"
-              :placeholder="`${$t('titles.table_titles.books.genre')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              type="text"
-              v-model="book.language"
-              :placeholder="`${$t('titles.table_titles.books.language')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              required
-              type="date"
-              v-model="book.published_at"
-              :placeholder="`${$t('titles.table_titles.books.language')}`"
-          />
-        </li>
-      </ul>
-      <ul class="button-list">
-        <li class="button-list__item">
-          <button @click="editData">{{ $t('buttons.save') }}</button>
-        </li>
-        <li class="button-list__item">
-          <button @click="emitClose">{{ $t('buttons.cancel') }}</button>
-        </li>
-      </ul>
-    </div>
+      <el-form-item :label="`${$t('titles.table_titles.books.name')}`" prop="title">
+        <el-input v-model="book.title"/>
+      </el-form-item>
+      <el-form-item
+          :label="`${$t('titles.table_titles.books.author')}`"
+          prop="author_ids"
+      >
+        <el-select multiple v-model="book.author_ids" clearable>
+          <el-option
+              v-for="author in authors"
+              :key="author.id"
+              :label="author.initials"
+              :value="author.id"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item
+          :label="`${$t('titles.table_titles.books.description')}`"
+          prop="description"
+      >
+        <el-input v-model="book.description"/>
+      </el-form-item>
+      <el-form-item :label="`${$t('titles.table_titles.books.isbn')}`" prop="ISBN">
+        <el-input v-model="book.ISBN"/>
+      </el-form-item>
+      <el-form-item :label="`${$t('titles.table_titles.books.pages')}`" prop="pages">
+        <el-input v-model="book.pages"/>
+      </el-form-item>
+      <el-form-item
+          :label="`${$t('titles.table_titles.books.publisher')}`"
+          prop="publisher"
+      >
+        <el-input v-model="book.publisher"/>
+      </el-form-item>
+      <el-form-item
+          :label="`${$t('titles.table_titles.books.genre')}`"
+          prop="genre"
+      >
+        <el-input v-model="book.genre"/>
+      </el-form-item>
+      <el-form-item
+          :label="`${$t('titles.table_titles.books.language')}`"
+          prop="language"
+      >
+        <el-input v-model="book.language"/>
+      </el-form-item>
+      <el-form-item
+          :label="`${$t('titles.table_titles.books.publish_date')}`"
+          prop="published_at"
+      >
+        <el-date-picker format="D.MM.YYYY" v-model="book.published_at" type="date"/>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="editData">{{ $t('buttons.save') }}</el-button>
+        <el-button @click="emitClose">{{ $t('buttons.cancel') }}</el-button>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 
@@ -230,5 +238,10 @@ onMounted(() => {
       }
     }
   }
+}
+
+.el-form--label-top .el-form-item {
+  width: -webkit-fill-available;
+  margin-bottom: 0;
 }
 </style>

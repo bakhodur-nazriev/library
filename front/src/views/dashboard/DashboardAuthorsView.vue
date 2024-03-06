@@ -23,8 +23,14 @@ const showAddModal = ref(false);
 const showEditModal = ref(false);
 const selectedAuthorId = ref(0);
 const selectedAuthor = ref(null);
+const loading = ref(true);
+const currentPage = ref(1);
+const itemsPerPage = ref(15);
+const totalItems = ref(0);
+
 
 const getAuthors = async () => {
+  loading.value = true;
   const authToken = sessionStorage.getItem('token');
   const headers = {
     'Content-Type': 'application/json',
@@ -33,7 +39,7 @@ const getAuthors = async () => {
   };
 
   await axios
-      .get('/authors?per_page=15&page=1', {headers})
+      .get(`/authors?per_page=${itemsPerPage.value}&page=${currentPage.value}`, {headers})
       .then(res => {
         if (res.status === 200 || res.status === 201) {
           tableRows.value = res.data.data.map(author => ({
@@ -44,11 +50,13 @@ const getAuthors = async () => {
             date_of_birth: author.date_of_birth,
             photo_link: author.photo_link
           }));
+          totalItems.value = res.data.total;
         }
       })
       .catch(err => {
         console.log(err);
       })
+      .finally(() => loading.value = false);
 };
 const openAddAuthor = () => {
   showAddModal.value = true;
@@ -70,6 +78,10 @@ const closeEditModal = () => {
 const closeAddModal = () => {
   showAddModal.value = false;
 };
+const handleCurrentPageChange = (newPage) => {
+  currentPage.value = newPage;
+  getAuthors();
+};
 
 onMounted(() => {
   getAuthors();
@@ -81,6 +93,8 @@ onMounted(() => {
     <h2 class="main-title">{{ $t('label.authors') }}</h2>
     <button class="add-button" @click="openAddAuthor">{{ $t('buttons.add') }}</button>
     <SampleTable
+        v-loading="loading"
+        :element-loading-text="$t('loading')"
         :rows="tableRows"
         :headers="tableHeaders"
         @openEditModal="openEditModal"
@@ -103,6 +117,15 @@ onMounted(() => {
         @reloadData="getAuthors"
         :authorId="selectedAuthorId"
     />
+    <div class="pagination-block">
+      <el-pagination
+          background
+          layout="prev, pager, next"
+          :total="totalItems"
+          :current-page.sync="currentPage"
+          @current-change="handleCurrentPageChange"
+      />
+    </div>
   </div>
 </template>
 
@@ -129,6 +152,13 @@ onMounted(() => {
     &:hover {
       opacity: 0.9;
     }
+  }
+
+  .pagination-block {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 30px 0;
   }
 }
 </style>

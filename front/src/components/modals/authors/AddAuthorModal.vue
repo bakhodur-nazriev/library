@@ -11,10 +11,12 @@ const author = ref({
   date_of_birth: '',
   photo_link: ''
 });
+const loading = ref(false);
 const handleFileChange = (e) => {
   author.value.photo_link = e.target.files[0];
 };
 const addAuthor = async () => {
+  loading.value = true;
   const payload = getFormData(author.value);
   const authToken = sessionStorage.getItem('token');
   const headers = {
@@ -32,6 +34,7 @@ const addAuthor = async () => {
       .catch(err => {
         console.log(err);
       })
+      .finally(() => loading.value = false);
 };
 const emitClose = () => {
   emit('close');
@@ -39,7 +42,12 @@ const emitClose = () => {
 </script>
 
 <template>
-  <div class="modal-overlay" @click="emitClose">
+  <div
+      class="modal-overlay"
+      @click="emitClose"
+      v-loading="loading"
+      :element-loading-text="$t('loading')"
+  >
     <div class="modal" @click.stop>
       <ul class="input-list">
         <li class="input-list__item">

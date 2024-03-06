@@ -1,5 +1,5 @@
 <script setup>
-import {defineEmits, ref} from 'vue';
+import {defineEmits, onMounted, ref} from 'vue';
 import {getFormData} from "../../../utils.js";
 import axios from "axios";
 
@@ -18,6 +18,7 @@ const book = ref({
   file: ''
 });
 const loading = ref(false);
+const authors = ref([]);
 const handleFileChange = (e) => {
   book.value.file = e.target.files[0];
 };
@@ -43,9 +44,32 @@ const addBook = async () => {
       })
       .finally(() => loading.value = false);
 };
+const getAuthors = async () => {
+  const authToken = sessionStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Methods': '*',
+    'Authorization': `Bearer ${authToken}`
+  };
+
+  await axios
+      .get('/authors?per_page=15&page=1', {headers})
+      .then(res => {
+        if (res.status === 200 || res.status === 201) {
+          authors.value = res.data.data;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+};
 const emitCancel = () => {
   emit('cancel');
 };
+
+onMounted(() => {
+  getAuthors();
+});
 </script>
 
 <template>
@@ -61,11 +85,18 @@ const emitCancel = () => {
           />
         </li>
         <li class="input-list__item">
-          <input
-              type="text"
+          <el-select
               v-model="book.author"
+              multiple
               :placeholder="`${$t('titles.table_titles.books.author')}`"
-          />
+          >
+            <el-option
+                v-for="author in authors"
+                :key="author.id"
+                :label="author.initials"
+                :value="author.id"
+            ></el-option>
+          </el-select>
         </li>
         <li class="input-list__item">
           <input

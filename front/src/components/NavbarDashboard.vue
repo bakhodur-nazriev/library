@@ -5,7 +5,6 @@ import {onMounted, ref} from "vue";
 
 const user = ref(null);
 const getUser = async () => {
-
 }
 
 onMounted(() => {
@@ -23,17 +22,26 @@ onMounted(() => {
           </router-link>
         </li>
         <li class="list-item">
-          <router-link :to="`/${$i18n.locale}/dashboard/authors`">
+          <router-link
+              :to="`/${$i18n.locale}/dashboard/authors`"
+              :class="{'active-link': $route.path === `/${$i18n.locale}/dashboard/authors`}"
+          >
             {{ $t('label.authors') }}
           </router-link>
         </li>
         <li class="list-item">
-          <router-link :to="`/${$i18n.locale}/dashboard/books`">
+          <router-link
+              :to="`/${$i18n.locale}/dashboard/books`"
+              :class="{'active-link': $route.path === `/${$i18n.locale}/dashboard/books`}"
+          >
             {{ $t('label.books') }}
           </router-link>
         </li>
         <li class="list-item">
-          <router-link :to="`/${$i18n.locale}/dashboard/users`">
+          <router-link
+              :to="`/${$i18n.locale}/dashboard/users`"
+              :class="{'active-link': $route.path === `/${$i18n.locale}/dashboard/users`}"
+          >
             {{ $t('label.users') }}
           </router-link>
         </li>
@@ -88,6 +96,10 @@ onMounted(() => {
 
         &:hover {
           opacity: 0.5;
+        }
+
+        &.active-link {
+          color: var(--color-active-link);
         }
       }
     }

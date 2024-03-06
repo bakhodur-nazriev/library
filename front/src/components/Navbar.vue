@@ -10,15 +10,12 @@ const handleScroll = () => {
   }
 };
 
-// Добавляем слушатель события прокрутки
 window.addEventListener('scroll', handleScroll);
 
-// Вызываем обработчик прокрутки при монтировании компонента
 onMounted(() => {
   handleScroll();
 });
 
-// Очищаем слушатель при уничтожении компонента
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', handleScroll);
 });

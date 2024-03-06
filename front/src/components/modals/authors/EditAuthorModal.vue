@@ -5,6 +5,7 @@ import axios from "axios";
 
 const emit = defineEmits(['close', 'reloadData']);
 const props = defineProps(['selectedAuthor']);
+const loading = ref(false);
 
 const author = ref({
   initials: props.selectedAuthor.initials,
@@ -19,6 +20,7 @@ const handleFileChange = (e) => {
 };
 
 const editData = async () => {
+  loading.value = true;
   const payload = getFormData(author.value);
   const authToken = sessionStorage.getItem('token');
   const headers = {
@@ -37,6 +39,7 @@ const editData = async () => {
       .catch(err => {
         console.log(err);
       })
+      .finally(() => loading.value = false);
 };
 const emitClose = () => {
   emit('close');
@@ -44,7 +47,12 @@ const emitClose = () => {
 </script>
 
 <template>
-  <div class="modal-overlay" @click="emitClose">
+  <div
+      class="modal-overlay"
+      @click="emitClose"
+      v-loading="loading"
+      :element-loading-text="$t('loading')"
+  >
     <div class="modal" @click.stop>
       <h1 class="modal-title">{{ $t('label.edit_author') }}</h1>
       <ul class="input-list">
