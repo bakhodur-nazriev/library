@@ -1,23 +1,25 @@
 <script setup>
-import {defineEmits, onMounted, ref, computed} from 'vue';
+import {onMounted, ref} from 'vue';
 import {getFormData} from "../../../utils.js";
 import axios from "axios";
 
 const emit = defineEmits(['close']);
 const props = defineProps(['selectedBook']);
-
 const book = ref({
   title: props.selectedBook.title,
-  author_ids: Array.isArray(props.selectedBook.author_ids)
+  author_ids: (Array.isArray(props.selectedBook.author_ids)
       ? [...props.selectedBook.author_ids]
-      : [props.selectedBook.author_ids],
+      : props.selectedBook.author_ids
+          ? props.selectedBook.author_ids.split(',').map(author => parseInt(author.trim(), 10))
+          : []),
   description: props.selectedBook.description,
-  ISBN: props.selectedBook.ISBN,
+  ISBN: props.selectedBook.isbn,
   publisher: props.selectedBook.publisher,
   genre: props.selectedBook.genre,
   language: props.selectedBook.language,
   pages: props.selectedBook.pages,
-  published_at: props.selectedBook.published_at
+  published_at: props.selectedBook.published_at,
+  // cover_book: props.selectedBook.cover_image
 });
 const loading = ref(false);
 const authors = ref([]);
@@ -37,9 +39,18 @@ const formRules = {
     {pattern: /^[0-9]*$/, message: 'Pages must contain only numbers', trigger: 'blur'},
   ]
 };
+const formRef = ref(null);
 
 const editData = async () => {
+  const isValid = await formRef.value.validate();
+
+  if (!isValid) {
+    return;
+  }
+
   loading.value = true;
+  book.value.published_at = new Date(props.selectedBook.published_at).toLocaleDateString('en-CA');
+
   const payload = getFormData(book.value);
   const authToken = sessionStorage.getItem('token');
   const headers = {
@@ -72,7 +83,7 @@ const getAuthors = async () => {
       .get('/authors?per_page=15&page=1', {headers})
       .then(res => {
         if (res.status === 200 || res.status === 201) {
-          authors.value = res.data.data;
+          authors.value = Array.isArray(res.data.data) ? res.data.data : [];
         }
       })
       .catch(err => {
@@ -85,13 +96,19 @@ const emitClose = () => {
 
 onMounted(() => {
   getAuthors();
+  if (typeof props.selectedBook.author === 'string') {
+    const authorsArray = props.selectedBook.author.split(',').map(author => author.trim());
+    book.value.author = authorsArray
+        .filter(author => author !== '')
+        .map(author => isNaN(author) ? author : parseInt(author, 10));
+  }
 });
 </script>
 
 <template>
   <div class="modal-overlay" @click="emitClose">
     <el-form
-        ref="ruleFormRef"
+        ref="formRef"
         style="max-width: 600px"
         :model="book"
         :rules="formRules"
@@ -108,14 +125,14 @@ onMounted(() => {
       </el-form-item>
       <el-form-item
           :label="`${$t('titles.table_titles.books.author')}`"
-          prop="author_ids"
+          prop="author"
       >
-        <el-select multiple v-model="book.author_ids" clearable>
+        <el-select multiple v-model="book.author_ids" filterable clearable>
           <el-option
               v-for="author in authors"
               :key="author.id"
               :label="author.initials"
-              :value="author.id"
+              :value="parseInt(author.id, 10)"
           ></el-option>
         </el-select>
       </el-form-item>
@@ -149,14 +166,28 @@ onMounted(() => {
       >
         <el-input v-model="book.language"/>
       </el-form-item>
+<!--      <el-form-item>-->
+<!--        <el-upload-->
+<!--            class="upload-demo"-->
+<!--            action="/your-upload-endpoint"-->
+<!--            :on-success="handleSuccess"-->
+<!--            :before-upload="beforeUpload"-->
+<!--            :file-list="fileList"-->
+<!--            :auto-upload="false"-->
+<!--            v-model="book.cover_image"-->
+<!--        >-->
+<!--          <el-button size="small" type="primary">Choose File</el-button>-->
+<!--          <div slot="tip" class="el-upload__tip">Only jpg/png files allowed</div>-->
+<!--        </el-upload>-->
+<!--      </el-form-item>-->
       <el-form-item
           :label="`${$t('titles.table_titles.books.publish_date')}`"
           prop="published_at"
       >
-        <el-date-picker format="D.MM.YYYY" v-model="book.published_at" type="date"/>
+        <el-date-picker format="YYYY-MM-DD" v-model="book.published_at" type="date"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="editData">{{ $t('buttons.save') }}</el-button>
+        <el-button type="primary" :disabled="loading.value" @click="editData">{{ $t('buttons.save') }}</el-button>
         <el-button @click="emitClose">{{ $t('buttons.cancel') }}</el-button>
       </el-form-item>
     </el-form>
@@ -185,7 +216,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 10px;
 
   &-title {
     font-size: 26px;

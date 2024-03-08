@@ -2,10 +2,18 @@
 import {onMounted, ref} from "vue";
 import FilterIcon from "../components/icons/FilterIcon.vue";
 import axios from "axios";
+import LoupeIcon from "../components/icons/LoupeIcon.vue";
+import SampleBook from "../components/SampleBook.vue";
 
 const books = ref(null);
+const search = ref('');
+const currentPage = ref(1);
+const itemsPerPage = ref(12);
+const totalItems = ref(0);
+const loading = ref(false);
 
 const getBooks = async () => {
+  loading.value = true;
   const authToken = sessionStorage.getItem('token');
   const headers = {
     'Content-Type': 'application/json',
@@ -13,17 +21,22 @@ const getBooks = async () => {
   };
 
   await axios
-      .get('/books/?per_page=6&page=1&order=desc', {headers})
+      .get(`/books/?per_page=${itemsPerPage.value}&page=${currentPage.value}&order=desc`, {headers})
       .then(res => {
-        console.log(res.data.data);
         if (res.status === 200 || res.status === 201) {
           books.value = res.data.data;
+          totalItems.value = res.data.total;
         }
       })
       .catch(err => {
         console.log(err);
       })
+      .finally(() => loading.value = false);
 }
+const handleCurrentPageChange = (newPage) => {
+  currentPage.value = newPage;
+  getBooks();
+};
 
 onMounted(() => {
   getBooks();
@@ -31,7 +44,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="container">
+  <div
+      class="container"
+      v-loading.fullscreen.lock="loading"
+      element-loading-background="rgba(0, 0, 0, 0.7)"
+      :element-loading-text="$t('loading')"
+  >
     <section class="header">
       <img src="../assets/slide4.jpg" alt="">
       <div class="title-bar">
@@ -41,7 +59,7 @@ onMounted(() => {
         </ul>
       </div>
       <section class="main-title_section">
-        <h1>{{ $t('label.books_latest') }}</h1>
+        <h1>{{ $t('titles.banner.books') }}</h1>
       </section>
     </section>
 
@@ -66,33 +84,38 @@ onMounted(() => {
           <li class="filter-list_item">{{ $t('titles.filter.books.items.geography') }}</li>
           <li class="filter-list_item">{{ $t('titles.filter.books.items.technology') }}</li>
         </ul>
-        <button>{{ $t('buttons.see_all') }}</button>
+        <button class="filter-all_btn">{{ $t('buttons.see_all') }}</button>
       </aside>
 
-
       <div class="books-section">
-        <h4 class="main-right-side-title">Search Box</h4>
+        <div class="search-box_section">
+          <h4 class="main-right-side-title">{{ $t('titles.books.search_box') }}</h4>
+          <div class="search-box">
+            <input
+                type="search"
+                :placeholder="$t('placeholders.search_book')"
+                v-model="search"
+            />
+            <button class="search-btn">
+              <LoupeIcon/>
+            </button>
+          </div>
+        </div>
 
-        <section>
-          <ul class="books-list">
-            <li v-for="(book, i) in books" :key="i" class="books-list_item">
-              <img :src="book.img" :alt="book.name">
-              <div class="right-block">
-                <h3 class="book-name">{{ book.title }}</h3>
-                <h4 class="book-author">{{ $t('label.authors') }}: {{ book.author }}</h4>
-
-                <p class="book-description">{{ book.description }}</p>
-
-                <button
-                    type="button"
-                    class="read-more_btn"
-                >
-                  {{ $t('buttons.read_more') }}
-                </button>
-              </div>
-            </li>
-          </ul>
+        <section class="book-block">
+          <SampleBook :books="books"/>
         </section>
+
+        <div class="pagination-block">
+          <el-pagination
+              class="custom-pagination"
+              background
+              layout="prev, pager, next"
+              :total="totalItems"
+              :current-page.sync="currentPage"
+              @current-change="handleCurrentPageChange"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -121,7 +144,7 @@ onMounted(() => {
   .main-title_section {
     position: absolute;
     left: 0;
-    top: 45%;
+    top: 43%;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -146,7 +169,7 @@ onMounted(() => {
     max-width: 400px;
     width: 100%;
     color: var(--color-white);
-    top: 55%;
+    top: 58%;
     -webkit-transform: translateY(-50%);
     transform: translateY(-50%);
     z-index: 100;
@@ -176,12 +199,16 @@ onMounted(() => {
 
   .main-content {
     display: flex;
+    justify-content: center;
 
     .sidebar {
-      max-width: 200px;
+      width: 200px;
       padding: 0 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
 
-      button {
+      .filter-all_btn {
         color: var(--color-white);
         background-color: var(--color-primary);
         padding: 10px;
@@ -218,12 +245,12 @@ onMounted(() => {
           font-size: 18px;
           color: var(--color-gray);
           font-weight: normal;
-          margin-top: 0;
-          margin-bottom: 15px;
+          margin: 0;
         }
       }
 
       hr {
+        width: 100%;
         border: 0;
         border-top: 1px solid #eee;
       }
@@ -240,9 +267,24 @@ onMounted(() => {
         &_item {
           cursor: pointer;
           transition: all 0.3s ease 0s;
+          display: flex;
+          align-items: center;
+
+          &::before {
+            margin-right: 10px;
+            content: '';
+            width: 10px;
+            height: 10px;
+            background-color: var(--color-gray);
+            transition: all 0.3s ease 0s;
+          }
 
           &:hover {
             color: var(--color-active-link);
+          }
+
+          &:hover::before {
+            background-color: var(--color-active-link);
           }
         }
       }
@@ -258,63 +300,62 @@ onMounted(() => {
         font-weight: normal;
       }
 
-      .books-list {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        padding: 0;
-        margin: 0;
-        list-style: none;
-        width: 100%;
-        gap: 30px;
+      .search-box_section {
+        margin-bottom: 40px;
 
-        &_item {
+        .search-box {
           display: flex;
-          padding: 20px 25px;
+        }
+
+        input {
+          border-top-left-radius: 5px;
+          border-bottom-left-radius: 5px;
+          height: 40px;
           border: 2px solid #d6d6d6;
-          gap: 15px;
-          border-radius: 5px;
-          max-width: 410px;
-          transition: all 0.3s ease 0s;
+          border-right: 0;
+          padding: 0 10px;
+          width: 100%;
+          font-family: inherit;
 
-          &:hover {
-            border: 2px solid var(--color-active-link);
+          &:focus {
+            border-color: #66afe9;
+            outline: 0;
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
           }
+        }
 
-          .right-block {
-            display: flex;
-            flex-direction: column;
-          }
+        .search-btn {
+          background-color: var(--color-primary);
+          border-top-right-radius: 5px;
+          border-bottom-right-radius: 5px;
+          height: 40px;
+          min-width: 80px;
+          padding: 5px;
+          border: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
 
-          .read-more_btn {
-            background-color: var(--color-primary);
+          svg {
             color: var(--color-white);
-            border-radius: 5px;
-            border: none;
-            padding: 10px 15px;
-            cursor: pointer;
-            width: max-content;
           }
+        }
+      }
 
-          img {
-            width: 150px;
-          }
+      .pagination-block {
+        display: flex;
+        justify-content: end;
+        margin: 40px 0;
 
-          .book-name {
-            font-size: 18px;
-            margin: 0;
-          }
 
-          .book-author {
-            margin: 0;
-            font-size: 14px;
-          }
-
-          .book-description {
-            flex-grow: 1;
-          }
+        .custom-pagination {
+          --el-color-primary: var(--color-primary);
+          --el-pagination-border-radius: 5px;
+          --el-pagination-button-bg-color: #d6d6d6;
         }
       }
     }
   }
 }
+
 </style>

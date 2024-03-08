@@ -88,7 +88,7 @@ const getBooks = async () => {
           published_at: book.published_at,
           create_at: getFormattedDate(book.created_at)
         }));
-        console.log(res.data.data);
+
         totalItems.value = res.data.total;
       })
       .catch(err => {

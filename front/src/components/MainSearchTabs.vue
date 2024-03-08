@@ -54,6 +54,7 @@ let currentTab = ref(0);
   width: 500px;
   z-index: 15;
   position: absolute;
+  transform: translateY(-50%);
   top: 220px;
 
   .tabs {
@@ -117,10 +118,11 @@ let currentTab = ref(0);
       }
 
       input {
+        font-family: inherit;
         outline: none;
         height: 40px;
         padding: 6px 12px;
-        font-size: 13px;
+        font-size: 12px;
         line-height: 1.42857143;
         color: #555;
         background-color: #fff;

@@ -86,6 +86,9 @@
           "technology": "Технология"
         }
       }
+    },
+    "books": {
+      "search_box": "Поисковая строка"
     }
   },
   "subtitles": {
@@ -129,7 +132,9 @@
     "add_user": "Добавить пользователья",
     "edit_user": "Езменить пользователья",
     "books_latest": "Новые книги",
-    "authors_latest": "Новые авторы"
+    "authors_latest": "Новые авторы",
+    "book_empty_cover": "Без обложки",
+    "author_empty_cover": "Без фото"
   },
   "notifications": {
     "remove_message": "Вы действительно хотите удалить этот запись ?"

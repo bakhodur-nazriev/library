@@ -1,5 +1,5 @@
 <script setup>
-import {defineEmits, onMounted, ref} from 'vue';
+import {onMounted, ref} from 'vue';
 import {getFormData} from "../../../utils.js";
 import axios from "axios";
 
@@ -60,7 +60,7 @@ const getAuthors = async () => {
         }
       })
       .catch(err => {
-        console.log(err);
+        console.npm (err);
       })
 };
 const emitCancel = () => {
