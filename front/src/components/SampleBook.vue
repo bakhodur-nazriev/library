@@ -1,56 +1,56 @@
 <script setup>
 const props = defineProps(['books']);
 import {ref} from 'vue';
-import pdfjs from '/public/lib/build/pdf.mjs'
+// import pdfjs from '/public/lib/build/pdf.mjs'
 
-const isPdfModalOpen = ref(false);
-const pdfCanvasRef = ref(null);
-let pdfDocument = null;
-let pdfPage = null;
-
-const openPdf = async (pdfFile) => {
-  try {
-    // Открытие PDF-файла
-    const loadingTask = pdfjs.getDocument(pdfFile);
-    const pdf = await loadingTask.promise;
-
-    // Отображение первой страницы
-    const pageNumber = 1;
-    pdfDocument = pdf;
-    pdfPage = await pdf.getPage(pageNumber);
-
-    // Отображение страницы на холсте
-    renderPage();
-
-    // Открываем модальное окно
-    isPdfModalOpen.value = true;
-  } catch (error) {
-    console.error('Error opening PDF:', error);
-  }
-};
-
-const renderPage = async () => {
-  const canvas = pdfCanvasRef.value;
-  const context = canvas.getContext('2d');
-
-  const viewport = pdfPage.getViewport({scale: 1.5});
-  canvas.width = viewport.width;
-  canvas.height = viewport.height;
-
-  const renderContext = {
-    canvasContext: context,
-    viewport: viewport,
-  };
-
-  await pdfPage.render(renderContext);
-};
-
-const closePdfModal = () => {
-  // Закрываем модальное окно и очищаем состояние PDF
-  isPdfModalOpen.value = false;
-  pdfDocument = null;
-  pdfPage = null;
-};
+// const isPdfModalOpen = ref(false);
+// const pdfCanvasRef = ref(null);
+// let pdfDocument = null;
+// let pdfPage = null;
+//
+// const openPdf = async (pdfFile) => {
+//   try {
+//     // Открытие PDF-файла
+//     const loadingTask = pdfjs.getDocument(pdfFile);
+//     const pdf = await loadingTask.promise;
+//
+//     // Отображение первой страницы
+//     const pageNumber = 1;
+//     pdfDocument = pdf;
+//     pdfPage = await pdf.getPage(pageNumber);
+//
+//     // Отображение страницы на холсте
+//     renderPage();
+//
+//     // Открываем модальное окно
+//     isPdfModalOpen.value = true;
+//   } catch (error) {
+//     console.error('Error opening PDF:', error);
+//   }
+// };
+//
+// const renderPage = async () => {
+//   const canvas = pdfCanvasRef.value;
+//   const context = canvas.getContext('2d');
+//
+//   const viewport = pdfPage.getViewport({scale: 1.5});
+//   canvas.width = viewport.width;
+//   canvas.height = viewport.height;
+//
+//   const renderContext = {
+//     canvasContext: context,
+//     viewport: viewport,
+//   };
+//
+//   await pdfPage.render(renderContext);
+// };
+//
+// const closePdfModal = () => {
+//   // Закрываем модальное окно и очищаем состояние PDF
+//   isPdfModalOpen.value = false;
+//   pdfDocument = null;
+//   pdfPage = null;
+// };
 </script>
 
 <template>
@@ -73,21 +73,21 @@ const closePdfModal = () => {
         <button
             type="button"
             class="read-more_btn"
-            @click="openPdf(book.file)"
+
         >
           {{ $t('buttons.read_more') }}
         </button>
       </div>
     </li>
 
-    <el-dialog :visible.sync="isPdfModalOpen" width="80%">
-      <div>
-        <canvas ref="pdfCanvas"></canvas>
-      </div>
-      <span slot="footer">
-        <el-button @click="closePdfModal">{{ $t('buttons.close') }}</el-button>
-      </span>
-    </el-dialog>
+<!--    <el-dialog :visible.sync="isPdfModalOpen" width="80%">-->
+<!--      <div>-->
+<!--        <canvas ref="pdfCanvas"></canvas>-->
+<!--      </div>-->
+<!--      <span slot="footer">-->
+<!--        <el-button @click="closePdfModal">{{ $t('buttons.close') }}</el-button>-->
+<!--      </span>-->
+<!--    </el-dialog>-->
   </ul>
 </template>
 
