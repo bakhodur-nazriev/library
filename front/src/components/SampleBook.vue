@@ -15,7 +15,7 @@ const getBook = async (id) => {
   };
 
   await axios
-      .get('/books/download-link/' + id, {headers})
+      .get('/books/download/' + id, {headers})
       .then(res => {
         console.log(res.data);
         if (res.status === 200 || res.status === 201) {
