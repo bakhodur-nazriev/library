@@ -114,12 +114,14 @@
     "save": "Save",
     "cancel": "Cancel",
     "read_more": "Read more...",
-    "see_all": "See All"
+    "see_all": "See All",
+    "choose_file": "Choose file"
   },
   "label": {
     "create_account": "Create account",
     "have_account": "You have an account ?",
     "forgot_password": "Forgot password ?",
+    "author": "Author",
     "authors": "Authors",
     "books": "Books",
     "publisher": "Publisher",

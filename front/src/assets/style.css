@@ -19,7 +19,7 @@ body {
     --color-seashell: #0e0e0f;
     --color-toggle: #f1f1f1;
     --color-active-link: #fec826;
-    --el-pagination-border-radius: 10px;
+    --el-color-primary: var(--color-primary) !important;
 
     ::-webkit-scrollbar-track {
         background-color: var(--color-toggle);

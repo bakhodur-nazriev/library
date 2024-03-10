@@ -60,7 +60,7 @@ const getAuthors = async () => {
         }
       })
       .catch(err => {
-        console.npm (err);
+        console.npm(err);
       })
 };
 const emitCancel = () => {
@@ -89,6 +89,8 @@ onMounted(() => {
               v-model="book.author"
               multiple
               :placeholder="`${$t('titles.table_titles.books.author')}`"
+              filterable
+              clearable
           >
             <el-option
                 v-for="author in authors"

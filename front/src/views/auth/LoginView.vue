@@ -12,6 +12,8 @@ const email = ref('');
 const password = ref('');
 const errorMessage = ref('');
 const showError = ref(false);
+const loading = ref(false);
+const rules = ref([]);
 
 const togglePasswordVisibility = () => {
   isPasswordVisible.value = !isPasswordVisible.value

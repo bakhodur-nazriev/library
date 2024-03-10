@@ -1,56 +1,33 @@
 <script setup>
-const props = defineProps(['books']);
-import {ref} from 'vue';
-// import pdfjs from '/public/lib/build/pdf.mjs'
+import {ref} from "vue";
+import axios from "axios";
 
-// const isPdfModalOpen = ref(false);
-// const pdfCanvasRef = ref(null);
-// let pdfDocument = null;
-// let pdfPage = null;
-//
-// const openPdf = async (pdfFile) => {
-//   try {
-//     // Открытие PDF-файла
-//     const loadingTask = pdfjs.getDocument(pdfFile);
-//     const pdf = await loadingTask.promise;
-//
-//     // Отображение первой страницы
-//     const pageNumber = 1;
-//     pdfDocument = pdf;
-//     pdfPage = await pdf.getPage(pageNumber);
-//
-//     // Отображение страницы на холсте
-//     renderPage();
-//
-//     // Открываем модальное окно
-//     isPdfModalOpen.value = true;
-//   } catch (error) {
-//     console.error('Error opening PDF:', error);
-//   }
-// };
-//
-// const renderPage = async () => {
-//   const canvas = pdfCanvasRef.value;
-//   const context = canvas.getContext('2d');
-//
-//   const viewport = pdfPage.getViewport({scale: 1.5});
-//   canvas.width = viewport.width;
-//   canvas.height = viewport.height;
-//
-//   const renderContext = {
-//     canvasContext: context,
-//     viewport: viewport,
-//   };
-//
-//   await pdfPage.render(renderContext);
-// };
-//
-// const closePdfModal = () => {
-//   // Закрываем модальное окно и очищаем состояние PDF
-//   isPdfModalOpen.value = false;
-//   pdfDocument = null;
-//   pdfPage = null;
-// };
+const props = defineProps(['books']);
+const selectedBook = ref(null);
+
+const getBook = async (id) => {
+  const authToken = sessionStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': '*',
+    "Authorization": `Bearer ${authToken}`
+  };
+
+  await axios
+      .get('/books/download-link/' + id, {headers})
+      .then(res => {
+        console.log(res.data);
+        if (res.status === 200 || res.status === 201) {
+          const downloadLink = res.data.file_path;
+          window.open(downloadLink, '_blank');
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+}
+
 </script>
 
 <template>
@@ -62,7 +39,8 @@ import {ref} from 'vue';
       </div>
       <div class="right-block">
         <h3 class="book-name">{{ book.title }}</h3>
-        <h4 class="book-author">{{ $t('label.authors') }}:
+        <h4 class="book-author">
+          {{ book.authors.length > 1 ? $t('label.authors') : $t('label.author') }}:
           <span v-for="(author, index) in book.authors" :key="index">
             {{ author.initials }}{{ index < book.authors.length - 1 ? ', ' : '' }}
           </span>
@@ -70,28 +48,39 @@ import {ref} from 'vue';
 
         <p class="book-description">{{ book.description }}</p>
 
+        {{ book.link }}
         <button
             type="button"
             class="read-more_btn"
-
+            @click="getBook(book.id)"
         >
           {{ $t('buttons.read_more') }}
         </button>
       </div>
     </li>
-
-<!--    <el-dialog :visible.sync="isPdfModalOpen" width="80%">-->
-<!--      <div>-->
-<!--        <canvas ref="pdfCanvas"></canvas>-->
-<!--      </div>-->
-<!--      <span slot="footer">-->
-<!--        <el-button @click="closePdfModal">{{ $t('buttons.close') }}</el-button>-->
-<!--      </span>-->
-<!--    </el-dialog>-->
+    <!--    <PDFViewer :pdf-file="selectedBook"/>-->
   </ul>
 </template>
 
 <style scoped lang="scss">
+.custom-file-upload {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+  background: #4A8FED;
+  padding: 10px;
+  color: #fff;
+  font: inherit;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+input[type="file"] {
+  display: none;
+}
+
 .books-list {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

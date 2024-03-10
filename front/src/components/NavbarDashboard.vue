@@ -17,8 +17,8 @@ onMounted(() => {
     <nav class="sidebar">
       <ul class="list">
         <li class="list-item">
-          <router-link :to="`/${$i18n.locale}/dashboard`">
-            <img src="../assets/logo.png" alt="Логотип">
+          <router-link :to="`/${$i18n.locale}`">
+            <img class="logo-img" src="../assets/main-logo-1.png" alt="Логотип">
           </router-link>
         </li>
         <li class="list-item">
@@ -93,6 +93,11 @@ onMounted(() => {
         color: var(--color-white);
         font-size: 14px;
         font-weight: 500;
+
+        .logo-img {
+          max-width: 180px;
+          margin-bottom: 10px;
+        }
 
         &:hover {
           opacity: 0.5;

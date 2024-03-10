@@ -106,7 +106,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="modal-overlay" @click="emitClose">
+  <div
+      class="modal-overlay"
+      @click="emitClose"
+      element-loading-background="rgba(0, 0, 0, 0.7)"
+      :element-loading-text="$t('loading')"
+  >
     <el-form
         ref="formRef"
         style="max-width: 600px"
@@ -114,10 +119,9 @@ onMounted(() => {
         :rules="formRules"
         status-icon
         label-width="auto"
-        class="modal demo-ruleForm"
+        class="modal"
         label-position="top"
         @click.stop
-        :element-loading-text="$t('loading')"
     >
       <h1 class="modal-title">{{ $t('label.edit_book') }}</h1>
       <el-form-item :label="`${$t('titles.table_titles.books.name')}`" prop="title">
@@ -166,20 +170,20 @@ onMounted(() => {
       >
         <el-input v-model="book.language"/>
       </el-form-item>
-<!--      <el-form-item>-->
-<!--        <el-upload-->
-<!--            class="upload-demo"-->
-<!--            action="/your-upload-endpoint"-->
-<!--            :on-success="handleSuccess"-->
-<!--            :before-upload="beforeUpload"-->
-<!--            :file-list="fileList"-->
-<!--            :auto-upload="false"-->
-<!--            v-model="book.cover_image"-->
-<!--        >-->
-<!--          <el-button size="small" type="primary">Choose File</el-button>-->
-<!--          <div slot="tip" class="el-upload__tip">Only jpg/png files allowed</div>-->
-<!--        </el-upload>-->
-<!--      </el-form-item>-->
+      <!--      <el-form-item>-->
+      <!--        <el-upload-->
+      <!--            class="upload-demo"-->
+      <!--            action="/your-upload-endpoint"-->
+      <!--            :on-success="handleSuccess"-->
+      <!--            :before-upload="beforeUpload"-->
+      <!--            :file-list="fileList"-->
+      <!--            :auto-upload="false"-->
+      <!--            v-model="book.cover_image"-->
+      <!--        >-->
+      <!--          <el-button size="small" type="primary">Choose File</el-button>-->
+      <!--          <div slot="tip" class="el-upload__tip">Only jpg/png files allowed</div>-->
+      <!--        </el-upload>-->
+      <!--      </el-form-item>-->
       <el-form-item
           :label="`${$t('titles.table_titles.books.publish_date')}`"
           prop="published_at"
@@ -228,28 +232,6 @@ onMounted(() => {
     list-style: none;
     padding: 0;
     margin: 0;
-  }
-
-  .input-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    width: inherit;
-
-    &__item {
-      input {
-        background-color: var(--color-white);
-        border-radius: 8px;
-        border: 1px solid var(--color-gray);
-        box-sizing: border-box;
-        color: var(--color-gray);
-        font-size: 14px;
-        outline: none;
-        padding: 12px 15px;
-        transition: border-color .2s cubic-bezier(.645, .045, .355, 1);
-        width: 100%;
-      }
-    }
   }
 
   .button-list {

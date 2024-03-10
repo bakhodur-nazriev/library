@@ -119,6 +119,7 @@ onMounted(() => {
     />
     <div class="pagination-block">
       <el-pagination
+          class="custom-pagination"
           background
           layout="prev, pager, next"
           :total="totalItems"
@@ -158,7 +159,13 @@ onMounted(() => {
     display: flex;
     justify-content: center;
     width: 100%;
-    margin: 30px 0;
+    margin: 40px 0;
+
+    .custom-pagination {
+      --el-color-primary: var(--color-primary);
+      --el-pagination-border-radius: 5px;
+      --el-pagination-button-bg-color: #d6d6d6;
+    }
   }
 }
 </style>

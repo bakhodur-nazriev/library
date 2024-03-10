@@ -48,53 +48,52 @@ const emitClose = () => {
       v-loading="loading"
       :element-loading-text="$t('loading')"
   >
-    <div class="modal" @click.stop>
-      <ul class="input-list">
-        <li class="input-list__item">
-          <input
-              v-model="author.initials"
-              type="text"
-              :placeholder="`${$t('titles.table_titles.authors.name')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              v-model="author.nationality"
-              type="text"
-              :placeholder="`${$t('titles.table_titles.authors.nationality')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              v-model="author.biography"
-              type="text"
-              :placeholder="`${$t('titles.table_titles.authors.biography')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              v-model="author.date_of_birth"
-              type="date"
-              :placeholder="`${$t('titles.table_titles.authors.date_of_birth')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              @change="handleFileChange"
-              type="file"
-              :placeholder="`${$t('titles.table_titles.authors.photo_link')}`"
-          />
-        </li>
-      </ul>
-      <ul class="button-list">
-        <li class="button-list__item">
-          <button @click="addAuthor">{{ $t('buttons.save') }}</button>
-        </li>
-        <li class="button-list__item">
-          <button @click="emitClose">{{ $t('buttons.cancel') }}</button>
-        </li>
-      </ul>
-    </div>
+    <el-form
+        label-position="top"
+        ref="formRef"
+        style="max-width: 600px;"
+        status-icon
+        :model="author"
+        class="modal"
+        @click.stop
+    >
+      <el-form-item :label="`${$t('titles.table_titles.authors.name')}`" prop="initials">
+        <el-input v-model="author.initials"/>
+      </el-form-item>
+      <el-form-item :label="`${$t('titles.table_titles.authors.nationality')}`" prop="nationality">
+        <el-select
+            v-model="author.nationality"
+            multiple
+            :placeholder="`${$t('titles.table_titles.authors.nationality')}`"
+            filterable
+            clearable
+        >
+          <el-option
+              v-for="author in authors"
+              :key="author.id"
+              :label="author.initials"
+              :value="author.id"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item :label="`${$t('titles.table_titles.authors.biography')}`" prop="biography">
+        <el-input type="textarea" v-model="author.biography"/>
+      </el-form-item>
+      <el-form-item :label="`${$t('titles.table_titles.authors.date_of_birth')}`" prop="date_of_birth">
+        <el-date-picker format="YYYY-MM-DD" v-model="author.date_of_birth" type="date"/>
+      </el-form-item>
+      <el-form-item :label="`${$t('titles.table_titles.authors.photo_link')}`">
+        <el-upload @change="handleFileChange">
+          <el-button size="small" type="primary"></el-button>
+          <div slot="tip" class="el-upload__tip">Only jpg/png files allowed</div>
+        </el-upload>
+      </el-form-item>
+
+      <el-form-item>
+        <el-button @click="addAuthor" :disabled="loading.value" type="primary">{{ $t('buttons.save') }}</el-button>
+        <el-button @click="emitClose">{{ $t('buttons.cancel') }}</el-button>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 
@@ -117,56 +116,6 @@ const emitClose = () => {
   border-radius: 12px;
   width: 400px;
   padding: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   gap: 20px;
-
-  .input-list,
-  .button-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .input-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    width: inherit;
-
-    &__item {
-      input {
-        background-color: var(--color-white);
-        border-radius: 8px;
-        border: 1px solid var(--color-gray);
-        box-sizing: border-box;
-        color: var(--color-gray);
-        font-size: 14px;
-        outline: none;
-        padding: 12px 15px;
-        transition: border-color .2s cubic-bezier(.645, .045, .355, 1);
-        width: 100%;
-      }
-    }
-  }
-
-  .button-list {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-
-    &__item {
-      button {
-        font-size: 16px;
-        border: none;
-        background-color: var(--color-primary);
-        border-radius: 8px;
-        padding: 8px 15px;
-        color: var(--color-white);
-        cursor: pointer;
-      }
-    }
-  }
 }
 </style>

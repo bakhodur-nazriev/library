@@ -114,13 +114,15 @@
     "save": "Сохранить",
     "cancel": "Отмена",
     "read_more": "Читать далее...",
-    "see_all": "Просмотреть все"
+    "see_all": "Просмотреть все",
+    "choose_file": "Выбери файл"
   },
   "label": {
     "create_account": "Создать аккаунт",
     "have_account": "У вас есть аккаунт ?",
     "forgot_password": "Забыл пароль ?",
     "home": "Главная",
+    "author": "Автор",
     "authors": "Авторы",
     "books": "Книги",
     "publisher": "Издатель",
