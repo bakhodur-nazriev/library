@@ -48,7 +48,6 @@ const getBook = async (id) => {
 
         <p class="book-description">{{ book.description }}</p>
 
-        {{ book.link }}
         <button
             type="button"
             class="read-more_btn"

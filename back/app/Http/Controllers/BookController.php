@@ -12,6 +12,7 @@ use App\Services\BookService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class BookController extends Controller
@@ -50,12 +51,12 @@ class BookController extends Controller
      */
     public function update(BookUpdateRequest $request, int $id): JsonResponse
     {
-       return $this->bookService->update($request->all(), $request->file('file'), $id);
+        return $this->bookService->update($request->all(), $request->file('file'), $id);
     }
 
     public function detachFromBookTheAuthor(int $bookId, int $authorId): JsonResponse
     {
-        $book =  Book::query()
+        $book = Book::query()
             ->find($bookId);
         $book->authors()->detach(Author::query()->find($authorId));
 
@@ -64,7 +65,7 @@ class BookController extends Controller
 
     public function detachFromAuthorTheBook(int $authorId, int $bookId): JsonResponse
     {
-        $author =  Author::query()
+        $author = Author::query()
             ->find($authorId);
         $author->books()->detach(Book::query()->find($bookId));
 
@@ -94,10 +95,8 @@ class BookController extends Controller
         return response()->json(['error' => 'Book fetching exception'], 400);
     }
 
-    public function download(int $id): BinaryFileResponse|JsonResponse
+    public function download(int $id)
     {
-       return $this->bookService->downloadFile($id);
+        return $this->bookService->downloadFile($id);
     }
-
-
 }

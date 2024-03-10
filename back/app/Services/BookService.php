@@ -8,15 +8,15 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Illuminate\Support\Facades\Storage;
 
 class BookService
 {
-
     public function get(array $attributes): JsonResponse
     {
-        $perPage = $attributes['per_page']?? 10;
-        $page = $attributes['page']?? 1;
-        $order = $attributes['order']?? 'asc';
+        $perPage = $attributes['per_page'] ?? 10;
+        $page = $attributes['page'] ?? 1;
+        $order = $attributes['order'] ?? 'asc';
 
         $authors = Book::with('authors')
             ->orderBy('created_at', $order)
@@ -126,21 +126,18 @@ class BookService
         throw new Exception('updating book type mismatch exception');
     }
 
-    public function downloadFile(int $id): BinaryFileResponse|JsonResponse
+    public function downloadFile(int $id)
     {
-        $book = Book::query()
-            ->find($id);
+        $book = Book::findOrFail($id);
 
         if ($book instanceof Book) {
-            $filePath = config('proj_env.STORAGE_PATH') . $book->link;
+            $filePath = storage_path('app/' . $book->link);
 
-            if (!file_exists($filePath)) {
-                abort(404, 'File not found.');
+            if (!Storage::exists($filePath)) {
+                return response()->json(['file_path' => $filePath]);
+            } else {
+                return response()->json(['error' => 'File not found'], 404);
             }
-
-            $fileSize = filesize($filePath);
-
-            return response()->download($filePath, $book->title . '.pdf', ['Content-Length' => $fileSize]);
         }
 
         return response()->json(['error' => 'Book fetching exception'], 404);
