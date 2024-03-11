@@ -177,7 +177,7 @@ class BookService
             if ($file?->isValid()){
                 $this->uploadFile($file, $book);
             } else {
-                Log::info('Book service update:pdf was not uploaded');
+                Log::info(['Book service update:pdf was not uploaded' => $file?->isValid()]);
             }
             $this->addAuthors($attributes, $book);
 
