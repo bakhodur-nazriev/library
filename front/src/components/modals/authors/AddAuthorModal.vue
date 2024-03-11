@@ -62,30 +62,33 @@ const emitClose = () => {
       </el-form-item>
       <el-form-item :label="`${$t('titles.table_titles.authors.nationality')}`" prop="nationality">
         <el-select
-            v-model="author.nationality"
             multiple
+            v-model="author.nationality"
             :placeholder="`${$t('titles.table_titles.authors.nationality')}`"
             filterable
             clearable
         >
-          <el-option
-              v-for="author in authors"
-              :key="author.id"
-              :label="author.initials"
-              :value="author.id"
-          ></el-option>
+          <!--          <el-option-->
+          <!--              v-for="author in nationalities"-->
+          <!--              :key="author.id"-->
+          <!--              :label="author.initials"-->
+          <!--              :value="author.id"-->
+          <!--          ></el-option>-->
         </el-select>
       </el-form-item>
       <el-form-item :label="`${$t('titles.table_titles.authors.biography')}`" prop="biography">
         <el-input type="textarea" v-model="author.biography"/>
       </el-form-item>
-      <el-form-item :label="`${$t('titles.table_titles.authors.date_of_birth')}`" prop="date_of_birth">
-        <el-date-picker format="YYYY-MM-DD" v-model="author.date_of_birth" type="date"/>
+      <el-form-item
+          :label="`${$t('titles.table_titles.authors.date_of_birth')}`"
+          prop="date_of_birth"
+      >
+        <el-date-picker v-model="author.date_of_birth" type="date" format="YYYY-MM-DD"/>
       </el-form-item>
       <el-form-item :label="`${$t('titles.table_titles.authors.photo_link')}`">
         <el-upload @change="handleFileChange">
-          <el-button size="small" type="primary"></el-button>
-          <div slot="tip" class="el-upload__tip">Only jpg/png files allowed</div>
+          <el-button size="small" type="primary">{{ $t('titles.table_titles.authors.photo_link') }}</el-button>
+          <div slot="tip" class="el-upload__tip">{{ $t('validation.only_jpg_png_files_allowed') }}</div>
         </el-upload>
       </el-form-item>
 

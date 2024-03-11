@@ -140,5 +140,8 @@
   },
   "notifications": {
     "remove_message": "Вы действительно хотите удалить этот запись ?"
+  },
+  "validation": {
+    "only_jpg_png_files_allowed": "Разрешены только файлы jpg/png."
   }
 }

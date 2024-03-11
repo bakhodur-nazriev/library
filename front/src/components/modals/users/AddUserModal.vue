@@ -9,6 +9,7 @@ const user = ref({
   email: '',
   password: ''
 });
+const alert = ref(null);
 const addUser = async () => {
   const payload = getFormData(user.value);
 
@@ -20,6 +21,7 @@ const addUser = async () => {
   await axios
       .post('/admin/users', payload, {headers})
       .then(res => {
+        console.log(res);
         if (res.status === 200 || res.status === 201) {
           emit('reloadData', true);
           emitCancel();
@@ -27,6 +29,7 @@ const addUser = async () => {
       })
       .catch(err => {
         console.log(err);
+        alert.value = err.response.data.message;
       })
 };
 const emitCancel = () => {
@@ -55,7 +58,7 @@ const emitCancel = () => {
         </li>
         <li class="input-list__item">
           <input
-              type="text"
+              type="password"
               v-model="user.password"
               :placeholder="`${$t('titles.table_titles.users.password')}`"
           />
@@ -70,6 +73,7 @@ const emitCancel = () => {
         </li>
       </ul>
     </div>
+    <el-alert v-if="alert" :title="alert" type="error" effect="dark"/>
   </div>
 </template>
 
@@ -147,6 +151,19 @@ const emitCancel = () => {
         cursor: pointer;
       }
     }
+  }
+}
+
+.el-alert {
+  position: absolute;
+  bottom: 10px;
+  width: max-content;
+
+
+  .el-alert__content {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
   }
 }
 </style>

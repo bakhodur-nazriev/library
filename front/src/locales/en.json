@@ -139,5 +139,8 @@
   },
   "notifications": {
     "remove_message": "Are you sure you want to delete this entry ?"
+  },
+  "validation": {
+    "only_jpg_png_files_allowed": "Only_pg_png_files_allowed"
   }
 }
