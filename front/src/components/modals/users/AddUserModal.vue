@@ -73,7 +73,9 @@ const emitCancel = () => {
         </li>
       </ul>
     </div>
-    <el-alert v-if="alert" :title="alert" type="error" effect="dark"/>
+    <div class="alert-block">
+      <el-alert v-if="alert" :title="alert" type="error" effect="dark"/>
+    </div>
   </div>
 </template>
 
@@ -154,16 +156,15 @@ const emitCancel = () => {
   }
 }
 
-.el-alert {
+.alert-block {
   position: absolute;
-  bottom: 10px;
-  width: max-content;
+  bottom: 20px;
+  width: 400px;
+  left: 50%;
+  transform: translate(-50%, -50%);
 
+  .el-alert {
 
-  .el-alert__content {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
   }
 }
 </style>
