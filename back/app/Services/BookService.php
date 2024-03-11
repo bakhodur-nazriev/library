@@ -3,12 +3,12 @@
 namespace App\Services;
 
 use App\Models\Book;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Illuminate\Support\Facades\Storage;
 
 class BookService
 {
@@ -55,7 +55,7 @@ class BookService
         $book->title = $attributes['title'];
         $book->ISBN = $attributes['ISBN'] ?? null;
         $book->description = $attributes['description'] ?? null;
-        $book->published_at = $attributes['published_at'] ?? null;
+        $book->published_at = isset($attributes['published_at']) ? $this->parseDate($attributes['published_at']) : null;
         $book->genre = $attributes['genre'] ?? null;
         $book->language = $attributes['language'] ?? null;
         $book->publisher = $attributes['publisher'] ?? null;
@@ -63,6 +63,21 @@ class BookService
         $book->save();
 
         return $book;
+    }
+
+    private function parseDate(string $dateString): ?string
+    {
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateString)) {
+            return $dateString;
+        }
+
+        $date = Carbon::createFromFormat('D M d Y H:i:s e+', $dateString);
+
+        if ($date instanceof Carbon) {
+            return $date->toDateString();
+        } else {
+            return null;
+        }
     }
 
     public function uploadFile(UploadedFile|null $file, Book $book): JsonResponse
@@ -115,6 +130,10 @@ class BookService
             if (isset($value)) {
                 $book->$key = $value;
             }
+        }
+
+        if (isset($book->published_at)) {
+            $book->published_at = $this->parseDate($book->published_at);
         }
 
         $book->save();

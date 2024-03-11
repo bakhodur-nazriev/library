@@ -18,7 +18,7 @@ class AuthorStoreRequest extends FormRequest
     {
         return [
             'initials' => 'required|string|min:5|max:200',
-            'date_of_birth' => 'nullable|date',
+            'date_of_birth' => 'nullable|string',
             'book_ids' => 'nullable|array',
             'nationality' => 'nullable|string',
             'biography' => 'nullable|string',

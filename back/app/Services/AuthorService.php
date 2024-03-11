@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Author;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -43,7 +44,7 @@ class AuthorService
             return DB::transaction(function () use ($attributes, $file) {
                 $author = new Author();
                 $author->initials = $attributes['initials']?? null;
-                $author->date_of_birth = $attributes['date_of_birth']?? null;
+                $author->date_of_birth = isset($attributes['date_of_birth']) ? $this->parseDate($attributes['date_of_birth']): null;
                 $author->nationality = $attributes['nationality']?? null;
                 $author->biography = $attributes['biography']?? null;
                 $author->save();
@@ -61,6 +62,21 @@ class AuthorService
             Log::info('storing authors ' . $e->getMessage());
 
             return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    private function parseDate(string $dateString): ?string
+    {
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateString)) {
+            return $dateString;
+        }
+
+        $date = Carbon::createFromFormat('D M d Y H:i:s e+', $dateString);
+
+        if ($date instanceof Carbon) {
+            return $date->toDateString();
+        } else {
+            return null;
         }
     }
 
@@ -87,6 +103,10 @@ class AuthorService
             if (isset($value)) {
                 $author->$key = $value;
             }
+        }
+
+        if (isset($author->date_of_birth)) {
+            $author->date_of_birth = $this->parseDate($author->date_of_birth);
         }
 
         $author->save();
