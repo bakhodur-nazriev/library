@@ -19,7 +19,7 @@ class AuthorUpdateRequest extends FormRequest
 
         return [
             'initials' => 'nullable|string|min:5|max:200',
-            'date_of_birth' => 'nullable|date',
+            'date_of_birth' => 'nullable|string',
             'book_ids' => 'nullable|array',
             'author_id' => ['nullable', 'exists:authors,id'],
         ];

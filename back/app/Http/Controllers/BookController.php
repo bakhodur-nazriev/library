@@ -95,7 +95,7 @@ class BookController extends Controller
         return response()->json(['error' => 'Book fetching exception'], 400);
     }
 
-    public function download(int $id)
+    public function download(int $id): BinaryFileResponse|JsonResponse
     {
         return $this->bookService->downloadFile($id);
     }

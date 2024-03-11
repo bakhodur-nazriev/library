@@ -48,8 +48,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
                 ->group(function () {
                     Route::get('', [UserController::class, 'index']);
                     Route::post('', [UserController::class, 'store']);
-                    Route::put('', [UserController::class, 'update']);
-                    Route::delete('', [UserController::class, 'destroy']);
+                    Route::patch('/{id}', [UserController::class, 'update']);
+                    Route::delete('/{id}', [UserController::class, 'destroy']);
                 });
 
             Route::prefix('privileges')

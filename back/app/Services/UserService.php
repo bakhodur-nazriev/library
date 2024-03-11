@@ -11,12 +11,19 @@ use Illuminate\Support\Facades\Log;
 class UserService
 {
 
-    public function get(): LengthAwarePaginator|JsonResponse
+    public function get(array $attributes): LengthAwarePaginator|JsonResponse
     {
         try {
+            $perPage = $attributes['per_page'] ?? 10;
+            $page = $attributes['page'] ?? 1;
+            $order = $attributes['order'] ?? 'asc';
+            $orderBy = $attributes['order_by'] ?? 'id';
+
+
             return User::query()
                 ->with(['roles', 'permissions'])
-                ->paginate(10);
+                ->orderBy($orderBy, $order)
+                ->paginate($perPage, ['*'], 'page', $page);
         } catch (\Exception $e) {
             Log::info($e->getMessage());
             return response()->json(['message' => 'error'], 500);

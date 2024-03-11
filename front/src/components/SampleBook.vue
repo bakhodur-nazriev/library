@@ -8,18 +8,18 @@ const selectedBook = ref(null);
 const getBook = async (id) => {
   const authToken = sessionStorage.getItem('token');
   const headers = {
-    'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': '*',
     "Authorization": `Bearer ${authToken}`
   };
 
   await axios
-      .get('/books/download/' + id, {headers})
+      .get('/books/download/' + id, {headers, responseType: 'blob'})
       .then(res => {
         console.log(res.data);
         if (res.status === 200 || res.status === 201) {
-          const downloadLink = res.data.file_path;
+          const blob = new Blob([res.data], { type: 'application/pdf' });
+          const downloadLink = URL.createObjectURL(blob);
           window.open(downloadLink, '_blank');
         }
       })
