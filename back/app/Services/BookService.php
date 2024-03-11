@@ -126,18 +126,21 @@ class BookService
         throw new Exception('updating book type mismatch exception');
     }
 
-    public function downloadFile(int $id)
+    public function downloadFile(int $id): BinaryFileResponse|JsonResponse
     {
-        $book = Book::findOrFail($id);
+        $book = Book::query()
+            ->find($id);
 
         if ($book instanceof Book) {
-            $filePath = storage_path('app/' . $book->link);
+            $filePath = config('proj_env.STORAGE_PATH') . $book->link;
 
-            if (!Storage::exists($filePath)) {
-                return response()->json(['file_path' => $filePath]);
-            } else {
-                return response()->json(['error' => 'File not found'], 404);
+            if (!file_exists($filePath)) {
+                abort(404, 'File not found.');
             }
+
+            $fileSize = filesize($filePath);
+
+            return response()->download($filePath, $book->title . '.pdf', ['Content-Length' => $fileSize]);
         }
 
         return response()->json(['error' => 'Book fetching exception'], 404);
