@@ -25,7 +25,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
             Route::prefix('books')->group(function () {
                 Route::post('', [BookController::class, 'store']);
-                Route::patch('/{id}', [BookController::class, 'update'])
+                Route::post('/{id}', [BookController::class, 'update'])
                     ->where('id', '[0-9]+');
                 Route::delete('/{id}', [BookController::class, 'destroy']);
                 //

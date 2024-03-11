@@ -63,7 +63,7 @@ const editData = async () => {
   };
 
   await axios
-      .patch('/admin/books/' + props.selectedBook.id, payload, {headers})
+      .post('/admin/books/' + props.selectedBook.id, payload, {headers})
       .then(res => {
         if (res.status === 200 || res.status === 201) {
           emit('reloadData', true);

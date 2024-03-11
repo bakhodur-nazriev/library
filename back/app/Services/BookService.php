@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class BookService
@@ -85,7 +86,7 @@ class BookService
      */
     public function uploadFile(UploadedFile $file, Book $book): JsonResponse
     {
-        if ($file?->isValid()) {
+        if ($file->isValid()) {
             $path = $file->store('pdfs');
             $book->link = $path;
             $book->save();
@@ -126,18 +127,14 @@ class BookService
         $book = Book::query()
             ->findOrFail($bookId);
 
-        //todo use tdo
-        unset($attributes['author_ids']);
-
-        foreach ($attributes as $key => $value) {
-            if (isset($value)) {
-                $book->$key = $value;
-            }
-        }
-
-        if (isset($book->published_at)) {
-            $book->published_at = $this->parseDate($book->published_at);
-        }
+        $book->title = $attributes['title']?? $book->title;
+        $book->ISBN = $attributes['ISBN'] ?? $book->ISBN;
+        $book->description = $attributes['description'] ?? $book->description;
+        $book->published_at = isset($attributes['published_at']) ? $this->parseDate($attributes['published_at']) : $book->published_at;
+        $book->genre = $attributes['genre'] ?? $book->genre;
+        $book->language = $attributes['language'] ?? $book->language;
+        $book->publisher = $attributes['publisher'] ?? $book->publisher;
+        $book->search_key = $attributes['title'] ?? $book->search_key;
 
         $book->save();
 
@@ -173,8 +170,10 @@ class BookService
         return DB::transaction(function () use ($attributes, $file, $id) {
 
             $book = $this->updateBook($attributes, $id);
-            if ($file){
+            if ($file?->isValid()){
                 $this->uploadFile($file, $book);
+            } else {
+                Log::info(['pdf was not uploaded']);
             }
             $this->addAuthors($attributes, $book);
 
