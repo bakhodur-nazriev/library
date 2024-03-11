@@ -80,7 +80,10 @@ class BookService
         }
     }
 
-    public function uploadFile(UploadedFile|null $file, Book $book): JsonResponse
+    /**
+     * @throws Exception
+     */
+    public function uploadFile(UploadedFile $file, Book $book): JsonResponse
     {
         if ($file?->isValid()) {
             $path = $file->store('pdfs');
@@ -90,7 +93,7 @@ class BookService
             return response()->json(['message' => 'PDF uploaded successfully', 'path' => $path], 201);
         }
 
-        return response()->json(['error' => 'Invalid file'], 400);
+        throw new Exception('file was not uploaded');
     }
 
     public function addAuthors(array $attributes, $book): void
@@ -170,7 +173,9 @@ class BookService
         return DB::transaction(function () use ($attributes, $file, $id) {
 
             $book = $this->updateBook($attributes, $id);
-            $this->uploadFile($file, $book);
+            if ($file){
+                $this->uploadFile($file, $book);
+            }
             $this->addAuthors($attributes, $book);
 
             return response()->json(['message' => 'Book stored successfully', 'book' => $book], 201);
@@ -181,7 +186,9 @@ class BookService
     {
         return DB::transaction(function () use ($attributes, $file) {
             $book = $this->storeBook($attributes);
-            $this->uploadFile($file, $book);
+            if ($file) {
+                $this->uploadFile($file, $book);
+            }
             $this->addAuthors($attributes, $book);
 
             return response()->json(['message' => 'Book stored successfully', 'book' => $book]);

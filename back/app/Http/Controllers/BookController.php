@@ -83,12 +83,16 @@ class BookController extends Controller
     }
 
     //todo
+
+    /**
+     * @throws Exception
+     */
     public function uploadPdf(UploadFileRequest $request, int $bookId): JsonResponse
     {
         $book = Book::query()
             ->find($bookId);
 
-        if ($book instanceof Book) {
+        if ($book instanceof Book && $request->file('pdf')) {
             return $this->bookService->uploadFile($request->file('pdf'), $book);
         }
 
