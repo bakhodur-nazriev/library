@@ -63,13 +63,6 @@ const emitClose = () => {
               :placeholder="`${$t('titles.table_titles.users.password')}`"
           />
         </li>
-        <li class="input-list__item">
-          <input
-              v-model="user.role"
-              type="text"
-              :placeholder="`${$t('titles.table_titles.users.role')}`"
-          />
-        </li>
       </ul>
       <ul class="button-list">
         <li class="button-list__item">

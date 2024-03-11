@@ -72,7 +72,7 @@ const getBooks = async () => {
   };
 
   await axios
-      .get(`/books?per_page=${itemsPerPage.value}&page=${currentPage.value}`, {headers})
+      .get(`/books?per_page=${itemsPerPage.value}&page=${currentPage.value}&order=desc`, {headers})
       .then(res => {
         tableRows.value = res.data.data.map(book => ({
           id: book.id,
