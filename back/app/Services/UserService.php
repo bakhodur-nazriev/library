@@ -17,10 +17,12 @@ class UserService
             $perPage = $attributes['per_page'] ?? 10;
             $page = $attributes['page'] ?? 1;
             $order = $attributes['order'] ?? 'asc';
+            $orderBy = $attributes['order_by'] ?? 'id';
+
 
             return User::query()
                 ->with(['roles', 'permissions'])
-                ->orderBy('created_at', $order)
+                ->orderBy($orderBy, $order)
                 ->paginate($perPage, ['*'], 'page', $page);
         } catch (\Exception $e) {
             Log::info($e->getMessage());
