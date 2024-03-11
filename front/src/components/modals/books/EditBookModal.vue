@@ -7,7 +7,8 @@ const emit = defineEmits(['close']);
 const props = defineProps(['selectedBook']);
 const book = ref({
   title: props.selectedBook.title,
-  link: props.selectedBook.link,
+  // incoming link is just path not pdf file
+  file: '',
   author_ids: (Array.isArray(props.selectedBook.author_ids)
       ? [...props.selectedBook.author_ids]
       : props.selectedBook.author_ids
@@ -43,7 +44,7 @@ const formRules = {
 const formRef = ref(null);
 
 const handleFileChange = (e) => {
-  book.value.link = e.target.files[0];
+  book.value.file = e.target.files[0];
 };
 const editData = async () => {
   const isValid = await formRef.value.validate();
@@ -58,7 +59,6 @@ const editData = async () => {
   const payload = getFormData(book.value);
   const authToken = sessionStorage.getItem('token');
   const headers = {
-    'Content-Type': 'application/json',
     'Authorization': `Bearer ${authToken}`
   };
 
@@ -181,10 +181,12 @@ onMounted(() => {
         <el-input v-model="book.language"/>
       </el-form-item>
       <el-form-item>
-        <el-upload @change="handleFileChange">
-          <el-button size="small" type="primary">Choose File</el-button>
-          <div slot="tip" class="el-upload__tip">Only jpg/png files allowed</div>
-        </el-upload>
+        <input
+            type="file"
+            accept=".pdf"
+            @change="handleFileChange"
+            :placeholder="`${$t('titles.table_titles.books.file')}`"
+        />
       </el-form-item>
       <el-form-item
           :label="`${$t('titles.table_titles.books.publish_date')}`"
