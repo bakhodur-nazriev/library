@@ -8,15 +8,16 @@ use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
 
     public function __construct(private readonly UserService $userService){}
 
-    public function index(): LengthAwarePaginator|JsonResponse
+    public function index(Request $request): LengthAwarePaginator|JsonResponse
     {
-        return $this->userService->get();
+        return $this->userService->get($request->all());
     }
 
     public function store(UserStoreRequest $request): JsonResponse
