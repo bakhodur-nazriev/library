@@ -86,15 +86,19 @@ class BookService
      */
     public function uploadFile(UploadedFile $file, Book $book): JsonResponse
     {
-        if ($file->isValid()) {
-            $path = $file->store('pdfs');
-            $book->link = $path;
-            $book->save();
+        try {
+            if ($file->isValid()) {
+                $path = $file->store('pdfs');
+                $book->link = $path;
+                $book->save();
 
-            return response()->json(['message' => 'PDF uploaded successfully', 'path' => $path], 201);
+                return response()->json(['message' => 'PDF uploaded successfully', 'path' => $path], 201);
+            }
+        } catch (Exception $e) {
+            Log::info('uploadFile: ' . $e->getMessage());
+            throw new Exception('file was not uploaded look in logs');
         }
 
-        throw new Exception('file was not uploaded');
     }
 
     public function addAuthors(array $attributes, $book): void
@@ -173,7 +177,7 @@ class BookService
             if ($file?->isValid()){
                 $this->uploadFile($file, $book);
             } else {
-                Log::info('pdf was not uploaded');
+                Log::info('Book service update:pdf was not uploaded');
             }
             $this->addAuthors($attributes, $book);
 
