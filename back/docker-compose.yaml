@@ -14,6 +14,8 @@ services: #containers
     volumes:
       - ./:/var/www/library
       - ./docker/xdebug/90-xdebug.ini:/usr/local/etc/php/conf.d/90-xdebug.ini
+      - ./docker/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+
     working_dir: /var/www/library
     networks:
       - library_network

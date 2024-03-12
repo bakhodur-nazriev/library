@@ -2,6 +2,16 @@
 import {onMounted, ref} from 'vue';
 import {getFormData} from "../../../utils.js";
 import axios from "axios";
+import Popup from "../../Popup.vue";
+
+//popup
+const errorMessage = ref('');
+const showError = ref(false);
+const resetError = () => {
+  showError.value = false;
+  errorMessage.value = '';
+};
+//popup
 
 const emit = defineEmits(['cancel', 'reloadData']);
 const book = ref({
@@ -38,8 +48,12 @@ const addBook = async () => {
           emitCancel();
         }
       })
-      .catch(err => {
-        console.log(err);
+      .catch(error => {
+        console.log(error);
+        showError.value = true;
+        if (error.response.status !== 200) {
+          errorMessage.value = error.message;
+        }
       })
       .finally(() => loading.value = false);
 };
@@ -58,8 +72,11 @@ const getAuthors = async () => {
           authors.value = res.data.data;
         }
       })
-      .catch(err => {
-        console.npm(err);
+      .catch(error => {
+        showError.value = true;
+        if (error.response.status !== 200) {
+          errorMessage.value = error.message;
+        }
       })
 };
 const emitCancel = () => {
@@ -173,6 +190,9 @@ onMounted(() => {
         </li>
       </ul>
     </div>
+
+    <Popup v-if="showError" :message="errorMessage" @close="resetError"/>
+
   </div>
 </template>
 

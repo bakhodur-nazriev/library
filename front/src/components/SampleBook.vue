@@ -1,11 +1,24 @@
 <script setup>
 import {ref} from "vue";
 import axios from "axios";
+import Popup from "./Popup.vue";
+
+//popup
+const errorMessage = ref('');
+const showError = ref(false);
+const resetError = () => {
+  showError.value = false;
+  errorMessage.value = '';
+};
+//popup
+
+const loading = ref(false);
 
 const props = defineProps(['books']);
 const selectedBook = ref(null);
 
 const getBook = async (id) => {
+  loading.value = true;
   const authToken = sessionStorage.getItem('token');
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -16,22 +29,49 @@ const getBook = async (id) => {
   await axios
       .get('/books/download/' + id, {headers, responseType: 'blob'})
       .then(res => {
-        console.log(res.data);
+        loading.value = false;
+
         if (res.status === 200 || res.status === 201) {
-          const blob = new Blob([res.data], { type: 'application/pdf' });
+
+          let blob;
+          if (res.data.type === 'image/vnd.djvu') {
+            blob = new Blob([res.data], { type: 'image/vnd.djvu' });
+
+          } else if (res.data.type === 'application/pdf') {
+            blob = new Blob([res.data], { type: 'application/pdf' });
+
+          } else if (res.data.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+            blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+
+          } else if (res.data.type === 'application/epub+zip') {
+            blob = new Blob([res.data], { type: 'application/epub+zip' });
+
+          } else if (res.data.type === 'application/x-mobipocket-ebook') {
+            blob = new Blob([res.data], { type: 'application/x-mobipocket-ebook' });
+
+          } else {
+            // Handle other file types, either by checking the type or using a default MIME type
+            blob = new Blob([res.data], { type: 'application/octet-stream' });
+          }
+
           const downloadLink = URL.createObjectURL(blob);
           window.open(downloadLink, '_blank');
         }
       })
-      .catch(err => {
-        console.log(err);
+      .catch(error => {
+        console.log(error);
+        showError.value = true;
+        errorMessage.value = error.message;
+        loading.value = false;
       })
 }
 
 </script>
 
 <template>
-  <ul class="books-list">
+  <Popup v-if="showError" :message="errorMessage" @close="resetError"/>
+
+  <ul class="books-list" v-loading="loading" :element-loading-text="$t('loading')">
     <li v-for="(book, i) in books" :key="i" class="books-list_item">
       <img :src="book.cover_image" :alt="book.name" v-if="book.cover_image">
       <div v-else class="book-cover-block">

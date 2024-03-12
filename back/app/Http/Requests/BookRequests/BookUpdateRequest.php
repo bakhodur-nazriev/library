@@ -26,7 +26,7 @@ class BookUpdateRequest extends FormRequest
             'language' => 'nullable|string|max:20',
             'pages' => 'nullable|numeric|max:10000',
             'publisher' => 'nullable|string|max:100',
-            'pdf' => 'nullable|file|mimes:pdf|max:51200',
+            'file' => 'nullable|file|mimes:pdf,docx,epub,mobi,djvu|max:51200',
             'author_ids' => 'nullable|array'
         ];
     }

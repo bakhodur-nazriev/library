@@ -12,7 +12,6 @@ use App\Services\BookService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class BookController extends Controller
@@ -75,20 +74,22 @@ class BookController extends Controller
 
     public function destroy(int $id): JsonResponse
     {
-        Book::query()
-            ->find($id)
-            ->delete();
+        $this->bookService->delete($id);
 
         return response()->json(['message' => 'Book deleted successfully']);
     }
 
     //todo
+
+    /**
+     * @throws Exception
+     */
     public function uploadPdf(UploadFileRequest $request, int $bookId): JsonResponse
     {
         $book = Book::query()
             ->find($bookId);
 
-        if ($book instanceof Book) {
+        if ($book instanceof Book && $request->file('pdf')) {
             return $this->bookService->uploadFile($request->file('pdf'), $book);
         }
 

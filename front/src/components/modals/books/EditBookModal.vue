@@ -7,7 +7,8 @@ const emit = defineEmits(['close']);
 const props = defineProps(['selectedBook']);
 const book = ref({
   title: props.selectedBook.title,
-  file: props.selectedBook.link,
+  // incoming link is just path not pdf file
+  file: '',
   author_ids: (Array.isArray(props.selectedBook.author_ids)
       ? [...props.selectedBook.author_ids]
       : props.selectedBook.author_ids
@@ -43,24 +44,8 @@ const formRules = {
 const formRef = ref(null);
 
 const handleFileChange = (e) => {
-  // Preserve existing values in the book object
-  const {title, author_ids, description, ISBN, pages, publisher, genre, language, published_at} = book.value;
-
-  // Update only the file property
-  book.value = {
-    title,
-    author_ids,
-    description,
-    ISBN,
-    pages,
-    publisher,
-    genre,
-    language,
-    published_at,
-    file: e.target.files[0],
-  };
+  book.value.file = e.target.files[0];
 };
-
 const editData = async () => {
   loading.value = true;
   const payload = getFormData(book.value);
@@ -79,7 +64,7 @@ const editData = async () => {
   //book.value.published_at = new Date(props.selectedBook.published_at).toLocaleDateString('en-CA');
 
   await axios
-      .patch('/admin/books/' + props.selectedBook.id, payload, {headers})
+      .post('/admin/books/' + props.selectedBook.id, payload, {headers})
       .then(res => {
         if (res.status === 200 || res.status === 201) {
           emit('reloadData', true);
@@ -87,7 +72,7 @@ const editData = async () => {
         }
       })
       .catch(err => {
-        console.log(err.response.data);
+        console.log(err);
       })
       .finally(() => loading.value = false);
 };

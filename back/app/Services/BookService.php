@@ -8,6 +8,8 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class BookService
@@ -80,17 +82,25 @@ class BookService
         }
     }
 
-    public function uploadFile(UploadedFile|null $file, Book $book): JsonResponse
+    /**
+     * @throws Exception
+     */
+    public function uploadFile(UploadedFile $file, Book $book): JsonResponse
     {
-        if ($file?->isValid()) {
-            $path = $file->store('pdfs');
-            $book->link = $path;
-            $book->save();
+        try {
+            if ($file->isValid()) {
+                $path = $file->store('pdfs');
+                $book->link = $path;
+                $book->save();
 
-            return response()->json(['message' => 'PDF uploaded successfully', 'path' => $path], 201);
+                return response()->json(['message' => 'PDF uploaded successfully', 'path' => $path], 201);
+            }
+        } catch (Exception $e) {
+            Log::info('uploadFile: ' . $e->getMessage());
+            throw new Exception('file was not uploaded look in logs');
         }
+        return response()->json(['message' => 'somethng went wrong'], 500);
 
-        return response()->json(['error' => 'Invalid file'], 400);
     }
 
     public function addAuthors(array $attributes, $book): void
@@ -123,18 +133,14 @@ class BookService
         $book = Book::query()
             ->findOrFail($bookId);
 
-        //todo use tdo
-        unset($attributes['author_ids']);
-
-        foreach ($attributes as $key => $value) {
-            if (isset($value)) {
-                $book->$key = $value;
-            }
-        }
-
-        if (isset($book->published_at)) {
-            $book->published_at = $this->parseDate($book->published_at);
-        }
+        $book->title = $attributes['title']?? $book->title;
+        $book->ISBN = $attributes['ISBN'] ?? $book->ISBN;
+        $book->description = $attributes['description'] ?? $book->description;
+        $book->published_at = isset($attributes['published_at']) ? $this->parseDate($attributes['published_at']) : $book->published_at;
+        $book->genre = $attributes['genre'] ?? $book->genre;
+        $book->language = $attributes['language'] ?? $book->language;
+        $book->publisher = $attributes['publisher'] ?? $book->publisher;
+        $book->search_key = $attributes['title'] ?? $book->search_key;
 
         $book->save();
 
@@ -159,7 +165,9 @@ class BookService
 
             $fileSize = filesize($filePath);
 
-            return response()->download($filePath, $book->title . '.pdf', ['Content-Length' => $fileSize]);
+            $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION); // Get the file extension
+
+            return response()->download($filePath, $book->title . '.' . $fileExtension, ['Content-Length' => $fileSize]);
         }
 
         return response()->json(['error' => 'Book fetching exception'], 404);
@@ -170,7 +178,16 @@ class BookService
         return DB::transaction(function () use ($attributes, $file, $id) {
 
             $book = $this->updateBook($attributes, $id);
-            $this->uploadFile($file, $book);
+            if ($file?->isValid()) {
+
+                if ($book->link) {
+                    Log::info(['old file was deleted ' . Storage::delete($book->link)]);
+                }
+
+                $this->uploadFile($file, $book);
+            } else {
+                Log::info(['Book service update:pdf was not uploaded' => $file?->isValid()]);
+            }
             $this->addAuthors($attributes, $book);
 
             return response()->json(['message' => 'Book stored successfully', 'book' => $book], 201);
@@ -181,10 +198,26 @@ class BookService
     {
         return DB::transaction(function () use ($attributes, $file) {
             $book = $this->storeBook($attributes);
-            $this->uploadFile($file, $book);
+            if ($file) {
+                $this->uploadFile($file, $book);
+            }
             $this->addAuthors($attributes, $book);
 
             return response()->json(['message' => 'Book stored successfully', 'book' => $book]);
         });
+    }
+
+    public function delete(int $id): void
+    {
+        $book = Book::query()->findOrFail($id);
+
+        $fileLink = $book->link;
+
+        $book->delete();
+
+        // Remove the associated file from storage
+        if ($fileLink) {
+            Storage::delete($fileLink);
+        }
     }
 }
