@@ -37,7 +37,7 @@ class BookController extends Controller
 
     public function store(BookStoreRequest $request)
     {
-        return $this->bookService->store($request->all(), $request->file('file'));
+        return $this->bookService->store($request->all(), $request->file('file'), $request->file('cover_image'));
     }
 
     public function showById(int $id): JsonResponse
@@ -50,7 +50,7 @@ class BookController extends Controller
      */
     public function update(BookUpdateRequest $request, int $id): JsonResponse
     {
-        return $this->bookService->update($request->all(), $request->file('file'), $id);
+        return $this->bookService->update($request->all(), $request->file('file'), $id, $request->file('cover_image'));
     }
 
     public function detachFromBookTheAuthor(int $bookId, int $authorId): JsonResponse

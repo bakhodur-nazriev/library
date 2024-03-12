@@ -3,18 +3,10 @@ import {ref} from "vue";
 import axios from "axios";
 import Popup from "./Popup.vue";
 
-//popup
+const props = defineProps(['books']);
 const errorMessage = ref('');
 const showError = ref(false);
-const resetError = () => {
-  showError.value = false;
-  errorMessage.value = '';
-};
-//popup
-
 const loading = ref(false);
-
-const props = defineProps(['books']);
 const selectedBook = ref(null);
 
 const getBook = async (id) => {
@@ -35,33 +27,33 @@ const getBook = async (id) => {
 
           let blob;
           if (res.data.type === 'image/vnd.djvu') {
-            blob = new Blob([res.data], { type: 'image/vnd.djvu' });
+            blob = new Blob([res.data], {type: 'image/vnd.djvu'});
 
           } else if (res.data.type === 'application/pdf') {
-            blob = new Blob([res.data], { type: 'application/pdf' });
+            blob = new Blob([res.data], {type: 'application/pdf'});
 
           } else if (res.data.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-            blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+            blob = new Blob([res.data], {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
 
           } else if (res.data.type === 'application/epub+zip') {
-            blob = new Blob([res.data], { type: 'application/epub+zip' });
+            blob = new Blob([res.data], {type: 'application/epub+zip'});
 
           } else if (res.data.type === 'application/x-mobipocket-ebook') {
-            blob = new Blob([res.data], { type: 'application/x-mobipocket-ebook' });
+            blob = new Blob([res.data], {type: 'application/x-mobipocket-ebook'});
 
           } else {
             // Handle other file types, either by checking the type or using a default MIME type
-            blob = new Blob([res.data], { type: 'application/octet-stream' });
+            blob = new Blob([res.data], {type: 'application/octet-stream'});
           }
 
           const downloadLink = URL.createObjectURL(blob);
           window.open(downloadLink, '_blank');
         }
       })
-      .catch(error => {
-        console.log(error);
+      .catch(err => {
+        console.log(err);
         showError.value = true;
-        errorMessage.value = error.message;
+        errorMessage.value = err.message;
         loading.value = false;
       })
 }
@@ -69,7 +61,7 @@ const getBook = async (id) => {
 </script>
 
 <template>
-  <Popup v-if="showError" :message="errorMessage" @close="resetError"/>
+  <Popup v-if="showError" :message="errorMessage"/>
 
   <ul class="books-list" v-loading="loading" :element-loading-text="$t('loading')">
     <li v-for="(book, i) in books" :key="i" class="books-list_item">
@@ -97,7 +89,6 @@ const getBook = async (id) => {
         </button>
       </div>
     </li>
-    <!--    <PDFViewer :pdf-file="selectedBook"/>-->
   </ul>
 </template>
 

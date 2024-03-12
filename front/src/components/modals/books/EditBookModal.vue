@@ -2,6 +2,7 @@
 import {onMounted, ref} from 'vue';
 import {getFormData} from "../../../utils.js";
 import axios from "axios";
+import Popup from "../../Popup.vue";
 
 const emit = defineEmits(['close']);
 const props = defineProps(['selectedBook']);
@@ -21,30 +22,24 @@ const book = ref({
   language: props.selectedBook.language,
   pages: props.selectedBook.pages,
   published_at: props.selectedBook.published_at,
-  // cover_book: props.selectedBook.cover_image
+  cover_image: props.selectedBook.cover_image
 });
 const loading = ref(false);
 const authors = ref([]);
 const formRules = {
   title: [
     {required: true, message: 'Please enter the title', trigger: 'blur'},
-  ],
-  author_ids: [
-    {required: true, message: 'Please select at least one author', trigger: 'change'},
-  ],
-  ISBN: [
-    {required: true, message: 'Please enter the ISBN', trigger: 'blur'},
-    {pattern: /^[0-9]*$/, message: 'ISBN must contain only numbers', trigger: 'blur'},
-  ],
-  pages: [
-    {required: true, message: 'Please enter the number of pages', trigger: 'blur'},
-    {pattern: /^[0-9]*$/, message: 'Pages must contain only numbers', trigger: 'blur'},
   ]
 };
 const formRef = ref(null);
+const showError = ref(false);
+const errorMessage = ref('');
 
 const handleFileChange = (e) => {
   book.value.file = e.target.files[0];
+};
+const handleImageChange = (e) => {
+  book.value.cover_image = e.target.files[0];
 };
 const editData = async () => {
   loading.value = true;
@@ -61,11 +56,10 @@ const editData = async () => {
     return;
   }
 
-  //book.value.published_at = new Date(props.selectedBook.published_at).toLocaleDateString('en-CA');
-
   await axios
       .post('/admin/books/' + props.selectedBook.id, payload, {headers})
       .then(res => {
+        loading.value = false;
         if (res.status === 200 || res.status === 201) {
           emit('reloadData', true);
           emitClose();
@@ -73,6 +67,9 @@ const editData = async () => {
       })
       .catch(err => {
         console.log(err);
+        showError.value = true;
+        errorMessage.value = err.message;
+        loading.value = false;
       })
       .finally(() => loading.value = false);
 };
@@ -181,12 +178,18 @@ onMounted(() => {
       >
         <el-input v-model="book.language"/>
       </el-form-item>
-      <el-form-item>
+      <el-form-item :label="`${$t('titles.table_titles.books.cover_image')}`">
+        <input
+            type="file"
+            accept="image/*"
+            @change="handleImageChange"
+        />
+      </el-form-item>
+      <el-form-item :label="`${$t('titles.table_titles.books.file')}`">
         <input
             type="file"
             accept=".pdf"
             @change="handleFileChange"
-            :placeholder="`${$t('titles.table_titles.books.file')}`"
         />
       </el-form-item>
       <el-form-item
@@ -200,6 +203,7 @@ onMounted(() => {
         <el-button @click="emitClose">{{ $t('buttons.cancel') }}</el-button>
       </el-form-item>
     </el-form>
+    <Popup v-if="showError" :message="errorMessage"/>
   </div>
 </template>
 
@@ -226,6 +230,9 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   gap: 10px;
+  overflow-y: auto;
+  max-height: -webkit-fill-available;
+  max-height: -moz-available;;
 
   &-title {
     font-size: 26px;

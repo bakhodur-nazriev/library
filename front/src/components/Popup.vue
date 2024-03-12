@@ -10,7 +10,7 @@ const props = defineProps(['message']);
 
 <style scoped>
 .custom-message {
-  width: 200px;
+  width: 320px;
   position: absolute;
   bottom: 20px;
   left: 50%;
