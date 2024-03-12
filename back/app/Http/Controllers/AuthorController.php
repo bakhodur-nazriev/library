@@ -8,6 +8,8 @@ use App\Models\Author;
 use App\Services\AuthorService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class AuthorController extends Controller
 {
@@ -48,9 +50,13 @@ class AuthorController extends Controller
 
     public function destroy(int $id): JsonResponse
     {
-        Author::query()
-            ->find($id)
-            ->delete();
+        $author = Author::query()
+            ->findOrFail($id);
+            $author->delete();
+
+        if ($author->photo_link) {
+            Log::info('author log', ['old author image was deleted: ' . Storage::delete($author->photo_link)]);
+        }
 
         return response()->json(['message' => 'Author deleted successfully']);
     }
