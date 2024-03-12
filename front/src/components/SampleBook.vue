@@ -29,6 +29,7 @@ const getBook = async (id) => {
   await axios
       .get('/books/download/' + id, {headers, responseType: 'blob'})
       .then(res => {
+        loading.value = false;
         console.log(res.data);
         if (res.status === 200 || res.status === 201) {
           const blob = new Blob([res.data], { type: 'application/pdf' });
@@ -49,7 +50,7 @@ const getBook = async (id) => {
 <template>
   <Popup v-if="showError" :message="errorMessage" @close="resetError"/>
 
-  <ul class="books-list">
+  <ul class="books-list" v-loading="loading" :element-loading-text="$t('loading')">
     <li v-for="(book, i) in books" :key="i" class="books-list_item">
       <img :src="book.cover_image" :alt="book.name" v-if="book.cover_image">
       <div v-else class="book-cover-block">
