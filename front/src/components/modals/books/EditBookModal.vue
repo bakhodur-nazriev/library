@@ -7,7 +7,7 @@ const emit = defineEmits(['close']);
 const props = defineProps(['selectedBook']);
 const book = ref({
   title: props.selectedBook.title,
-  link: props.selectedBook.link,
+  file: props.selectedBook.link,
   author_ids: (Array.isArray(props.selectedBook.author_ids)
       ? [...props.selectedBook.author_ids]
       : props.selectedBook.author_ids
@@ -43,24 +43,40 @@ const formRules = {
 const formRef = ref(null);
 
 const handleFileChange = (e) => {
-  book.value.link = e.target.files[0];
+  // Preserve existing values in the book object
+  const {title, author_ids, description, ISBN, pages, publisher, genre, language, published_at} = book.value;
+
+  // Update only the file property
+  book.value = {
+    title,
+    author_ids,
+    description,
+    ISBN,
+    pages,
+    publisher,
+    genre,
+    language,
+    published_at,
+    file: e.target.files[0],
+  };
 };
+
 const editData = async () => {
+  loading.value = true;
+  const payload = getFormData(book.value);
+
+  const authToken = sessionStorage.getItem('token');
+  const headers = {
+    'Authorization': `Bearer ${authToken}`,
+    'Content-Type': 'multipart/form-data'
+  };
   const isValid = await formRef.value.validate();
 
   if (!isValid) {
     return;
   }
 
-  loading.value = true;
-  book.value.published_at = new Date(props.selectedBook.published_at).toLocaleDateString('en-CA');
-
-  const payload = getFormData(book.value);
-  const authToken = sessionStorage.getItem('token');
-  const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${authToken}`
-  };
+  //book.value.published_at = new Date(props.selectedBook.published_at).toLocaleDateString('en-CA');
 
   await axios
       .patch('/admin/books/' + props.selectedBook.id, payload, {headers})
@@ -71,7 +87,7 @@ const editData = async () => {
         }
       })
       .catch(err => {
-        console.log(err);
+        console.log(err.response.data);
       })
       .finally(() => loading.value = false);
 };
@@ -181,10 +197,12 @@ onMounted(() => {
         <el-input v-model="book.language"/>
       </el-form-item>
       <el-form-item>
-        <el-upload @change="handleFileChange">
-          <el-button size="small" type="primary">Choose File</el-button>
-          <div slot="tip" class="el-upload__tip">Only jpg/png files allowed</div>
-        </el-upload>
+        <input
+            type="file"
+            accept=".pdf"
+            @change="handleFileChange"
+            :placeholder="`${$t('titles.table_titles.books.file')}`"
+        />
       </el-form-item>
       <el-form-item
           :label="`${$t('titles.table_titles.books.publish_date')}`"

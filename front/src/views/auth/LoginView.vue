@@ -20,6 +20,7 @@ const togglePasswordVisibility = () => {
 }
 const login = async (e) => {
   e.preventDefault();
+  loading.value = true;
   const payload = getFormData({
     email: email.value,
     password: password.value
@@ -34,6 +35,7 @@ const login = async (e) => {
   await axios
       .post('/login', payload, {headers})
       .then(res => {
+        loading.value = true;
         if (res.status === 200) {
           sessionStorage.setItem('token', res.data.token);
           router.push({name: 'home'});
@@ -41,14 +43,9 @@ const login = async (e) => {
       })
       .catch(error => {
         showError.value = true;
-        if (error.response.status !== 200) {
-          errorMessage.value = error.response.data.error;
-        }
-      });
-};
-const resetError = () => {
-  showError.value = false;
-  errorMessage.value = '';
+        errorMessage.value = error.message;
+      })
+      .finally(() => loading.value = false);
 };
 </script>
 
@@ -88,6 +85,8 @@ const resetError = () => {
       <button
           type="submit"
           class="login-form__button"
+          v-loading="loading"
+          :element-loading-text="$t('loading')"
       >
         {{ $t('buttons.login') }}
       </button>
@@ -95,7 +94,8 @@ const resetError = () => {
         {{ $t('label.create_account') }}
       </router-link>
     </form>
-    <Popup v-if="showError" :message="errorMessage" @close="resetError"/>
+
+    <Popup v-if="showError" :message="errorMessage"/>
   </main>
 </template>
 
@@ -156,6 +156,7 @@ const resetError = () => {
       padding: 14px;
       font-size: 14px;
       width: -webkit-fill-available;
+      width: -moz-available;
       border-radius: 8px;
     }
 
@@ -172,7 +173,6 @@ const resetError = () => {
   z-index: 1;
   width: inherit;
 }
-
 
 .eye-button {
   display: flex;

@@ -1,5 +1,6 @@
 {
   "lang": "en",
+  "copyrights": "All rights reserved © MCIT",
   "languages": {
     "title": "English",
     "name": {
@@ -135,12 +136,17 @@
     "books_latest": "Latest Books",
     "authors_latest": "Latest Author",
     "book_empty_cover": "Without cover",
-    "author_empty_cover": "Without photo"
+    "author_empty_cover": "Without photo",
+    "year": "year",
+    "contact_us": "Contact us"
   },
   "notifications": {
     "remove_message": "Are you sure you want to delete this entry ?"
   },
   "validation": {
     "only_jpg_png_files_allowed": "Only_pg_png_files_allowed"
+  },
+  "footer": {
+    "title": "Medical-Social Institute of Tajikistan , The Republic of Tajikistan, c. Dushanbe, st. Clary Setkin, 2."
   }
 }

@@ -1,5 +1,6 @@
 {
   "lang": "ru",
+  "copyrights": "Все права защищены © МСИТ",
   "languages": {
     "title": "Русский",
     "name": {
@@ -136,12 +137,19 @@
     "books_latest": "Новые книги",
     "authors_latest": "Новые авторы",
     "book_empty_cover": "Без обложки",
-    "author_empty_cover": "Без фото"
+    "author_empty_cover": "Без фото",
+    "year": "год",
+    "tel": "Телефон",
+    "fax": "Факс",
+    "contact_us": "Связаться с нами"
   },
   "notifications": {
     "remove_message": "Вы действительно хотите удалить этот запись ?"
   },
   "validation": {
     "only_jpg_png_files_allowed": "Разрешены только файлы jpg/png."
+  },
+  "footer": {
+    "title": "Медико-социальный институт Таджикистана , Республика Таджикистан, г.Душанбе, ул. Клары Сеткиной, 2."
   }
 }

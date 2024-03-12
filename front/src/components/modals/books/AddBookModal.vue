@@ -25,7 +25,6 @@ const handleFileChange = (e) => {
 const addBook = async () => {
   loading.value = true;
   const payload = getFormData(book.value);
-
   const authToken = sessionStorage.getItem('token');
   const headers = {
     "Authorization": `Bearer ${authToken}`

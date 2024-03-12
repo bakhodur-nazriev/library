@@ -30,8 +30,8 @@ onBeforeUnmount(() => {
       <ul class="navbar-list">
         <li class="navbar-list_item">
           <router-link
-              :to="`/${$i18n.locale}`"
-              :class="{ 'active-link': $route.path === `/${$i18n.locale}` }"
+              :to="`/${$i18n.locale}/`"
+              :class="{ 'active-link': $route.path === `/${$i18n.locale}/` }"
           >
             {{ $t('main_menu.home') }}
           </router-link>
