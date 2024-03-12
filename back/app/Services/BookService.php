@@ -165,7 +165,9 @@ class BookService
 
             $fileSize = filesize($filePath);
 
-            return response()->download($filePath, $book->title . '.pdf', ['Content-Length' => $fileSize]);
+            $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION); // Get the file extension
+
+            return response()->download($filePath, $book->title . '.' . $fileExtension, ['Content-Length' => $fileSize]);
         }
 
         return response()->json(['error' => 'Book fetching exception'], 404);

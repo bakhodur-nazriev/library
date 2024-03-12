@@ -30,9 +30,30 @@ const getBook = async (id) => {
       .get('/books/download/' + id, {headers, responseType: 'blob'})
       .then(res => {
         loading.value = false;
-        console.log(res.data);
+
         if (res.status === 200 || res.status === 201) {
-          const blob = new Blob([res.data], { type: 'application/pdf' });
+
+          let blob;
+          if (res.data.type === 'image/vnd.djvu') {
+            blob = new Blob([res.data], { type: 'image/vnd.djvu' });
+
+          } else if (res.data.type === 'application/pdf') {
+            blob = new Blob([res.data], { type: 'application/pdf' });
+
+          } else if (res.data.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+            blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+
+          } else if (res.data.type === 'application/epub+zip') {
+            blob = new Blob([res.data], { type: 'application/epub+zip' });
+
+          } else if (res.data.type === 'application/x-mobipocket-ebook') {
+            blob = new Blob([res.data], { type: 'application/x-mobipocket-ebook' });
+
+          } else {
+            // Handle other file types, either by checking the type or using a default MIME type
+            blob = new Blob([res.data], { type: 'application/octet-stream' });
+          }
+
           const downloadLink = URL.createObjectURL(blob);
           window.open(downloadLink, '_blank');
         }
