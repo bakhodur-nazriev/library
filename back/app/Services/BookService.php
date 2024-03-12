@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class BookService
@@ -174,7 +175,12 @@ class BookService
         return DB::transaction(function () use ($attributes, $file, $id) {
 
             $book = $this->updateBook($attributes, $id);
-            if ($file?->isValid()){
+            if ($file?->isValid()) {
+
+                if ($book->link) {
+                    Log::info(['old file was deleted ' . Storage::delete($book->link)]);
+                }
+
                 $this->uploadFile($file, $book);
             } else {
                 Log::info(['Book service update:pdf was not uploaded' => $file?->isValid()]);
@@ -196,5 +202,19 @@ class BookService
 
             return response()->json(['message' => 'Book stored successfully', 'book' => $book]);
         });
+    }
+
+    public function delete(int $id): void
+    {
+        $book = Book::query()->findOrFail($id);
+
+        $fileLink = $book->link;
+
+        $book->delete();
+
+        // Remove the associated file from storage
+        if ($fileLink) {
+            Storage::delete($fileLink);
+        }
     }
 }
