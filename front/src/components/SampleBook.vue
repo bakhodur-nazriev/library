@@ -1,11 +1,24 @@
 <script setup>
 import {ref} from "vue";
 import axios from "axios";
+import Popup from "./Popup.vue";
+
+//popup
+const errorMessage = ref('');
+const showError = ref(false);
+const resetError = () => {
+  showError.value = false;
+  errorMessage.value = '';
+};
+//popup
+
+const loading = ref(false);
 
 const props = defineProps(['books']);
 const selectedBook = ref(null);
 
 const getBook = async (id) => {
+  loading.value = true;
   const authToken = sessionStorage.getItem('token');
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -23,14 +36,19 @@ const getBook = async (id) => {
           window.open(downloadLink, '_blank');
         }
       })
-      .catch(err => {
-        console.log(err);
+      .catch(error => {
+        console.log(error);
+        showError.value = true;
+        errorMessage.value = error.message;
+        loading.value = false;
       })
 }
 
 </script>
 
 <template>
+  <Popup v-if="showError" :message="errorMessage" @close="resetError"/>
+
   <ul class="books-list">
     <li v-for="(book, i) in books" :key="i" class="books-list_item">
       <img :src="book.cover_image" :alt="book.name" v-if="book.cover_image">

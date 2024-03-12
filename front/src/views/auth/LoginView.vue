@@ -36,13 +36,19 @@ const login = async (e) => {
       .then(res => {
         if (res.status === 200) {
           sessionStorage.setItem('token', res.data.token);
+
+          // дар и холат редирект мешава дар уча нишон намета бояд попап глобални боша
+          showError.value = true;
+          errorMessage.value = "'ok'";
+
           router.push({name: 'home'});
         }
       })
       .catch(error => {
         showError.value = true;
         if (error.response.status !== 200) {
-          errorMessage.value = error.response.data.error;
+          console.log('error.response.data', error.message)
+          errorMessage.value = error.message;
         }
       });
 };
@@ -95,7 +101,7 @@ const resetError = () => {
         {{ $t('label.create_account') }}
       </router-link>
     </form>
-    <Popup v-if="showError" :message="errorMessage" @close="resetError"/>
+    <Popup v-if="showError" :message="{errorMessage}" @close="resetError"/>
   </main>
 </template>
 
