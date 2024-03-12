@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class AuthorService
 {
@@ -122,6 +123,11 @@ class AuthorService
     public function uploadFile(UploadedFile|null $file, $author): JsonResponse
     {
         if ($file?->isValid()) {
+
+            if ($author->photo_link) {
+                Log::info('author log', ['old author image was deleted: ' . Storage::delete($author->photo_link)]);
+            }
+
             $path = $file->store('imgs');
             $author->photo_link = config('proj_env.STORAGE_PATH') . $path;
             $author->save();

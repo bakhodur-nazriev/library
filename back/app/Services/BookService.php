@@ -99,6 +99,7 @@ class BookService
             Log::info('uploadFile: ' . $e->getMessage());
             throw new Exception('file was not uploaded look in logs');
         }
+        return response()->json(['message' => 'somethng went wrong'], 500);
 
     }
 
