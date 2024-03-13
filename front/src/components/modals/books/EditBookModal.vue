@@ -191,9 +191,7 @@ onMounted(() => {
             @change="handleImageChange"
         />
       </el-form-item>
-      <el-form-item
-          :label="`${$t('titles.table_titles.books.file')}`"
-      >
+      <el-form-item :label="`${$t('titles.table_titles.books.file')}`">
         <input
             type="file"
             accept=".pdf"
@@ -257,6 +255,7 @@ onMounted(() => {
 
 .el-form--label-top .el-form-item {
   width: -webkit-fill-available;
+  width: -moz-available;
   margin-bottom: 0;
 }
 </style>

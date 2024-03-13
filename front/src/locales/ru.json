@@ -49,7 +49,7 @@
         "language": "Язык",
         "publish_date": "Дата выхода",
         "added_date": "Дата добавление",
-        "file": "PDF",
+        "file": "Файл",
         "cover_image": "Обложка книги",
         "actions": "Действия"
       },
@@ -116,7 +116,8 @@
     "cancel": "Отмена",
     "read_more": "Читать далее...",
     "see_all": "Просмотреть все",
-    "choose_file": "Выбери файл"
+    "choose_file": "Выбери файл",
+    "pick_a_date": "Выберите дату"
   },
   "label": {
     "create_account": "Создать аккаунт",
@@ -147,7 +148,8 @@
     "remove_message": "Вы действительно хотите удалить этот запись ?"
   },
   "validation": {
-    "only_jpg_png_files_allowed": "Разрешены только файлы jpg/png."
+    "only_jpg_png_files_allowed": "Разрешены только файлы jpg/png.",
+    "please_enter_the_title": "Пожалуйста, введите название"
   },
   "footer": {
     "title": "Медико-социальный институт Таджикистана , Республика Таджикистан, г.Душанбе, ул. Клары Сеткиной, 2."

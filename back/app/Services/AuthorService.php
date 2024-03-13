@@ -15,9 +15,9 @@ class AuthorService
 
     public function paginate(array $attributes): JsonResponse
     {
-        $perPage = $attributes['per_page']?? 10;
-        $page = $attributes['page']?? 1 ;
-        $order = $attributes['order']?? 'asc';
+        $perPage = $attributes['per_page'] ?? 10;
+        $page = $attributes['page'] ?? 1;
+        $order = $attributes['order'] ?? 'asc';
 
 
         $authors = Author::with('books')
@@ -44,10 +44,10 @@ class AuthorService
         try {
             return DB::transaction(function () use ($attributes, $file) {
                 $author = new Author();
-                $author->initials = $attributes['initials']?? null;
-                $author->date_of_birth = isset($attributes['date_of_birth']) ? $this->parseDate($attributes['date_of_birth']): null;
-                $author->nationality = $attributes['nationality']?? null;
-                $author->biography = $attributes['biography']?? null;
+                $author->initials = $attributes['initials'] ?? null;
+                $author->date_of_birth = isset($attributes['date_of_birth']) ? $this->parseDate($attributes['date_of_birth']) : null;
+                $author->nationality = $attributes['nationality'] ?? null;
+                $author->biography = $attributes['biography'] ?? null;
                 $author->save();
 
                 if (isset($attributes['book_ids']) && count($attributes['book_ids']) > 0) {
@@ -83,7 +83,7 @@ class AuthorService
 
     public static function attachBooks($author, array $bookIds): void
     {
-        if(count($bookIds) > 0) {
+        if (count($bookIds) > 0) {
             $author->books()->attach($bookIds);
         }
     }
@@ -142,7 +142,7 @@ class AuthorService
     public function getAll(): JsonResponse
     {
 
-        $authors = Author::with('books')
+        $authors = Author::query()->select('id', 'initials')
             ->get();
 
         return response()->json($authors);

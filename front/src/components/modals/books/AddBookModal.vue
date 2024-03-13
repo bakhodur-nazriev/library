@@ -3,6 +3,8 @@ import {onMounted, ref} from 'vue';
 import {getFormData} from "../../../utils.js";
 import axios from "axios";
 import Popup from "../../Popup.vue";
+import i18n from "../../../i18n.js";
+
 
 const emit = defineEmits(['cancel', 'reloadData']);
 const errorMessage = ref('');
@@ -24,11 +26,18 @@ const loading = ref(false);
 const authors = ref([]);
 const formRules = {
   title: [
-    {required: true, message: 'Please enter the title', trigger: 'blur'},
+    {
+      required: true,
+      message: i18n.global.t('validation.please_enter_the_title'),
+      trigger: 'blur'
+    },
   ]
 };
 const handleFileChange = (e) => {
   book.value.file = e.target.files[0];
+};
+const handleImageChange = (e) => {
+  book.value.cover_image = e.target.files[0];
 };
 const addBook = async () => {
   loading.value = true;
@@ -67,7 +76,7 @@ const getAuthors = async () => {
       .get('/authors/all', {headers})
       .then(res => {
         if (res.status === 200 || res.status === 201) {
-          authors.value = res.data.data;
+          authors.value = res.data;
         }
       })
       .catch(error => {
@@ -102,11 +111,10 @@ onMounted(() => {
         @click.stop
         class="modal"
         :model="book"
-        v-loading="loading"
         label-width="auto"
-
         label-position="top"
         status-icon
+        :rules="formRules"
     >
       <h1 class="modal-title">{{ $t('label.add_book') }}</h1>
       <el-form-item
@@ -152,16 +160,30 @@ onMounted(() => {
         <el-input v-model="book.pages" type="number"/>
       </el-form-item>
       <el-form-item
-          :label="`${$t('titles.table_titles.books.cover_image')}`"
-          prop="cover_image"
-      >
-
-      </el-form-item>
-      <el-form-item
           :label="`${$t('titles.table_titles.books.publisher')}`"
           prop="publisher"
       >
         <el-input v-model="book.publisher"/>
+      </el-form-item>
+      <el-form-item
+          :label="`${$t('titles.table_titles.books.cover_image')}`"
+          prop="cover_image"
+      >
+        <input
+            type="file"
+            accept="image/*"
+            @change="handleImageChange"
+        />
+      </el-form-item>
+      <el-form-item
+          :label="`${$t('titles.table_titles.books.file')}`"
+          prop="file"
+      >
+        <input
+            type="file"
+            accept=".pdf"
+            @change="handleFileChange"
+        />
       </el-form-item>
       <el-form-item
           :label="`${$t('titles.table_titles.books.genre')}`"
@@ -179,16 +201,14 @@ onMounted(() => {
           :label="`${$t('titles.table_titles.books.publish_date')}`"
           prop="publish_date"
       >
-        <el-date-picker format="YYYY-MM-DD" type="date" v-model="book.published_at"/>
+        <el-date-picker
+            format="YYYY-MM-DD"
+            type="date"
+            v-model="book.published_at"
+            :placeholder="`${$t('buttons.pick_a_date')}`"
+        />
       </el-form-item>
-      <el-form-item
-          :label="`${$t('titles.table_titles.books.file')}`"
-          prop="file"
-      >
-        <el-input @change="handleFileChange" type="file"/>
-      </el-form-item>
-
-      <el-form-item>
+      <el-form-item class="buttons-block">
         <el-button @click="addBook" type="primary">{{ $t('buttons.save') }}</el-button>
         <el-button @click="emitCancel">{{ $t('buttons.cancel') }}</el-button>
       </el-form-item>
@@ -198,6 +218,12 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
+.el-form--label-top .el-form-item {
+  width: -webkit-fill-available;
+  width: -moz-available;
+  margin-bottom: 0;
+}
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -219,7 +245,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 10px;
   overflow-y: auto;
   max-height: -webkit-fill-available;
   max-height: -moz-available;
@@ -229,38 +255,10 @@ onMounted(() => {
     margin: 0;
   }
 
-  .input-list,
-  .button-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .input-list {
+  .buttons-block {
     display: flex;
-    flex-direction: column;
-    gap: 15px;
-    width: inherit;
-
-    &__item {
-      input {
-        background-color: var(--color-white);
-        border-radius: 8px;
-        border: 1px solid var(--color-gray);
-        box-sizing: border-box;
-        color: var(--color-gray);
-        font-size: 14px;
-        outline: none;
-        padding: 12px 15px;
-        transition: border-color .2s cubic-bezier(.645, .045, .355, 1);
-        width: 100%;
-      }
-    }
+    justify-content: center;
+    width: auto;
   }
-}
-
-.el-form--label-top .el-form-item {
-  width: -webkit-fill-available;
-  margin-bottom: 0;
 }
 </style>
