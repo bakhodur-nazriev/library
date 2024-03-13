@@ -5,7 +5,7 @@ export default defineConfig({
     devServer: {
         proxy: {
             '/api': {
-                target: 'https://2.56.212.189',
+                target: 'https://2.56.212.189:8081',
                 changeOrigin: true,
                 secure: false
             }
