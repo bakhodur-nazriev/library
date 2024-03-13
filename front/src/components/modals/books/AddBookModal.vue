@@ -44,6 +44,8 @@ const addBook = async () => {
   const payload = getFormData(book.value);
   const authToken = sessionStorage.getItem('token');
   const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': '*',
     "Authorization": `Bearer ${authToken}`
   };
 
@@ -69,6 +71,7 @@ const getAuthors = async () => {
   const headers = {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Methods': '*',
+    'Access-Control-Allow-Origin': '*',
     'Authorization': `Bearer ${authToken}`
   };
 
@@ -199,7 +202,7 @@ onMounted(() => {
       </el-form-item>
       <el-form-item
           :label="`${$t('titles.table_titles.books.publish_date')}`"
-          prop="publish_date"
+          prop="publish_at"
       >
         <el-date-picker
             format="YYYY-MM-DD"

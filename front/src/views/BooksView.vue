@@ -17,6 +17,8 @@ const getBooks = async () => {
   const authToken = sessionStorage.getItem('token');
   const headers = {
     'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': '*',
     'Authorization': `Bearer ${authToken}`
   };
 

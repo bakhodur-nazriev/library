@@ -15,7 +15,9 @@ const addUser = async () => {
 
   const authToken = sessionStorage.getItem('token');
   const headers = {
-    "Authorization": `Bearer ${authToken}`
+    "Authorization": `Bearer ${authToken}`,
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': '*',
   };
 
   await axios

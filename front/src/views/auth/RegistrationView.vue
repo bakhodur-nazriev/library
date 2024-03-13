@@ -23,7 +23,11 @@ const register = async (e) => {
     name: name.value
   });
 
-  const headers = {'Content-Type': 'multipart/form-data'}
+  const headers = {
+    'Content-Type': 'multipart/form-data',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': '*',
+  }
 
   await axios
       .post('/register', payload, {headers})

@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref} from 'vue';
+import {onMounted, ref, watch} from 'vue';
 import {getFormData} from "../../../utils.js";
 import axios from "axios";
 import Popup from "../../Popup.vue";
@@ -10,11 +10,7 @@ const book = ref({
   title: props.selectedBook.title,
   // incoming link is just path not pdf file
   file: '',
-  author_ids: (Array.isArray(props.selectedBook.author_ids)
-      ? [...props.selectedBook.author_ids]
-      : props.selectedBook.author_ids
-          ? props.selectedBook.author_ids.split(',').map(author => parseInt(author.trim(), 10))
-          : []),
+  authors: props.selectedBook.authors.map(author => author.id),
   description: props.selectedBook.description,
   ISBN: props.selectedBook.isbn,
   publisher: props.selectedBook.publisher,
@@ -34,6 +30,11 @@ const formRules = {
 const formRef = ref(null);
 const showError = ref(false);
 const errorMessage = ref('');
+const selectedAuthors = ref(book.value.authors);
+
+watch(selectedAuthors, (newValue, oldValue) => {
+  console.log(newValue, oldValue);
+});
 
 const handleFileChange = (e) => {
   book.value.file = e.target.files[0];
@@ -48,7 +49,9 @@ const editData = async () => {
   const authToken = sessionStorage.getItem('token');
   const headers = {
     'Authorization': `Bearer ${authToken}`,
-    'Content-Type': 'multipart/form-data'
+    'Content-Type': 'multipart/form-data',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': '*',
   };
   const isValid = await formRef.value.validate();
 
@@ -78,14 +81,15 @@ const getAuthors = async () => {
   const headers = {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Methods': '*',
+    'Access-Control-Allow-Origin': '*',
     'Authorization': `Bearer ${authToken}`
   };
 
   await axios
-      .get('/authors?per_page=15&page=1', {headers})
+      .get('/authors/all', {headers})
       .then(res => {
         if (res.status === 200 || res.status === 201) {
-          authors.value = Array.isArray(res.data.data) ? res.data.data : [];
+          authors.value = Array.isArray(res.data) ? res.data : [];
         }
       })
       .catch(err => {
@@ -98,22 +102,16 @@ const emitClose = () => {
 
 onMounted(() => {
   getAuthors();
-  if (typeof props.selectedBook.author === 'string') {
-    const authorsArray = props.selectedBook.author.split(',').map(author => author.trim());
-    book.value.author = authorsArray
-        .filter(author => author !== '')
-        .map(author => isNaN(author) ? author : parseInt(author, 10));
-  }
 });
 </script>
 
 <template>
   <div
-      class="modal-overlay"
       @click="emitClose"
       v-loading="loading"
-      element-loading-background="rgba(0, 0, 0, 0.7)"
+      class="modal-overlay"
       :element-loading-text="$t('loading')"
+      element-loading-background="rgba(0, 0, 0, 0.7)"
   >
     <el-form
         status-icon
@@ -135,14 +133,19 @@ onMounted(() => {
       </el-form-item>
       <el-form-item
           :label="`${$t('titles.table_titles.books.author')}`"
-          prop="author"
+          prop="authors"
       >
-        <el-select multiple v-model="book.author_ids" filterable clearable>
+        <el-select
+            multiple
+            clearable
+            filterable
+            v-model="selectedAuthors"
+        >
           <el-option
               v-for="author in authors"
               :key="author.id"
               :label="author.initials"
-              :value="parseInt(author.id, 10)"
+              :value="author.id"
           ></el-option>
         </el-select>
       </el-form-item>

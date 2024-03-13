@@ -65,7 +65,7 @@ const getBooks = async () => {
   loading.value = true;
   const authToken = sessionStorage.getItem("token");
   const headers = {
-    'Content-type': 'applications/json',
+    'Content-type': 'application/json',
     'Authorization': `Bearer ${authToken}`,
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': '*'
@@ -77,7 +77,7 @@ const getBooks = async () => {
         tableRows.value = res.data.data.map(book => ({
           id: book.id,
           title: book.title,
-          author: book.authors.map(author => author.initials).join(', '),
+          authors: book.authors,
           description: book.description,
           isbn: book.ISBN,
           publisher: book.publisher,
