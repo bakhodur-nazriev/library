@@ -39,7 +39,7 @@ const getAuthors = async () => {
   };
 
   await axios
-      .get(`/authors?per_page=${itemsPerPage.value}&page=${currentPage.value}`, {headers})
+      .get(`/authors?per_page=${itemsPerPage.value}&page=${currentPage.value}&order=desc`, {headers})
       .then(res => {
         if (res.status === 200 || res.status === 201) {
           tableRows.value = res.data.data.map(author => ({
