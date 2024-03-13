@@ -90,6 +90,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('authors')
         ->group(function () {
             Route::get('', [AuthorController::class, 'index']);
+            Route::get('/all', [AuthorController::class, 'all']);
             Route::get('/{id}', [AuthorController::class, 'showById']);
             Route::get('search/{search_key}', [AuthorController::class, 'search']);
 

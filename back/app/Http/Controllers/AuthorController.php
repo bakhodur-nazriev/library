@@ -20,7 +20,12 @@ class AuthorController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        return $this->authorService->get($request->all());
+        return $this->authorService->paginate($request->all());
+    }
+
+    public function all(Request $request): JsonResponse
+    {
+        return $this->authorService->getAll();
     }
 
     public function search(string $initials): array

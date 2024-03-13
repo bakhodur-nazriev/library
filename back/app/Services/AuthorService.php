@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
 class AuthorService
 {
 
-    public function get(array $attributes): JsonResponse
+    public function paginate(array $attributes): JsonResponse
     {
         $perPage = $attributes['per_page']?? 10;
         $page = $attributes['page']?? 1 ;
@@ -137,5 +137,14 @@ class AuthorService
 
         Log::info('is valid file:' . $file?->isValid());
         return response()->json(['error' => 'Invalid file'], 400);
+    }
+
+    public function getAll(): JsonResponse
+    {
+
+        $authors = Author::with('books')
+            ->get();
+
+        return response()->json($authors);
     }
 }
