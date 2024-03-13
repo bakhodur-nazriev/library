@@ -4,16 +4,9 @@ import {getFormData} from "../../../utils.js";
 import axios from "axios";
 import Popup from "../../Popup.vue";
 
-//popup
+const emit = defineEmits(['cancel', 'reloadData']);
 const errorMessage = ref('');
 const showError = ref(false);
-const resetError = () => {
-  showError.value = false;
-  errorMessage.value = '';
-};
-//popup
-
-const emit = defineEmits(['cancel', 'reloadData']);
 const book = ref({
   title: '',
   isbn: '',
@@ -29,6 +22,11 @@ const book = ref({
 });
 const loading = ref(false);
 const authors = ref([]);
+const formRules = {
+  title: [
+    {required: true, message: 'Please enter the title', trigger: 'blur'},
+  ]
+};
 const handleFileChange = (e) => {
   book.value.file = e.target.files[0];
 };
@@ -66,7 +64,7 @@ const getAuthors = async () => {
   };
 
   await axios
-      .get('/authors?per_page=15&page=1', {headers})
+      .get('/authors/all', {headers})
       .then(res => {
         if (res.status === 200 || res.status === 201) {
           authors.value = res.data.data;
@@ -82,6 +80,10 @@ const getAuthors = async () => {
 const emitCancel = () => {
   emit('cancel');
 };
+const resetError = () => {
+  showError.value = false;
+  errorMessage.value = '';
+};
 
 onMounted(() => {
   getAuthors();
@@ -89,110 +91,109 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="modal-overlay" @click="emitCancel">
-    <div class="modal" @click.stop v-loading="loading" :element-loading-text="$t('loading')">
+  <div
+      class="modal-overlay"
+      @click="emitCancel"
+      v-loading="loading"
+      :element-loading-text="$t('loading')"
+      element-loading-background="rgba(0, 0, 0, 0.7)"
+  >
+    <el-form
+        @click.stop
+        class="modal"
+        :model="book"
+        v-loading="loading"
+        label-width="auto"
+
+        label-position="top"
+        status-icon
+    >
       <h1 class="modal-title">{{ $t('label.add_book') }}</h1>
-      <ul class="input-list">
-        <li class="input-list__item">
-          <input
-              type="text"
-              v-model="book.title"
-              :placeholder="`${$t('titles.table_titles.books.name')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <el-select
-              v-model="book.author"
-              multiple
-              :placeholder="`${$t('titles.table_titles.books.author')}`"
-              filterable
-              clearable
-          >
-            <el-option
-                v-for="author in authors"
-                :key="author.id"
-                :label="author.initials"
-                :value="author.id"
-            ></el-option>
-          </el-select>
-        </li>
-        <li class="input-list__item">
-          <input
-              type="text"
-              v-model="book.description"
-              :placeholder="`${$t('titles.table_titles.books.description')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              type="number"
-              v-model="book.isbn"
-              :placeholder="`${$t('titles.table_titles.books.isbn')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              type="number"
-              v-model="book.pages"
-              :placeholder="`${$t('titles.table_titles.books.pages')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              type="text"
-              v-model="book.cover_image"
-              :placeholder="`${$t('titles.table_titles.books.cover_image')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              v-model="book.publisher"
-              type="text"
-              :placeholder="`${$t('titles.table_titles.books.publisher')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              type="text"
-              v-model="book.genre"
-              :placeholder="`${$t('titles.table_titles.books.genre')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              type="text"
-              v-model="book.language"
-              :placeholder="`${$t('titles.table_titles.books.language')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              type="date"
-              v-model="book.published_at"
-              :placeholder="`${$t('titles.table_titles.books.publish_date')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              type="file"
-              accept=".pdf"
-              @change="handleFileChange"
-              :placeholder="`${$t('titles.table_titles.books.file')}`"
-          />
-        </li>
-      </ul>
-      <ul class="button-list">
-        <li class="button-list__item">
-          <button @click="addBook">{{ $t('buttons.save') }}</button>
-        </li>
-        <li class="button-list__item">
-          <button @click="emitCancel">{{ $t('buttons.cancel') }}</button>
-        </li>
-      </ul>
-    </div>
+      <el-form-item
+          :label="`${$t('titles.table_titles.books.name')}`"
+          prop="title"
+      >
+        <el-input v-model="book.title"/>
+      </el-form-item>
+      <el-form-item
+          :label="`${$t('titles.table_titles.books.author')}`"
+          prop="author"
+      >
+        <el-select
+            multiple
+            clearable
+            filterable
+            v-model="book.author"
+        >
+          <el-option
+              v-for="author in authors"
+              :key="author.id"
+              :label="author.initials"
+              :value="author.id"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item
+          :label="`${$t('titles.table_titles.books.description')}`"
+          prop="description"
+      >
+        <el-input v-model="book.description"/>
+      </el-form-item>
+      <el-form-item
+          :label="`${$t('titles.table_titles.books.isbn')}`"
+          prop="isbn"
+      >
+        <el-input type="number" v-model="book.isbn"/>
+      </el-form-item>
+      <el-form-item
+          :label="`${$t('titles.table_titles.books.pages')}`"
+          prop="pages"
+      >
+        <el-input v-model="book.pages" type="number"/>
+      </el-form-item>
+      <el-form-item
+          :label="`${$t('titles.table_titles.books.cover_image')}`"
+          prop="cover_image"
+      >
 
+      </el-form-item>
+      <el-form-item
+          :label="`${$t('titles.table_titles.books.publisher')}`"
+          prop="publisher"
+      >
+        <el-input v-model="book.publisher"/>
+      </el-form-item>
+      <el-form-item
+          :label="`${$t('titles.table_titles.books.genre')}`"
+          prop=""
+      >
+        <el-input v-model="book.genre"/>
+      </el-form-item>
+      <el-form-item
+          :label="`${$t('titles.table_titles.books.language')}`"
+          prop="language"
+      >
+        <el-input v-model="book.language"/>
+      </el-form-item>
+      <el-form-item
+          :label="`${$t('titles.table_titles.books.publish_date')}`"
+          prop="publish_date"
+      >
+        <el-date-picker format="YYYY-MM-DD" type="date" v-model="book.published_at"/>
+      </el-form-item>
+      <el-form-item
+          :label="`${$t('titles.table_titles.books.file')}`"
+          prop="file"
+      >
+        <el-input @change="handleFileChange" type="file"/>
+      </el-form-item>
+
+      <el-form-item>
+        <el-button @click="addBook" type="primary">{{ $t('buttons.save') }}</el-button>
+        <el-button @click="emitCancel">{{ $t('buttons.cancel') }}</el-button>
+      </el-form-item>
+    </el-form>
     <Popup v-if="showError" :message="errorMessage" @close="resetError"/>
-
   </div>
 </template>
 
@@ -219,6 +220,9 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   gap: 20px;
+  overflow-y: auto;
+  max-height: -webkit-fill-available;
+  max-height: -moz-available;
 
   &-title {
     font-size: 26px;
@@ -253,23 +257,10 @@ onMounted(() => {
       }
     }
   }
+}
 
-  .button-list {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-
-    &__item {
-      button {
-        font-size: 16px;
-        border: none;
-        background-color: var(--color-primary);
-        border-radius: 8px;
-        padding: 8px 15px;
-        color: var(--color-white);
-        cursor: pointer;
-      }
-    }
-  }
+.el-form--label-top .el-form-item {
+  width: -webkit-fill-available;
+  margin-bottom: 0;
 }
 </style>

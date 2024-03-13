@@ -111,22 +111,26 @@ onMounted(() => {
   <div
       class="modal-overlay"
       @click="emitClose"
+      v-loading="loading"
       element-loading-background="rgba(0, 0, 0, 0.7)"
       :element-loading-text="$t('loading')"
   >
     <el-form
+        status-icon
+        @click.stop
         ref="formRef"
+        class="modal"
         style="max-width: 600px"
         :model="book"
         :rules="formRules"
-        status-icon
         label-width="auto"
-        class="modal"
         label-position="top"
-        @click.stop
     >
       <h1 class="modal-title">{{ $t('label.edit_book') }}</h1>
-      <el-form-item :label="`${$t('titles.table_titles.books.name')}`" prop="title">
+      <el-form-item
+          :label="`${$t('titles.table_titles.books.name')}`"
+          prop="title"
+      >
         <el-input v-model="book.title"/>
       </el-form-item>
       <el-form-item
@@ -178,14 +182,18 @@ onMounted(() => {
       >
         <el-input v-model="book.language"/>
       </el-form-item>
-      <el-form-item :label="`${$t('titles.table_titles.books.cover_image')}`">
+      <el-form-item
+          :label="`${$t('titles.table_titles.books.cover_image')}`"
+      >
         <input
             type="file"
             accept="image/*"
             @change="handleImageChange"
         />
       </el-form-item>
-      <el-form-item :label="`${$t('titles.table_titles.books.file')}`">
+      <el-form-item
+          :label="`${$t('titles.table_titles.books.file')}`"
+      >
         <input
             type="file"
             accept=".pdf"
@@ -232,7 +240,7 @@ onMounted(() => {
   gap: 10px;
   overflow-y: auto;
   max-height: -webkit-fill-available;
-  max-height: -moz-available;;
+  max-height: -moz-available;
 
   &-title {
     font-size: 26px;
@@ -244,24 +252,6 @@ onMounted(() => {
     list-style: none;
     padding: 0;
     margin: 0;
-  }
-
-  .button-list {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-
-    &__item {
-      button {
-        font-size: 16px;
-        border: none;
-        background-color: var(--color-primary);
-        border-radius: 8px;
-        padding: 8px 15px;
-        color: var(--color-white);
-        cursor: pointer;
-      }
-    }
   }
 }
 

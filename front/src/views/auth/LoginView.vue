@@ -86,7 +86,6 @@ const login = async (e) => {
           type="submit"
           class="login-form__button"
           v-loading="loading"
-          :element-loading-text="$t('loading')"
       >
         {{ $t('buttons.login') }}
       </button>
