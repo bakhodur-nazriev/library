@@ -26,7 +26,7 @@ const login = async (e) => {
     password: password.value
   });
 
-  const httpsAgent = new https.Agent({ rejectUnauthorized: false });
+  // const httpsAgent = new https.Agent({ rejectUnauthorized: false });
 
   const headers = {
     'Content-Type': 'application/json',
@@ -35,7 +35,7 @@ const login = async (e) => {
   };
 
   await axios
-      .post('/login', payload,{headers, httpsAgent})
+      .post('/login', payload,{headers})
       .then(res => {
         loading.value = false;
         if (res.status === 200) {
