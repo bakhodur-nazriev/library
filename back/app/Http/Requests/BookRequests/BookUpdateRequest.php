@@ -20,11 +20,11 @@ class BookUpdateRequest extends FormRequest
         return [
             'title' => 'required|string|max:100|min:3',
             'description' => 'nullable|string|max:300',
-            'ISBN' => 'nullable|numeric|max:200000000',
+            'ISBN' => 'nullable',
             'published_at' => 'nullable|date',
             'genre' => 'nullable|string|max:20',
             'language' => 'nullable|string|max:20',
-            'pages' => 'nullable|numeric|max:10000',
+            'pages' => 'nullable',
             'publisher' => 'nullable|string|max:100',
             'file' => 'nullable|file|mimes:pdf,docx,epub,mobi,djvu|max:51200',
             'author_ids' => 'nullable|array'
