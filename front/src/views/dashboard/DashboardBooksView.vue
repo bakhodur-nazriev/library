@@ -77,7 +77,7 @@ const getBooks = async () => {
         tableRows.value = res.data.data.map(book => ({
           id: book.id,
           title: book.title,
-          authors: book.authors,
+          authors: book.authors.map(author => author.initials).join(', '),
           description: book.description,
           isbn: book.ISBN,
           publisher: book.publisher,

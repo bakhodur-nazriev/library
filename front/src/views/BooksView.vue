@@ -105,7 +105,7 @@ onMounted(() => {
         </div>
 
         <section class="book-block">
-          <SampleBook :books="books"/>
+          <SampleBook :books="books" :gridColumns="2"/>
         </section>
 
         <div class="pagination-block">
@@ -295,6 +295,19 @@ onMounted(() => {
     .books-section {
       padding: 0 15px;
 
+      //.book-block {
+      .test {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+      }
+
+      //}
+
       .main-right-side-title {
         margin: 5px 0 10px 0;
         font-size: 18px;
@@ -359,5 +372,4 @@ onMounted(() => {
     }
   }
 }
-
 </style>

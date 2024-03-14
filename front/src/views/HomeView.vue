@@ -77,7 +77,7 @@ onMounted(() => {
     <CustomDivider :title="$t('label.books_latest')"/>
 
     <section class="books-section">
-      <SampleBook :books="books"/>
+      <SampleBook :books="books" :gridColumns="3"/>
     </section>
 
     <CustomDivider :title="$t('label.authors_latest')"/>
@@ -111,7 +111,7 @@ onMounted(() => {
   .books-section {
     margin-bottom: 60px;
 
-    .books-list {
+    ul {
       grid-template-columns: repeat(3, 1fr);
     }
   }

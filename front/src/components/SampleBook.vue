@@ -1,9 +1,12 @@
 <script setup>
-import {ref} from "vue";
+import {ref, defineProps} from "vue";
 import axios from "axios";
 import Popup from "./Popup.vue";
 
-const props = defineProps(['books']);
+const props = defineProps({
+  books: Array,
+  gridColumns: Number
+});
 const errorMessage = ref('');
 const showError = ref(false);
 const loading = ref(false);
@@ -57,13 +60,15 @@ const getBook = async (id) => {
         loading.value = false;
       })
 }
-
 </script>
 
 <template>
-  <Popup v-if="showError" :message="errorMessage"/>
-
-  <ul class="books-list" v-loading="loading" :element-loading-text="$t('loading')">
+  <ul
+      class="books-list"
+      v-loading="loading"
+      :element-loading-text="$t('loading')"
+      :class="{ 'three-columns': props.gridColumns === 3, 'two-columns': props.gridColumns === 2 }"
+  >
     <li v-for="(book, i) in books" :key="i" class="books-list_item">
       <img :src="book.cover_image" :alt="book.name" v-if="book.cover_image">
       <div v-else class="book-cover-block">
@@ -90,34 +95,17 @@ const getBook = async (id) => {
       </div>
     </li>
   </ul>
+
+  <Popup v-if="showError" :message="errorMessage"/>
 </template>
 
 <style scoped lang="scss">
-.custom-file-upload {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  display: inline-block;
-  padding: 6px 12px;
-  cursor: pointer;
-  background: #4A8FED;
-  padding: 10px;
-  color: #fff;
-  font: inherit;
-  font-size: 16px;
-  font-weight: bold;
-}
-
-input[type="file"] {
-  display: none;
-}
-
 .books-list {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
   padding: 0;
   margin: 0;
   list-style: none;
   width: 100%;
+  display: grid;
   gap: 30px;
 
   &_item {
@@ -184,5 +172,14 @@ input[type="file"] {
       color: var(--color-white);
     }
   }
+
+}
+
+.three-columns {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.two-columns {
+  grid-template-columns: repeat(2, 1fr);
 }
 </style>

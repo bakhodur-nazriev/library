@@ -10,7 +10,7 @@ const book = ref({
   title: props.selectedBook.title,
   // incoming link is just path not pdf file
   file: '',
-  authors: props.selectedBook.authors.map(author => author.id),
+  authors: props.selectedBook.authors,
   description: props.selectedBook.description,
   ISBN: props.selectedBook.isbn,
   publisher: props.selectedBook.publisher,
