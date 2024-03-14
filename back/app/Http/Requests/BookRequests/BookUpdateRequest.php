@@ -21,7 +21,7 @@ class BookUpdateRequest extends FormRequest
             'title' => 'required|string|max:100|min:3',
             'description' => 'nullable|string|max:300',
             'ISBN' => 'nullable',
-            'published_at' => 'nullable|date',
+            'published_at' => 'nullable',
             'genre' => 'nullable|string|max:20',
             'language' => 'nullable|string|max:20',
             'pages' => 'nullable',
