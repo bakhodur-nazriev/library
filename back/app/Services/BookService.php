@@ -69,15 +69,20 @@ class BookService
 
     private function parseDate(string $dateString): ?string
     {
-        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateString)) {
-            return $dateString;
-        }
+        try {
+            if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateString)) {
+                return $dateString;
+            }
 
-        $date = Carbon::createFromFormat('D M d Y H:i:s e+', $dateString);
+            $date = Carbon::createFromFormat('D M d Y H:i:s e+', $dateString);
 
-        if ($date instanceof Carbon) {
-            return $date->toDateString();
-        } else {
+            if ($date instanceof Carbon) {
+                return $date->toDateString();
+            } else {
+                return null;
+            }
+        } catch (Exception $e) {
+            Log::info('parseDate', ['dateString' => $dateString, 'exception getMessage' => $e->getMessage()]);
             return null;
         }
     }

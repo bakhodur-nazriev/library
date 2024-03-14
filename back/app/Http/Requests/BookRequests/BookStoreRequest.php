@@ -17,11 +17,11 @@ class BookStoreRequest extends FormRequest
         return [
             'title' => 'required|string|max:100|min:3',
             'description' => 'nullable|string|max:300',
-            'ISBN' => 'nullable|unique:books,ISBN|numeric|max:20000000000',
-            'published_at' => 'nullable|date',
+            'ISBN' => 'nullable',
+            'published_at' => 'nullable',
             'genre' => 'nullable|string|max:20',
             'language' => 'nullable|string|max:20',
-            'pages' => 'nullable|integer|max:1000',
+            'pages' => 'nullable',
             'publisher' => 'nullable|string|max:100',
             'file' => 'nullable|file|mimes:pdf,docx,epub,mobi,djvu|max:512000'
         ];
