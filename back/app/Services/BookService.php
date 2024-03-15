@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Book;
+use App\Models\BookSearchKey;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
@@ -31,7 +32,7 @@ class BookService
     public function fuzzySearch(array $attributes): Collection|array
     {
         $search_key = $attributes['search_key'];
-        $results =  DB::select(
+        $results = DB::select(
             "select
                         tab.id
                         from (select
@@ -205,6 +206,9 @@ class BookService
         return DB::transaction(function () use ($attributes, $file, $id, $coverImage) {
 
             $book = $this->updateBook($attributes, $id);
+
+            (new SearchKeysService($book))->update();
+
             $this->uploadBookFileAndRmOld($file, $book);
             $this->uploadBookCoverImgAndRmOld($coverImage, $book);
             $this->addAuthors($attributes, $book);
@@ -217,6 +221,9 @@ class BookService
     {
         return DB::transaction(function () use ($attributes, $file, $coverImg) {
             $book = $this->storeBook($attributes);
+
+            (new SearchKeysService($book))->store();
+
             if ($file) {
                 $this->uploadFile($file, $book);
             }
@@ -273,4 +280,6 @@ class BookService
             Log::info(['Book service update:image was not uploaded' => $coverImage?->isValid()]);
         }
     }
+
+
 }
