@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Author;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -29,14 +30,25 @@ class AuthorService
 
     public function fuzzySearch(array $attributes): array
     {
-        $initials = $attributes['initials'];
+        $search_key = $attributes['initials'];
 
-        return DB::select(
+        $results = DB::select(
             "select *
-                   from authors
-                   where initials % :initials;",
-            array('initials' => $initials)
+                   from authors_search_keys
+                   where search_key % :search_key;",
+            array('search_key' => $search_key)
         );
+
+        $extractedNumbers = [];
+        foreach ($results as $object) {
+            if (property_exists($object, 'author_id')) {
+                $extractedNumbers[] = $object->author_id;
+            }
+        }
+
+        return Author::query()
+            ->whereIn('id', $extractedNumbers)
+            ->get();
     }
 
     public function store(array $attributes, UploadedFile|null $file): JsonResponse
@@ -45,10 +57,12 @@ class AuthorService
             return DB::transaction(function () use ($attributes, $file) {
                 $author = new Author();
                 $author->initials = $attributes['initials'] ?? null;
-                $author->date_of_birth = isset($attributes['date_of_birth']) ? $this->parseDate($attributes['date_of_birth']) : null;
+                $author->date_of_birth = $this->parseDate($attributes['date_of_birth'] ?? null);
                 $author->nationality = $attributes['nationality'] ?? null;
                 $author->biography = $attributes['biography'] ?? null;
                 $author->save();
+                //
+                (new SearchKeysService($author))->store();
 
                 if (isset($attributes['book_ids']) && count($attributes['book_ids']) > 0) {
                     self::attachBooks($author, $attributes['book_ids']);
@@ -66,19 +80,31 @@ class AuthorService
         }
     }
 
-    private function parseDate(string $dateString): ?string
+    private function parseDate(?string $dateString): ?string
     {
-        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateString)) {
-            return $dateString;
-        }
+        if (
+            isset($attributes['date_of_birth']) &&
+            $attributes['date_of_birth'] != "null" &&
+            $attributes['date_of_birth'] != ""
+        ) {
+            try {
+                if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateString)) {
+                    return $dateString;
+                }
 
-        $date = Carbon::createFromFormat('D M d Y H:i:s e+', $dateString);
+                $date = Carbon::createFromFormat('D M d Y H:i:s e+', $dateString);
 
-        if ($date instanceof Carbon) {
-            return $date->toDateString();
-        } else {
-            return null;
+                if ($date instanceof Carbon) {
+                    return $date->toDateString();
+                } else {
+                    return null;
+                }
+            } catch (Exception $e) {
+                Log::info('parseDate', ['dateString' => $dateString, 'exception getMessage' => $e->getMessage()]);
+                return null;
+            }
         }
+        return null;
     }
 
     public static function attachBooks($author, array $bookIds): void
@@ -111,6 +137,8 @@ class AuthorService
         }
 
         $author->save();
+
+        (new SearchKeysService($author))->update();
 
         $this->uploadFile($file, $author);
 

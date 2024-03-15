@@ -26,7 +26,7 @@ class Author extends Model
 
     public function searchKeys(): HasMany
     {
-        return $this->hasMany(BookSearchKey::class, 'author_id', 'id');
+        return $this->hasMany(AuthorSearchKey::class, 'author_id', 'id');
     }
 
 }

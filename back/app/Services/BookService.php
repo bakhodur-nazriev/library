@@ -36,8 +36,8 @@ class BookService
             "select
                         tab.id
                         from (select
-	                        id
-                        from books
+	                        book_id as id
+                        from books_search_keys
                         where search_key % :search_key) as tab;",
             array('search_key' => $search_key)
         );
@@ -209,7 +209,8 @@ class BookService
 
             (new SearchKeysService($book))->update();
 
-            $this->uploadBookFileAndRmOld($file, $book);
+            if ($file) $this->uploadBookFileAndRmOld($file, $book);
+
             $this->uploadBookCoverImgAndRmOld($coverImage, $book);
             $this->addAuthors($attributes, $book);
 
@@ -250,9 +251,12 @@ class BookService
         }
     }
 
-    function uploadBookFileAndRmOld(?UploadedFile $file, Book $book): void
+    /**
+     * @throws Exception
+     */
+    function uploadBookFileAndRmOld(UploadedFile $file, Book $book): void
     {
-        if ($file?->isValid()) {
+        if ($file->isValid()) {
 
             if ($book->link) {
                 Log::info(['old file was deleted ' . Storage::delete($book->link)]);

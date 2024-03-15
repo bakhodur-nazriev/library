@@ -3,10 +3,12 @@
 namespace App\Services;
 
 use App\Models\Author;
+use App\Models\AuthorSearchKey;
 use App\Models\Book;
 use App\Models\BookSearchKey;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class SearchKeysService
 {
@@ -28,12 +30,9 @@ class SearchKeysService
     public function store(): void
     {
         foreach ($this->generateConcatenatedArray() as $searchKeyCombination) {
-            $skObj = new BookSearchKey();
-
-            Log::info(['qweqwe' => $this->modelTypeName() . '_id']);
-
+            $skObj = $this->searchKeyModel();
             $skObj->{$this->modelTypeName() . '_id'} = $this->model->id;
-            $skObj->{$this->modelTypeName() . '_search_key'} = $searchKeyCombination;
+            $skObj->search_key = Str::lower($searchKeyCombination);
             $skObj->save();
         }
 
@@ -60,6 +59,8 @@ class SearchKeysService
         if ($this->model instanceof Author) {
             return $this->model->initials;
         }
+
+        Log::info('searchKey wrong model type');
     }
 
     private function modelTypeName(): string
@@ -85,9 +86,22 @@ class SearchKeysService
     {
         $foreignKeyColumnName = $this->modelTypeName() . '_id';
 
-        BookSearchKey::query()
+        $this->searchKeyModel()::query()
             ->where($foreignKeyColumnName, $this->model->id)
             ->delete();
+    }
+
+    private function searchKeyModel()
+    {
+        if ($this->model instanceof Book) {
+            return new BookSearchKey();
+        }
+
+        if ($this->model instanceof Author) {
+            return new AuthorSearchKey();
+        }
+
+        Log::info('searchKeyModel wrong model type');
     }
 
 }
