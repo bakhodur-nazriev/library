@@ -36,7 +36,7 @@ class AuthController extends Controller
             $user = Auth::user();
             $token = $user->createToken('auth_token')->plainTextToken;
 
-            return response()->json(['token' => $token]);
+            return response()->json(['token' => $token, 'user' => ['name' => $user->name]]);
         } else {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
