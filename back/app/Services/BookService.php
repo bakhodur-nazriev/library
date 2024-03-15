@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Book;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -27,27 +28,29 @@ class BookService
         return response()->json($authors);
     }
 
-    public function fuzzySearch(array $attributes): array
+    public function fuzzySearch(array $attributes): Collection|array
     {
         $search_key = $attributes['search_key'];
-        return DB::select(
+        $results =  DB::select(
             "select
-                        tab.title,
-                        tab.description,
-                        tab.genre,
-                        tab.language,
-                        tab.publisher
-	                from (select
-	                        title,
-	                        description,
-	                        genre,
-	                        language,
-	                        publisher,
-                            similarity(search_key, :search_key) as sim
+                        tab.id
+                        from (select
+	                        id
                         from books
                         where search_key % :search_key) as tab;",
             array('search_key' => $search_key)
         );
+        $extractedNumbers = [];
+        foreach ($results as $object) {
+            if (property_exists($object, 'id')) {
+                $extractedNumbers[] = $object->id;
+            }
+        }
+
+        return Book::query()
+            ->with('authors')
+            ->whereIn('books.id', $extractedNumbers)
+            ->get();
 
     }
 

@@ -1,6 +1,9 @@
 <script setup>
-import LocalesDropdown from "./LocalesDropdown.vue";
 import {onMounted, onBeforeUnmount} from "vue";
+import LocalesDropdown from "./LocalesDropdown.vue";
+import {ArrowDown, UserFilled} from "@element-plus/icons-vue";
+import axios from "axios";
+import router from "../router/index.js";
 
 const handleScroll = () => {
   const navbar = document.querySelector('.main-navbar');
@@ -9,13 +12,30 @@ const handleScroll = () => {
     navbar.classList.toggle('has-background', shouldHaveBackground);
   }
 };
+const logout = async () => {
+  const authToken = sessionStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${authToken}`
+  };
+
+  await axios
+      .post('/logout', null, {headers})
+      .then(res => {
+        if (res.status === 200 || res.status === 201) {
+          sessionStorage.removeItem('token');
+          router.push({name: 'login'});
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+}
 
 window.addEventListener('scroll', handleScroll);
-
 onMounted(() => {
   handleScroll();
 });
-
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', handleScroll);
 });
@@ -60,8 +80,12 @@ onBeforeUnmount(() => {
             {{ $t('main_menu.contact') }}
           </router-link>
         </li>
-        <li>
+        <li class="navbar-list_item">
           <LocalesDropdown/>
+        </li>
+
+        <li class="navbar-list_item">
+          <el-button @click="logout">{{ $t('buttons.logout') }}</el-button>
         </li>
       </ul>
     </div>
@@ -133,5 +157,16 @@ onBeforeUnmount(() => {
       }
     }
   }
+}
+
+.example-showcase .el-dropdown + .el-dropdown {
+  margin-left: 15px;
+}
+
+.example-showcase .el-dropdown-link {
+  cursor: pointer;
+  color: var(--el-color-primary);
+  display: flex;
+  align-items: center;
 }
 </style>

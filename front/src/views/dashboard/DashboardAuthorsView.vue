@@ -119,10 +119,11 @@ onMounted(() => {
     />
     <div class="pagination-block">
       <el-pagination
-          class="custom-pagination"
           background
-          layout="prev, pager, next"
           :total="totalItems"
+          class="custom-pagination"
+          :page-size="itemsPerPage"
+          layout="prev, pager, next"
           :current-page.sync="currentPage"
           @current-change="handleCurrentPageChange"
       />

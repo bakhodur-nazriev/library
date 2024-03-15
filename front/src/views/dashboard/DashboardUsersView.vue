@@ -21,6 +21,9 @@ const showAddModal = ref(false);
 const showEditModal = ref(false);
 const selectedUserId = ref(0);
 const selectedUser = ref(null);
+const totalItems = ref(0);
+const itemsPerPage = ref(12);
+const currentPage = ref(1);
 
 const getUsers = async () => {
   const authToken = sessionStorage.getItem('token');
@@ -41,6 +44,7 @@ const getUsers = async () => {
             email: user.email,
             role: user.role
           }));
+          totalItems.value = res.data.total;
         }
       })
       .catch(err => {
@@ -66,6 +70,10 @@ const closeEditModal = () => {
 };
 const closeAddModal = () => {
   showAddModal.value = false;
+};
+const handleCurrentPageChange = (newPage) => {
+  currentPage.value = newPage;
+  getUsers();
 };
 
 onMounted(() => {
@@ -100,6 +108,18 @@ onMounted(() => {
         @reloadData="getUsers"
         :authorId="selectedUserId"
     />
+
+    <div class="pagination-block">
+      <el-pagination
+          background
+          :total="totalItems"
+          class="custom-pagination"
+          :page-size="itemsPerPage"
+          layout="prev, pager, next"
+          :current-page.sync="currentPage"
+          @current-change="handleCurrentPageChange"
+      />
+    </div>
   </div>
 </template>
 
@@ -125,6 +145,19 @@ onMounted(() => {
 
     &:hover {
       opacity: 0.9;
+    }
+  }
+
+  .pagination-block {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 40px 0;
+
+    .custom-pagination {
+      --el-color-primary: var(--color-primary);
+      --el-pagination-border-radius: 5px;
+      --el-pagination-button-bg-color: #d6d6d6;
     }
   }
 }
