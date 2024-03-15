@@ -13,6 +13,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class BookController extends Controller
@@ -31,7 +32,7 @@ class BookController extends Controller
     {
         //todo
         $arguments = $request->all();
-        $arguments['search_key'] = $search_key;
+        $arguments['search_key'] = Str::lower(str_replace(' ', '', $search_key));
 
         return $this->bookService->fuzzySearch($arguments);
     }
@@ -79,8 +80,6 @@ class BookController extends Controller
 
         return response()->json(['message' => 'Book deleted successfully']);
     }
-
-    //todo
 
     /**
      * @throws Exception

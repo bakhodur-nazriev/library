@@ -40,10 +40,10 @@ class SearchKeysService
 
     private function generateConcatenatedArray(): array
     {
-        $inputArray = $this->searchKeys();
-        $concatenatedArray = [];
+        $searchKeys = $this->searchKeys();
+        $concatenatedArray = array_slice($searchKeys, 1);
         $currentString = '';
-        foreach ($inputArray as $element) {
+        foreach ($searchKeys as $element) {
             $currentString .= $element;
             $concatenatedArray[] = $currentString;
         }

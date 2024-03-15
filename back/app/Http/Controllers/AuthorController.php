@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class AuthorController extends Controller
 {
@@ -30,7 +31,7 @@ class AuthorController extends Controller
 
     public function search(string $initials): array
     {
-        $attributes['initials'] = $initials;
+        $attributes['initials'] = Str::lower(str_replace(' ', '', $initials));;
         return $this->authorService->fuzzySearch($attributes);
     }
 
