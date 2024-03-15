@@ -140,6 +140,7 @@ onMounted(() => {
           class="custom-pagination"
           background
           layout="prev, pager, next"
+          :page-size="itemsPerPage"
           :total="totalItems"
           :current-page.sync="currentPage"
           @current-change="handleCurrentPageChange"

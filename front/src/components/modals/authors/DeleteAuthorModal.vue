@@ -10,12 +10,12 @@ const emitClose = () => {
 }
 const deleteAuthor = async () => {
   loading.value = true;
-  const authorToken = sessionStorage.getItem('token');
+  const authToken = sessionStorage.getItem('token');
   const headers = {
     "Content-type": "application/json",
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': '*',
-    "Authorization": `Bearer ${authorToken}`
+    "Authorization": `Bearer ${authToken}`
   };
 
   await axios

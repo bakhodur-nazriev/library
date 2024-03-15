@@ -10,6 +10,7 @@ use App\Models\Author;
 use App\Models\Book;
 use App\Services\BookService;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -26,7 +27,7 @@ class BookController extends Controller
         return $this->bookService->get($request->all());
     }
 
-    public function search(BookSearchRequest $request, string $search_key): array
+    public function search(BookSearchRequest $request, string $search_key): Collection|array
     {
         //todo
         $arguments = $request->all();

@@ -11,7 +11,6 @@ const currentPage = ref(1);
 const itemsPerPage = ref(12);
 const totalItems = ref(0);
 const loading = ref(false);
-
 const getBooks = async () => {
   loading.value = true;
   const authToken = sessionStorage.getItem('token');
@@ -23,7 +22,7 @@ const getBooks = async () => {
   };
 
   await axios
-      .get(`/books/?per_page=${itemsPerPage.value}&page=${currentPage.value}&order=desc`, {headers})
+  .get(`/books/?per_page=${itemsPerPage.value}&page=${currentPage.value}&order=desc`, {headers})
       .then(res => {
         if (res.status === 200 || res.status === 201) {
           books.value = res.data.data;
@@ -95,8 +94,8 @@ onMounted(() => {
           <div class="search-box">
             <input
                 type="search"
-                :placeholder="$t('placeholders.search_book')"
                 v-model="search"
+                :placeholder="$t('placeholders.search_book')"
             />
             <button class="search-btn">
               <LoupeIcon/>
@@ -113,6 +112,7 @@ onMounted(() => {
               class="custom-pagination"
               background
               layout="prev, pager, next"
+              :page-size="itemsPerPage"
               :total="totalItems"
               :current-page.sync="currentPage"
               @current-change="handleCurrentPageChange"
