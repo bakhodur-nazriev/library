@@ -4,7 +4,6 @@ import LocalesDropdown from "./LocalesDropdown.vue";
 import {ArrowDown, UserFilled} from "@element-plus/icons-vue";
 import axios from "axios";
 import router from "../router/index.js";
-
 const handleScroll = () => {
   const navbar = document.querySelector('.main-navbar');
   if (navbar) {
@@ -83,9 +82,8 @@ onBeforeUnmount(() => {
         <li class="navbar-list_item">
           <LocalesDropdown/>
         </li>
-
         <li class="navbar-list_item">
-          <el-button @click="logout">{{ $t('buttons.logout') }}</el-button>
+          <a type="submit" @click="logout">{{ $t('buttons.logout') }}</a>
         </li>
       </ul>
     </div>
@@ -138,6 +136,7 @@ onBeforeUnmount(() => {
           font-weight: 400;
           font-size: 14px;
           color: var(--color-white);
+          cursor: pointer;
 
           &.active-link {
             color: var(--color-active-link);

@@ -70,28 +70,32 @@ const getBook = async (id) => {
       :class="{ 'three-columns': props.gridColumns === 3, 'two-columns': props.gridColumns === 2 }"
   >
     <li v-for="(book, i) in books" :key="i" class="books-list_item">
-      <img :src="book.cover_image" :alt="book.name" v-if="book.cover_image">
+      <img class="book-image" :src="book.cover_image" :alt="book.name" v-if="book.cover_image">
       <div v-else class="book-cover-block">
         <span>{{ $t('label.book_empty_cover') }}</span>
       </div>
       <div class="right-block">
-        <h3 class="book-name">{{ book.title }}</h3>
-        <h4 class="book-author">
-          {{ book.authors.length > 1 ? $t('label.authors') : $t('label.author') }}:
-          <span v-for="(author, index) in book.authors" :key="index">
+        <div>
+          <h3 class="book-name">{{ book.title }}</h3>
+          <h4 class="book-author">
+            {{ book.authors.length > 1 ? $t('label.authors') : $t('label.author') }}:
+            <span v-for="(author, index) in book.authors" :key="index">
             {{ author.initials }}{{ index < book.authors.length - 1 ? ', ' : '' }}
           </span>
-        </h4>
+          </h4>
 
-        <p class="book-description">{{ book.description }}</p>
+          <p class="book-description">{{ book.description }}</p>
+        </div>
 
-        <button
-            type="button"
-            class="read-more_btn"
-            @click="getBook(book.id)"
-        >
-          {{ $t('buttons.read_more') }}
-        </button>
+        <div>
+          <button
+              type="button"
+              class="read-more_btn"
+              @click="getBook(book.id)"
+          >
+            {{ $t('buttons.read_more') }}
+          </button>
+        </div>
       </div>
     </li>
   </ul>
@@ -114,7 +118,6 @@ const getBook = async (id) => {
     border: 2px solid #d6d6d6;
     gap: 15px;
     border-radius: 5px;
-    max-width: 410px;
     transition: all 0.3s ease 0s;
 
     &:hover {
@@ -124,6 +127,7 @@ const getBook = async (id) => {
     .right-block {
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
       gap: 10px;
     }
 
@@ -138,38 +142,46 @@ const getBook = async (id) => {
       font-family: inherit;
     }
 
-    img {
-      width: 150px;
-    }
 
-    .book-name {
-      font-size: 16px;
-      margin: 0;
-    }
-
-    .book-author {
-      margin: 0;
-      font-size: 14px;
-
-      span {
-        font-weight: normal;
+    .book {
+      &-name {
+        font-size: 16px;
+        margin: 0;
       }
-    }
 
-    .book-description {
-      flex-grow: 1;
-    }
+      &-author {
+        margin-top: 6px;
+        font-size: 14px;
 
-    .book-cover-block {
-      background: rgba(0, 0, 0, 0.8);
-      min-width: 152px;
-      max-width: 152px;
-      height: 243px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 5px;
-      color: var(--color-white);
+        span {
+          font-weight: normal;
+        }
+      }
+
+      &-description {
+        font-size: 14px;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 6;
+        overflow: hidden;
+      }
+
+      &-image {
+        width: 150px;
+        border-radius: 5px;
+      }
+
+      &-cover-block {
+        background: rgba(0, 0, 0, 0.8);
+        min-width: 152px;
+        max-width: 152px;
+        height: 243px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 5px;
+        color: var(--color-white);
+      }
     }
   }
 

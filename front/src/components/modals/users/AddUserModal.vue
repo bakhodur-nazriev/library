@@ -23,7 +23,6 @@ const addUser = async () => {
   await axios
       .post('/admin/users', payload, {headers})
       .then(res => {
-        console.log(res);
         if (res.status === 200 || res.status === 201) {
           emit('reloadData', true);
           emitCancel();

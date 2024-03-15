@@ -20,7 +20,9 @@ import NavbarDashboard from "../NavbarDashboard.vue";
 .container {
   background-color: var(--bg-grey-color);
   width: -webkit-fill-available;
+  width: -moz-available;
   height: -webkit-fill-available;
+  height: -moz-available;
   padding-top: 70px;
   padding-left: 240px;
   position: absolute;

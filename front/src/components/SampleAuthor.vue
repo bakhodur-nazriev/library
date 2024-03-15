@@ -9,21 +9,25 @@ const props = defineProps(['authors']);
         :key="i"
         class="authors-list_item"
     >
-      <img v-if="author.link" :src="author.link" :alt="author.name">
+      <img class="author-image" v-if="author.link" :src="author.link" :alt="author.name">
       <div v-else class="authors-cover-block">
         <span>{{ $t('label.author_empty_cover') }}</span>
       </div>
       <div class="right-block">
-        <h3 class="book-name">{{ author.initials }}</h3>
-        <p>{{ author.nationality }}</p>
-        <p>{{ author.date_of_birth }}</p>
-        <p>{{ author.biography }}</p>
-        <button
-            type="button"
-            class="read-more_btn"
-        >
-          {{ $t('buttons.read_more') }}
-        </button>
+        <div>
+          <h3 v-if="author.initials" class="author-name">{{ author.initials }}</h3>
+          <p v-if="author.nationality" class="author-nationality">{{ author.nationality }}</p>
+          <p v-if="author.date_of_birth" class="author-birth">{{ author.date_of_birth }}</p>
+          <p v-if="author.biography" class="author-biography">{{ author.biography }}</p>
+        </div>
+        <div>
+          <button
+              type="button"
+              class="read-more_btn"
+          >
+            {{ $t('buttons.read_more') }}
+          </button>
+        </div>
       </div>
     </li>
   </ul>
@@ -61,6 +65,7 @@ const props = defineProps(['authors']);
     .right-block {
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
     }
 
     .read-more_btn {
@@ -74,22 +79,34 @@ const props = defineProps(['authors']);
       font-family: inherit;
     }
 
-    img {
+    .author-image {
       width: 150px;
     }
 
-    .book-name {
-      font-size: 16px;
-      margin: 0;
-    }
+    .author {
+      &-name {
+        font-size: 16px;
+        margin: 0;
+      }
 
-    .book-author {
-      margin: 0;
-      font-size: 14px;
-    }
+      &-nationality {
+        font-size: 14px;
+        margin: 6px 0;
+      }
 
-    .book-description {
-      flex-grow: 1;
+      &-birth {
+        font-size: 14px;
+        margin: 6px 0;
+      }
+
+      &-biography {
+        font-size: 14px;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 6;
+        overflow: hidden;
+        margin: 6px 0;
+      }
     }
   }
 }

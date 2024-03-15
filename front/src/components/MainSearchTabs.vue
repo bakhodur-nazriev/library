@@ -7,7 +7,6 @@ const tabs = computed(() => {
   return [
     {title: i18n.global.t('label.books'), content: i18n.global.t('placeholders.search_book')},
     {title: i18n.global.t('label.authors'), content: i18n.global.t('placeholders.search_author')},
-    {title: i18n.global.t('label.publisher'), content: i18n.global.t('placeholders.search_publisher')}
   ]
 });
 
@@ -35,7 +34,7 @@ let currentTab = ref(0);
           :key="index"
           v-show="index === currentTab"
       >
-        <input type="search" :placeholder="tab.content">
+        <input type="search" v-model="search" :placeholder="tab.content">
         <button type="button" class="search-btn">
           <LoupeIcon/>
         </button>
