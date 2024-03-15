@@ -1,7 +1,7 @@
 <script setup>
-import {onMounted, ref} from "vue";
-import FilterIcon from "../components/icons/FilterIcon.vue";
 import axios from "axios";
+import {onMounted, ref, watch} from "vue";
+import FilterIcon from "../components/icons/FilterIcon.vue";
 import LoupeIcon from "../components/icons/LoupeIcon.vue";
 import SampleBook from "../components/SampleBook.vue";
 
@@ -21,11 +21,17 @@ const getBooks = async () => {
     'Authorization': `Bearer ${authToken}`
   };
 
+  let url = `/books/?per_page=${itemsPerPage.value}&page=${currentPage.value}&order=desc`;
+
+  if (search.value.trim() !== '') {
+    url = `/books/search/${encodeURIComponent(search.value.trim())}`;
+  }
+
   await axios
-  .get(`/books/?per_page=${itemsPerPage.value}&page=${currentPage.value}&order=desc`, {headers})
+      .get(url, {headers})
       .then(res => {
         if (res.status === 200 || res.status === 201) {
-          books.value = res.data.data;
+          books.value = res.data.data || res.data;
           totalItems.value = res.data.total;
         }
       })
@@ -38,9 +44,16 @@ const handleCurrentPageChange = (newPage) => {
   currentPage.value = newPage;
   getBooks();
 };
+const handleSearch = () => {
+  currentPage.value = 1;
+  getBooks();
+}
 
 onMounted(() => {
   getBooks();
+});
+watch(search, () => {
+  handleSearch();
 });
 </script>
 
@@ -202,6 +215,7 @@ onMounted(() => {
   .main-content {
     display: flex;
     justify-content: center;
+    margin-bottom: 40px;
 
     .sidebar {
       width: 200px;
@@ -294,19 +308,8 @@ onMounted(() => {
 
     .books-section {
       padding: 0 15px;
-
-      //.book-block {
-      .test {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        width: 100%;
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 30px;
-      }
-
-      //}
+      width: -webkit-fill-available;
+      width: -moz-available;
 
       .main-right-side-title {
         margin: 5px 0 10px 0;

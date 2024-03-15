@@ -24,11 +24,11 @@ class AuthController extends Controller
                 ]);
 
             return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             Log::info($e->getMessage());
             return response()->json(['message' => 'error'], 500);
         }
-        }
+    }
 
     public function login(AuthLoginRequest $request): JsonResponse
     {

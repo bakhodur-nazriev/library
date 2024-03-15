@@ -61,6 +61,10 @@ footer {
     justify-content: center;
     background-color: #242424;
     width: 100%;
+
+    p {
+      font-size: 14px;
+    }
   }
 
   .footer-details {

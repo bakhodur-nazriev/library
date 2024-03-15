@@ -146,6 +146,7 @@ const register = async (e) => {
       padding: 14px;
       font-size: 14px;
       width: -webkit-fill-available;
+      width: -moz-available;
       border-radius: 8px;
     }
   }

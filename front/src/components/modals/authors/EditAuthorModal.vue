@@ -73,9 +73,8 @@ const emitClose = () => {
           />
         </li>
         <li class="input-list__item">
-          <input
+          <textarea
               v-model="author.biography"
-              type="text"
               :placeholder="`${$t('titles.table_titles.authors.biography')}`"
           />
         </li>
@@ -149,7 +148,7 @@ const emitClose = () => {
     width: inherit;
 
     &__item {
-      input {
+      input, textarea {
         background-color: var(--color-white);
         border-radius: 8px;
         border: 1px solid var(--color-gray);
