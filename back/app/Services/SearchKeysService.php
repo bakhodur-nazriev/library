@@ -41,13 +41,31 @@ class SearchKeysService
     private function generateConcatenatedArray(): array
     {
         $searchKeys = $this->searchKeys();
+        $shortestHeadsOfLongWords = $this->headsOfLongWords($searchKeys, 3);
+        $shorterHeadsOfLongWords = $this->headsOfLongWords($searchKeys, 7);
+        $headsOfLongWords = array_merge_recursive($shortestHeadsOfLongWords, $shorterHeadsOfLongWords);
+
         $concatenatedArray = array_slice($searchKeys, 1);
         $currentString = '';
         foreach ($searchKeys as $element) {
             $currentString .= $element;
             $concatenatedArray[] = $currentString;
         }
-        return $concatenatedArray;
+
+        return array_merge_recursive($concatenatedArray, $headsOfLongWords);
+    }
+
+    private function headsOfLongWords(array $searchKeys, int $length): array
+    {
+        $shortenedArray = [];
+
+        foreach ($searchKeys as $word) {
+            if (strlen($word) > $length) {
+                $shortenedArray[] = substr($word, 0, $length);
+            }
+        }
+
+        return $shortenedArray;
     }
 
     private function searchKey(): string

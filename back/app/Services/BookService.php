@@ -12,6 +12,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class BookService
@@ -29,30 +30,16 @@ class BookService
         return response()->json($authors);
     }
 
-    public function fuzzySearch(array $attributes): Collection|array
+    public function fuzzySearch(string $searchKey): Collection|array
     {
-        $search_key = $attributes['search_key'];
-        $results = DB::select(
-            "select
-                        tab.id
-                        from (select
-	                        book_id as id
-                        from books_search_keys
-                        where search_key % :search_key) as tab;",
-            array('search_key' => $search_key)
-        );
-        $extractedNumbers = [];
-        foreach ($results as $object) {
-            if (property_exists($object, 'id')) {
-                $extractedNumbers[] = $object->id;
-            }
-        }
+        $searchKey = Str::lower(str_replace(' ', '', $searchKey));
+        $results = $this->postgresTrigramResult($searchKey);
+        $bookIds = $this->bookIds($results);
 
         return Book::query()
             ->with('authors')
-            ->whereIn('books.id', $extractedNumbers)
+            ->whereIn('books.id', $bookIds)
             ->get();
-
     }
 
     public function storeBook(array $attributes): Book|JsonResponse
@@ -283,6 +270,30 @@ class BookService
         } else {
             Log::info(['Book service update:image was not uploaded' => $coverImage?->isValid()]);
         }
+    }
+
+    public function postgresTrigramResult(string $search_key): array
+    {
+        return DB::select(
+            "select
+                        tab.id
+                        from (select
+	                        book_id as id
+                        from books_search_keys
+                        where search_key % :search_key) as tab;",
+            array('search_key' => $search_key)
+        );
+    }
+
+    public function bookIds(array $results): array
+    {
+        $extractedNumbers = [];
+        foreach ($results as $object) {
+            if (property_exists($object, 'id')) {
+                $extractedNumbers[] = $object->id;
+            }
+        }
+        return $extractedNumbers;
     }
 
 

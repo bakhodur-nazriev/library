@@ -28,13 +28,9 @@ class BookController extends Controller
         return $this->bookService->get($request->all());
     }
 
-    public function search(BookSearchRequest $request, string $search_key): Collection|array
+    public function search(BookSearchRequest $request, string $searchKey): Collection|array
     {
-        //todo
-        $arguments = $request->all();
-        $arguments['search_key'] = Str::lower(str_replace(' ', '', $search_key));
-
-        return $this->bookService->fuzzySearch($arguments);
+        return $this->bookService->fuzzySearch($searchKey);
     }
 
     public function store(BookStoreRequest $request)

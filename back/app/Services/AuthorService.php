@@ -65,7 +65,7 @@ class AuthorService
                 (new SearchKeysService($author))->store();
 
                 if (isset($attributes['book_ids']) && count($attributes['book_ids']) > 0) {
-                    self::attachBooks($author, $attributes['book_ids']);
+                    $this->attachBooks($author, $attributes['book_ids']);
                 }
 
                 $this->uploadFile($file, $author);
@@ -107,7 +107,7 @@ class AuthorService
         return null;
     }
 
-    public static function attachBooks($author, array $bookIds): void
+    public function attachBooks($author, array $bookIds): void
     {
         if (count($bookIds) > 0) {
             $author->books()->attach($bookIds);
@@ -120,7 +120,7 @@ class AuthorService
             ->findOrFail($id);
 
         if (isset($attributes['book_ids']) && count($attributes['book_ids'])) {
-            self::attachBooks($author, $attributes['book_ids']);
+            $this->attachBooks($author, $attributes['book_ids']);
         }
 
         unset($attributes['book_ids']);
