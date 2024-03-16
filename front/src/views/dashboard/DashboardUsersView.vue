@@ -35,7 +35,7 @@ const getUsers = async () => {
   };
 
   await axios
-      .get('/admin/users?per_page=15&page=1', {headers})
+      .get(`/admin/users?per_page=15&page=${currentPage.value}`, {headers})
       .then(res => {
         if (res.status === 200 || res.status === 201) {
           tableRows.value = res.data.data.map(user => ({
