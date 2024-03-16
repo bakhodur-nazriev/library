@@ -67,22 +67,28 @@ class UsersFromExcelSeeder extends Seeder
      */
     private function userEmailAndPassword(string $initials, int $i): array
     {
-        $studentsInitials = preg_replace('/\s+/', ' ', $initials);
+        try {
+            $studentsInitials = preg_replace('/\s+/', ' ', $initials);
 
-        $names = explode(' ', $studentsInitials, 3);
-        $firstTwoNames = $names[0] . ' ' . isset($names[1]) ? $names[1] : '_second_name';
+            $names = explode(' ', $studentsInitials, 3);
+            $firstTwoNames = $names[0] . ' ' . count($names)> 1 ? $names[1] : '_second_name';
 
-        $cleanedNames = preg_replace('/[^a-zA-Zа-яА-Я\s]/u', '', $firstTwoNames);
+            $cleanedNames = preg_replace('/[^a-zA-Zа-яА-Я\s]/u', '', $firstTwoNames);
 
-        $latinNames = $this->customTransliterate($cleanedNames);
+            $latinNames = $this->customTransliterate($cleanedNames);
 
-        $email = $i . '_' . strtolower(str_replace(' ', '_', $latinNames)) . '@mail.ru';
+            $email = $i . '_' . strtolower(str_replace(' ', '_', $latinNames)) . '@mail.ru';
 
-        $randomPassword = $this->generateRandomLatinPassword(10);
+            $randomPassword = $this->generateRandomLatinPassword(10);
 
-        Log::info("email: $email, pass: $randomPassword");
+            Log::info("email: $email, pass: $randomPassword");
 
-        return [$email, $randomPassword];
+            return [$email, $randomPassword];
+        } catch (Exception $e) {
+            Log::info(['$initials' => $initials, '$names' => $names, '$e' => $e->getMessage()]);
+        }
+
+        return str_replace(' ', '_', $initials);
     }
 
     private function customTransliterate(string $inits): array|string|null
