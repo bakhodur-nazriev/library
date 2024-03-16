@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+.<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
     <data-source source="LOCAL" name="local library_db" uuid="489366f1-1272-49fd-9f43-25ff2faacbfc">
@@ -8,11 +8,12 @@
       <jdbc-url>jdbc:postgresql://localhost:5432/library_db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="prod lib" uuid="991500da-10ab-44d3-b366-5a06ac7b5285">
+    <data-source source="LOCAL" name="prod" uuid="93e95231-31b7-4ae3-92f5-4fc2fa40b6bf">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
+      <remarks>new second</remarks>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://localhost:5432/postgres</jdbc-url>
+      <jdbc-url>jdbc:postgresql://localhost:5432/library_db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

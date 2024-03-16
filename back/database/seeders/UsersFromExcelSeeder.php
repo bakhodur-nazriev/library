@@ -36,6 +36,7 @@ class UsersFromExcelSeeder extends Seeder
                     if (isset($rowData[0][1])) {
                         $userNameOrigin = $rowData[0][1];
                         $userName = $userNameOrigin;
+
                         $userNameAndPass = $this->userEmailAndPassword($userName, $row);
 
                         try {
@@ -69,7 +70,7 @@ class UsersFromExcelSeeder extends Seeder
         $studentsInitials = preg_replace('/\s+/', ' ', $initials);
 
         $names = explode(' ', $studentsInitials, 3);
-        $firstTwoNames = $names[0] . ' ' . $names[1]?? '_second_name';
+        $firstTwoNames = $names[0] . ' ' . isset($names[1]) ? $names[1] : '_second_name';
 
         $cleanedNames = preg_replace('/[^a-zA-Zа-яА-Я\s]/u', '', $firstTwoNames);
 
