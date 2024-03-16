@@ -45,7 +45,14 @@ class SearchKeysService
         $shorterHeadsOfLongWords = $this->headsOfLongWords($searchKeys, 7);
         $headsOfLongWords = array_merge_recursive($shortestHeadsOfLongWords, $shorterHeadsOfLongWords);
 
+        //-1 bcz first element will be repeated
         $concatenatedArray = array_slice($searchKeys, 1);
+
+        // concat like:
+        // a
+        // ab
+        // abc
+        // abcd
         $currentString = '';
         foreach ($searchKeys as $element) {
             $currentString .= $element;
