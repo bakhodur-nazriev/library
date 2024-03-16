@@ -17,32 +17,52 @@ class UsersFromExcelSeeder extends Seeder
      */
     public function run(): void
     {
-        $xlsDoc = file(database_path('seeders/sources/students.xlsx'));
-        $spreadsheet = IOFactory::load(database_path('seeders/sources/students.xlsx'));
-        $worksheet = $spreadsheet->getActiveSheet();
-        $highestRow = $worksheet->getHighestRow();
-        $bar = $this->command->getOutput()->createProgressBar($highestRow);
-        $bar->start();
+        $xlsFiles = ['studentsa.xlsx', 'studentsb.xlsx', 'studentsac.xlsx'];
 
-        foreach ($xlsDoc as $row) {
-            for ($row = 1; $row <= $highestRow; $row++) {
-                $bar->advance();
-                $rowData = $worksheet->rangeToArray('A' . $row . ':' . $worksheet->getHighestColumn() . $row, NULL, TRUE, FALSE);
+        foreach ($xlsFiles as $xlsFile) {
+            $xlsDoc = file(database_path('seeders/sources/' . $xlsFile));
+            $spreadsheet = IOFactory::load(database_path('seeders/sources/' . $xlsFile));
+            $worksheet = $spreadsheet->getActiveSheet();
+            $highestRow = $worksheet->getHighestRow();
 
-                $userNameOrigin = $rowData[0][0];
-                $userName = $userNameOrigin;
-                $userNameAndPass = $this->userEmailAndPassword($userName);
+            $bar = $this->command->getOutput()->createProgressBar($highestRow);
+            $bar->start();
 
-                $user = new User();
-                $user->name = $userNameOrigin;
-                $user->email = $userNameAndPass[0];
-                $user->password = Hash::make($userNameAndPass[1]);
-                $user->save();
+            foreach ($xlsDoc as $row) {
+                for ($row = 3; $row <= $highestRow; $row++) {
+                    $bar->advance();
+                    $rowData = $worksheet->rangeToArray('A' . $row . ':' . $worksheet->getHighestColumn() . $row, NULL, TRUE, FALSE);
+
+                    if (isset($rowData[0][1])) {
+                        $userNameOrigin = $rowData[0][1];
+                        $userName = $userNameOrigin;
+                        $userNameAndPass = $this->userEmailAndPassword($userName);
+
+                        try {
+                            $user = new User();
+                            $user->name = $userNameOrigin;
+                            $user->email = $userNameAndPass[0];
+                            $user->password = Hash::make($userNameAndPass[1]);
+                            $user->save();
+
+                        } catch (Exception $e) {
+                            if ($e->getCode() === '23505') {
+                                $user = new User();
+                                $user->name = $userNameOrigin;
+                                $user->email = $userNameAndPass[0] . '_' . rand(10, 100000);
+                                $user->password = Hash::make($userNameAndPass[1]);
+                                $user->save();
+                            } else {
+                                Log::info($e->getMessage());
+                            }
+                        }
+                    }
+                }
             }
-
-            $bar->finish();
-            dd('closed');
         }
+
+        $bar->finish();
+        dd('closed');
     }
 
 
@@ -91,8 +111,8 @@ class UsersFromExcelSeeder extends Seeder
         return preg_replace('/[^\x20-\x7E]/', '', $transliteratedString);
     }
 
-   private function generateRandomLatinPassword(int $length): string
-   {
+    private function generateRandomLatinPassword(int $length): string
+    {
         $latinAlphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $latinAlphabetLength = strlen($latinAlphabet);
 
