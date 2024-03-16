@@ -36,12 +36,12 @@ class UsersFromExcelSeeder extends Seeder
                     if (isset($rowData[0][1])) {
                         $userNameOrigin = $rowData[0][1];
                         $userName = $userNameOrigin;
-                        $userNameAndPass = $this->userEmailAndPassword($userName);
+                        $userNameAndPass = $this->userEmailAndPassword($userName, $row);
 
                         try {
                             $user = new User();
                             $user->name = $userNameOrigin;
-                            $user->email = $row . '_' . $userNameAndPass[0];
+                            $user->email = $userNameAndPass[0];
                             $user->password = Hash::make($userNameAndPass[1]);
                             $user->save();
 
@@ -64,7 +64,7 @@ class UsersFromExcelSeeder extends Seeder
     /**
      * @throws Exception
      */
-    private function userEmailAndPassword(string $initials): array
+    private function userEmailAndPassword(string $initials, int $i): array
     {
         $studentsInitials = preg_replace('/\s+/', ' ', $initials);
 
@@ -75,7 +75,7 @@ class UsersFromExcelSeeder extends Seeder
 
         $latinNames = $this->customTransliterate($cleanedNames);
 
-        $email = strtolower(str_replace(' ', '_', $latinNames)) . '@mail.ru';
+        $email = $i . '_' . strtolower(str_replace(' ', '_', $latinNames)) . '@mail.ru';
 
         $randomPassword = $this->generateRandomLatinPassword(10);
 
