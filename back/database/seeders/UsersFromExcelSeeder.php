@@ -41,28 +41,23 @@ class UsersFromExcelSeeder extends Seeder
                         try {
                             $user = new User();
                             $user->name = $userNameOrigin;
-                            $user->email = $userNameAndPass[0];
+                            $user->email = $row . '_' . $userNameAndPass[0];
                             $user->password = Hash::make($userNameAndPass[1]);
                             $user->save();
 
                         } catch (Exception $e) {
-                            if ($e->getCode() === '23505') {
-                                $user = new User();
-                                $user->name = $userNameOrigin;
-                                $user->email = $userNameAndPass[0] . '_' . rand(10, 100000);
-                                $user->password = Hash::make($userNameAndPass[1]);
-                                $user->save();
-                            } else {
-                                Log::info($e->getMessage());
-                            }
+                            Log::info($e->getMessage());
                         }
                     }
                 }
+
+                $bar->finish();
+                break;
             }
         }
+        dd('finished');
 
-        $bar->finish();
-        dd('closed');
+
     }
 
 

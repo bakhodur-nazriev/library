@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="16ca198d-4433-4298-a6d1-1befd7cbf915" name="library_rem">
+        <fileTransfer rootFolder="/var/www/library" accessType="SFTP" host="2.56.212.189" port="22" sshConfigId="d5b50d23-14db-4529-9cc8-8ac8831e7a5c" sshConfig="farruq@2.56.212.189:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
