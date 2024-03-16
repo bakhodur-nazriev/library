@@ -22,4 +22,4 @@ yarn-error.log
 /storage/app/pdfs
 /docker/pgdata
 /database/seeders/sources
-./.idea
+./.idea/*
