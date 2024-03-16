@@ -69,7 +69,7 @@ class UsersFromExcelSeeder extends Seeder
         $studentsInitials = preg_replace('/\s+/', ' ', $initials);
 
         $names = explode(' ', $studentsInitials, 3);
-        $firstTwoNames = $names[0] . ' ' . $names[1];
+        $firstTwoNames = $names[0] . ' ' . $names[1]?? '_second_name';
 
         $cleanedNames = preg_replace('/[^a-zA-Zа-яА-Я\s]/u', '', $firstTwoNames);
 
