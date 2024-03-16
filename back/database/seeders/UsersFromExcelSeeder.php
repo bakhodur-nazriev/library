@@ -67,10 +67,12 @@ class UsersFromExcelSeeder extends Seeder
      */
     private function userEmailAndPassword(string $initials, int $i): array
     {
-        try {
-            $studentsInitials = preg_replace('/\s+/', ' ', $initials);
+        $randomPassword = $this->generateRandomLatinPassword(10);
 
-            $names = explode(' ', $studentsInitials, 3);
+        try {
+            $studentsInitials = preg_replace('  ', ' ', $initials);
+
+            $names = explode(' ', $studentsInitials);
             $firstTwoNames = $names[0] . ' ' . count($names)> 1 ? $names[1] : '_second_name';
 
             $cleanedNames = preg_replace('/[^a-zA-Zа-яА-Я\s]/u', '', $firstTwoNames);
@@ -79,8 +81,6 @@ class UsersFromExcelSeeder extends Seeder
 
             $email = $i . '_' . strtolower(str_replace(' ', '_', $latinNames)) . '@mail.ru';
 
-            $randomPassword = $this->generateRandomLatinPassword(10);
-
             Log::info("email: $email, pass: $randomPassword");
 
             return [$email, $randomPassword];
@@ -88,7 +88,7 @@ class UsersFromExcelSeeder extends Seeder
             Log::info(['$initials' => $initials, '$names' => $names, '$e' => $e->getMessage()]);
         }
 
-        return str_replace(' ', '_', $initials);
+        return [str_replace(' ', '_', $initials), $randomPassword];
     }
 
     private function customTransliterate(string $inits): array|string|null
