@@ -17,7 +17,7 @@ class UsersFromExcelSeeder extends Seeder
      */
     public function run(): void
     {
-        $xlsFiles = ['studentsa.xlsx', 'studentsb.xlsx', 'studentsac.xlsx'];
+        $xlsFiles = ['studentsa.xlsx', 'studentsb.xlsx', 'studentsc.xlsx'];
 
         foreach ($xlsFiles as $xlsFile) {
             $xlsDoc = file(database_path('seeders/sources/' . $xlsFile));
@@ -70,12 +70,9 @@ class UsersFromExcelSeeder extends Seeder
         $randomPassword = $this->generateRandomLatinPassword(10);
 
         try {
-            $studentsInitials = preg_replace('  ', ' ', $initials);
+            $studentsInitials = str_replace('  ', ' ', $initials);
 
-            $names = explode(' ', $studentsInitials);
-            $firstTwoNames = $names[0] . ' ' . count($names)> 1 ? $names[1] : '_second_name';
-
-            $cleanedNames = preg_replace('/[^a-zA-Zа-яА-Я\s]/u', '', $firstTwoNames);
+            $cleanedNames = preg_replace('/[^a-zA-Zа-яА-Я\s]/u', '', $studentsInitials);
 
             $latinNames = $this->customTransliterate($cleanedNames);
 
@@ -85,7 +82,7 @@ class UsersFromExcelSeeder extends Seeder
 
             return [$email, $randomPassword];
         } catch (Exception $e) {
-            Log::info(['$initials' => $initials, '$names' => $names, '$e' => $e->getMessage()]);
+            Log::info(['$initials' => $initials, '$e' => $e->getMessage()]);
         }
 
         return [str_replace(' ', '_', $initials), $randomPassword];
