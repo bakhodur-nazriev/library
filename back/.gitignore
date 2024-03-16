@@ -21,3 +21,5 @@ yarn-error.log
 /docker/pgdata
 /storage/app/pdfs
 /docker/pgdata
+/database/seeders/sources
+./.idea
