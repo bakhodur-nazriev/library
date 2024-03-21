@@ -5,11 +5,14 @@ import SampleBook from "../components/SampleBook.vue";
 import CustomDivider from "../components/CustomDivider.vue";
 import MainSearchTabs from "../components/MainSearchTabs.vue";
 import SampleAuthor from "../components/SampleAuthor.vue";
+import Navbar from "../components/Navbar.vue";
 
 const books = ref(null);
 const authors = ref(null);
 const loading = ref(false);
 const search = ref('');
+const currentPage = ref(1);
+const itemsPerPage = ref(6);
 const getBooks = async () => {
   loading.value = true;
   const authToken = sessionStorage.getItem('token');
@@ -20,7 +23,7 @@ const getBooks = async () => {
     'Authorization': `Bearer ${authToken}`
   };
 
-  let url = '/books/?per_page=6&page=1&order=desc';
+  let url = `/books/?per_page=${itemsPerPage.value}&page=${currentPage.value}&order=desc`;
 
   if (search.value.trim() !== '') {
     url = `/books/search/${encodeURIComponent(search.value.trim())}`;
@@ -81,55 +84,82 @@ onMounted(() => {
       element-loading-background="rgba(0, 0, 0, 0.7)"
       :element-loading-text="$t('loading')"
   >
-    <section class="header">
-      <img src="../assets/slide4.jpg" alt="">
-      <MainSearchTabs/>
-    </section>
-
     <CustomDivider :title="$t('label.books_latest')"/>
 
     <section class="books-section">
-      <SampleBook :books="books" :gridColumns="3"/>
+      <ul class="books-list">
+        <SampleBook :books="books"/>
+      </ul>
     </section>
 
     <CustomDivider :title="$t('label.authors_latest')"/>
 
     <section class="authors-section">
-      <SampleAuthor :authors="authors"/>
+      <ul class="authors-list">
+        <SampleAuthor :authors="authors"/>
+      </ul>
     </section>
   </div>
 </template>
 
 <style scoped lang="scss">
 .container {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  width: 1280px;
+  padding: 20px 30px;
+  max-width: 1280px;
   margin: 0 auto;
 
-  .header {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 40px;
-
-    img {
-      height: auto;
-      filter: brightness(0.4);
-    }
-  }
-
   .books-section {
-    margin-bottom: 60px;
-
-    ul {
+    .books-list {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      width: 100%;
+      display: grid;
+      gap: 30px;
       grid-template-columns: repeat(3, 1fr);
     }
   }
 
-  .authors-section {
-    margin-bottom: 50px;
+  .authors-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    width: 100%;
+    gap: 30px;
+  }
+}
+
+@media (max-width: 1280px) {
+  .container {
+    .books-section {
+      .books-list {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .authors-section {
+      .authors-list {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  }
+}
+
+@media (max-width: 780px) {
+  .container {
+    .books-section {
+      .books-list {
+        grid-template-columns: repeat(1, 1fr);
+      }
+    }
+
+    .authors-section {
+      .authors-list {
+        grid-template-columns: repeat(1, 1fr);
+      }
+    }
   }
 }
 </style>

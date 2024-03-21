@@ -38,6 +38,7 @@ const login = async (e) => {
         loading.value = false;
         if (res.status === 200) {
           sessionStorage.setItem('token', res.data.token);
+          sessionStorage.setItem('user', JSON.stringify(res.data.user));
           router.push({name: 'home'});
         }
       })
@@ -81,7 +82,6 @@ const login = async (e) => {
         {{ $t('label.forgot_password') }}
       </router-link>
 
-
       <button
           type="submit"
           class="login-form__button"
@@ -105,6 +105,8 @@ const login = async (e) => {
     background-color: var(--color-white);
     border-radius: 10px;
     padding: 30px;
+    max-width: 450px;
+    width: 100%;
   }
 
   &-form {
@@ -113,7 +115,6 @@ const login = async (e) => {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    width: 450px;
 
     h1 {
       font-size: 40px;
@@ -170,7 +171,8 @@ const login = async (e) => {
   display: flex;
   flex-direction: column;
   z-index: 1;
-  width: inherit;
+  width: -webkit-fill-available;
+  width: -moz-available;
 }
 
 

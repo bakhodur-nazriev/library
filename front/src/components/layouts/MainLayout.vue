@@ -1,13 +1,14 @@
-<script setup>
+<script setup xmlns="http://www.w3.org/1999/html">
 
 import Navbar from "../Navbar.vue";
 import MainFooter from "../MainFooter.vue";
 </script>
 
 <template>
-  <div class="container">
-    <Navbar/>
-
+  <div class="main-block">
+    <div class="navbar-block">
+      <Navbar/>
+    </div>
     <main>
       <slot></slot>
     </main>
@@ -17,10 +18,14 @@ import MainFooter from "../MainFooter.vue";
 </template>
 
 <style scoped lang="scss">
-.container {
+.main-block {
+  display: flex;
+  flex-direction: column;
   height: 100vh;
-  width: 100vw;
-  box-sizing: border-box;
-  position: relative;
+
+  .navbar-block {
+    display: flex;
+    justify-content: center;
+  }
 }
 </style>

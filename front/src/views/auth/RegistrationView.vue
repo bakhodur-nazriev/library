@@ -96,6 +96,8 @@ const register = async (e) => {
     background-color: var(--color-white);
     border-radius: 10px;
     padding: 30px;
+    max-width: 450px;
+    width: 100%;
   }
 
   &-form {
@@ -104,7 +106,6 @@ const register = async (e) => {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    width: 450px;
 
     h1 {
       font-size: 40px;
@@ -157,7 +158,8 @@ const register = async (e) => {
   display: flex;
   flex-direction: column;
   z-index: 1;
-  width: inherit;
+  width: -webkit-fill-available;
+  width: -moz-available;
 }
 
 

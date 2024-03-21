@@ -39,7 +39,7 @@ const getBooks = async () => {
         console.log(err);
       })
       .finally(() => loading.value = false);
-}
+};
 const handleCurrentPageChange = (newPage) => {
   currentPage.value = newPage;
   getBooks();
@@ -52,6 +52,7 @@ const handleSearch = () => {
 onMounted(() => {
   getBooks();
 });
+
 watch(search, () => {
   handleSearch();
 });
@@ -64,19 +65,6 @@ watch(search, () => {
       element-loading-background="rgba(0, 0, 0, 0.7)"
       :element-loading-text="$t('loading')"
   >
-    <section class="header">
-      <img src="../assets/slide4.jpg" alt="">
-      <div class="title-bar">
-        <ul>
-          <li></li>
-          <li></li>
-        </ul>
-      </div>
-      <section class="main-title_section">
-        <h1>{{ $t('titles.banner.books') }}</h1>
-      </section>
-    </section>
-
     <div class="main-content">
       <aside class="sidebar">
         <div class="filter-titles_block">
@@ -117,7 +105,9 @@ watch(search, () => {
         </div>
 
         <section class="book-block">
-          <SampleBook :books="books" :gridColumns="2"/>
+          <ul class="books-list">
+            <SampleBook :books="books" :gridColumns="2"/>
+          </ul>
         </section>
 
         <div class="pagination-block">
@@ -141,81 +131,14 @@ watch(search, () => {
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 1280px;
+  max-width: 1280px;
   margin: 0 auto;
-
-  .header {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 40px;
-
-    img {
-      height: auto;
-      filter: brightness(0.4);
-    }
-  }
-
-  .main-title_section {
-    position: absolute;
-    left: 0;
-    top: 43%;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-    -webkit-transform: translateY(-50%);
-    transform: translateY(-50%);
-
-    h1 {
-      margin: 0;
-      font-size: 42px;
-      font-weight: bold;
-      color: var(--color-white);
-    }
-  }
-
-  .title-bar {
-    display: flex;
-    justify-content: center;
-    position: absolute;
-    background-color: var(--color-white);
-    height: 2px;
-    max-width: 400px;
-    width: 100%;
-    color: var(--color-white);
-    top: 58%;
-    -webkit-transform: translateY(-50%);
-    transform: translateY(-50%);
-    z-index: 100;
-
-    ul {
-      position: absolute;
-      padding: 0;
-      margin: 0;
-      list-style: none;
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      left: 0;
-      top: 50%;
-      -webkit-transform: translateY(-50%);
-      transform: translateY(-50%);
-      width: 100%;
-
-      li {
-        width: 12px;
-        height: 12px;
-        background-color: var(--color-white);
-        transform: rotate(45deg)
-      }
-    }
-  }
 
   .main-content {
     display: flex;
     justify-content: center;
-    margin-bottom: 40px;
+    margin: 40px 0;
+    width: 100%;
 
     .sidebar {
       width: 200px;
@@ -311,6 +234,14 @@ watch(search, () => {
       width: -webkit-fill-available;
       width: -moz-available;
 
+      .book-block {
+        .books-list {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 20px;
+        }
+      }
+
       .main-right-side-title {
         margin: 5px 0 10px 0;
         font-size: 18px;
@@ -371,6 +302,31 @@ watch(search, () => {
           --el-pagination-border-radius: 5px;
           --el-pagination-button-bg-color: #d6d6d6;
         }
+      }
+    }
+  }
+}
+
+@media (max-width: 991px) {
+  .container {
+    .main-content {
+      .books-section {
+        .book-block {
+          .books-list {
+            grid-template-columns: repeat(1, 1fr);
+            gap: 20px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    .main-content {
+      .sidebar {
+        display: none;
       }
     }
   }
