@@ -49,9 +49,6 @@ const currentYear = new Date().getFullYear();
 
 <style scoped lang="scss">
 footer {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
   align-items: center;
   background-color: #333;
   color: var(--color-white);
@@ -61,6 +58,7 @@ footer {
     justify-content: center;
     background-color: #242424;
     width: 100%;
+    padding: 20px;
 
     p {
       font-size: 14px;
@@ -73,7 +71,6 @@ footer {
     align-items: center;
     gap: 40px;
     padding: 20px;
-    width: 1280px;
   }
 
   .left-side {
@@ -119,6 +116,15 @@ footer {
     p {
       font-size: 14px;
       margin: 0 0 10px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  footer {
+    .footer-details {
+      flex-direction: column;
+      align-items: baseline;
     }
   }
 }

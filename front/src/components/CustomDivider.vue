@@ -47,8 +47,7 @@ const props = defineProps(['title']);
 
 .title-section {
   text-align: center;
-  margin-top: 0;
-  margin-bottom: 20px;
+  margin: 30px 0 20px;
   font-size: 32px;
   font-weight: bold;
   color: #5b5b5b;

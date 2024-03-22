@@ -53,8 +53,9 @@ let currentTab = ref(0);
   width: 500px;
   z-index: 15;
   position: absolute;
-  transform: translateY(-50%);
-  top: 220px;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 200px;
 
   .tabs {
     width: inherit;

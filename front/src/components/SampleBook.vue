@@ -5,7 +5,6 @@ import Popup from "./Popup.vue";
 
 const props = defineProps({
   books: Array,
-  gridColumns: Number
 });
 const errorMessage = ref('');
 const showError = ref(false);
@@ -45,7 +44,6 @@ const getBook = async (id) => {
             blob = new Blob([res.data], {type: 'application/x-mobipocket-ebook'});
 
           } else {
-            // Handle other file types, either by checking the type or using a default MIME type
             blob = new Blob([res.data], {type: 'application/octet-stream'});
           }
 
@@ -63,135 +61,110 @@ const getBook = async (id) => {
 </script>
 
 <template>
-  <ul
-      class="books-list"
-      v-loading="loading"
-      :element-loading-text="$t('loading')"
-      :class="{ 'three-columns': props.gridColumns === 3, 'two-columns': props.gridColumns === 2 }"
-  >
-    <li v-for="(book, i) in books" :key="i" class="books-list_item">
-      <img class="book-image" :src="book.cover_image" :alt="book.name" v-if="book.cover_image">
-      <div v-else class="book-cover-block">
-        <span>{{ $t('label.book_empty_cover') }}</span>
-      </div>
-      <div class="right-block">
-        <div>
-          <h3 class="book-name">{{ book.title }}</h3>
-          <h4 class="book-author">
-            {{ book.authors.length > 1 ? $t('label.authors') : $t('label.author') }}:
-            <span v-for="(author, index) in book.authors" :key="index">
+  <li v-for="(book, i) in books" :key="i" class="books-list_item">
+    <img class="book-image" :src="book.cover_image" :alt="book.name" v-if="book.cover_image">
+    <div v-else class="book-cover-block">
+      <span>{{ $t('label.book_empty_cover') }}</span>
+    </div>
+    <div class="right-block">
+      <div>
+        <h3 class="book-name">{{ book.title }}</h3>
+        <h4 class="book-author">
+          {{ book.authors.length > 1 ? $t('label.authors') : $t('label.author') }}:
+          <span v-for="(author, index) in book.authors" :key="index">
             {{ author.initials }}{{ index < book.authors.length - 1 ? ', ' : '' }}
           </span>
-          </h4>
+        </h4>
 
-          <p class="book-description">{{ book.description }}</p>
-        </div>
-
-        <div>
-          <button
-              type="button"
-              class="read-more_btn"
-              @click="getBook(book.id)"
-          >
-            {{ $t('buttons.read_more') }}
-          </button>
-        </div>
+        <p class="book-description">{{ book.description }}</p>
       </div>
-    </li>
-  </ul>
+
+      <div>
+        <button
+            type="button"
+            class="read-more_btn"
+            @click="getBook(book.id)"
+        >
+          {{ $t('buttons.read_more') }}
+        </button>
+      </div>
+    </div>
+  </li>
 
   <Popup v-if="showError" :message="errorMessage"/>
 </template>
 
 <style scoped lang="scss">
-.books-list {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-  width: 100%;
-  display: grid;
-  gap: 30px;
+.books-list_item {
+  display: flex;
+  padding: 20px 25px;
+  border: 2px solid #d6d6d6;
+  gap: 15px;
+  border-radius: 5px;
+  transition: all 0.3s ease 0s;
 
-  &_item {
-    display: flex;
-    padding: 20px 25px;
-    border: 2px solid #d6d6d6;
-    gap: 15px;
-    border-radius: 5px;
-    transition: all 0.3s ease 0s;
-
-    &:hover {
-      border: 2px solid var(--color-active-link);
-    }
-
-    .right-block {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .read-more_btn {
-      background-color: var(--color-primary);
-      color: var(--color-white);
-      border-radius: 5px;
-      border: none;
-      padding: 10px 15px;
-      cursor: pointer;
-      width: max-content;
-      font-family: inherit;
-    }
-
-
-    .book {
-      &-name {
-        font-size: 16px;
-        margin: 0;
-      }
-
-      &-author {
-        margin-top: 6px;
-        font-size: 14px;
-
-        span {
-          font-weight: normal;
-        }
-      }
-
-      &-description {
-        font-size: 14px;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 6;
-        overflow: hidden;
-      }
-
-      &-image {
-        width: 150px;
-        border-radius: 5px;
-      }
-
-      &-cover-block {
-        background: rgba(0, 0, 0, 0.8);
-        min-width: 152px;
-        max-width: 152px;
-        height: 243px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 5px;
-        color: var(--color-white);
-      }
-    }
+  &:hover {
+    border: 2px solid var(--color-active-link);
   }
 
-}
+  .right-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+  }
 
-.three-columns {
-  grid-template-columns: repeat(3, 1fr);
-}
+  .read-more_btn {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    border-radius: 5px;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    width: max-content;
+    font-family: inherit;
+  }
 
-.two-columns {
-  grid-template-columns: repeat(2, 1fr);
+
+  .book {
+    &-name {
+      font-size: 16px;
+      margin: 0;
+    }
+
+    &-author {
+      margin-top: 6px;
+      font-size: 14px;
+
+      span {
+        font-weight: normal;
+      }
+    }
+
+    &-description {
+      font-size: 14px;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 6;
+      overflow: hidden;
+    }
+
+    &-image {
+      width: 150px;
+      border-radius: 5px;
+    }
+
+    &-cover-block {
+      background: rgba(0, 0, 0, 0.8);
+      min-width: 152px;
+      max-width: 152px;
+      height: 243px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 5px;
+      color: var(--color-white);
+    }
+  }
 }
 </style>

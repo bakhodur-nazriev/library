@@ -20,18 +20,20 @@
 <style scoped lang="scss">
 .forgot-password {
   &-block {
-    box-shadow: 0 6px 10px -4px rgba(0,0,0,.15);
+    box-shadow: 0 6px 10px -4px rgba(0, 0, 0, .15);
     background-color: var(--color-white);
     border-radius: 10px;
     padding: 20px;
+    max-width: 450px;
+    width: 100%;
   }
+
   &__form {
     display: flex;
     gap: 20px;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    width: 450px;
 
     h1 {
       font-size: 40px;
@@ -71,6 +73,14 @@
       &:hover {
         opacity: 0.9;
       }
+    }
+  }
+}
+
+.forgot-password {
+  &__form {
+    h1 {
+      font-size: 32px;
     }
   }
 }
