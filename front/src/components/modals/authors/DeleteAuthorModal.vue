@@ -1,6 +1,7 @@
 <script setup>
 import {ref} from 'vue';
 import axios from "axios";
+import router from "../../../router/index.js";
 
 const emit = defineEmits(['close', 'reloadData']);
 const props = defineProps(['authorId']);
@@ -27,6 +28,11 @@ const deleteAuthor = async () => {
         }
       })
       .catch(err => {
+        if (err.response.status === 401) {
+          router.push({name: 'login'});
+          sessionStorage.removeItem('token');
+          sessionStorage.removeItem('user');
+        }
         console.log(err);
       })
       .finally(() => loading.value = false);

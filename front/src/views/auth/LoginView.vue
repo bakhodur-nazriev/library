@@ -182,7 +182,7 @@ const login = async (e) => {
   background: none;
   border: none;
   cursor: pointer;
-  right: 0;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
 

@@ -37,7 +37,12 @@ const register = async (e) => {
         }
       })
       .catch(err => {
-        console.log(err)
+        if (err.response.status === 401) {
+          router.push({name: 'login'});
+          sessionStorage.removeItem('token');
+          sessionStorage.removeItem('user');
+        }
+        console.log(err);
       })
 }
 </script>
@@ -169,7 +174,7 @@ const register = async (e) => {
   background: none;
   border: none;
   cursor: pointer;
-  right: 0;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
 

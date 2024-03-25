@@ -6,6 +6,7 @@ import CustomDivider from "../components/CustomDivider.vue";
 import MainSearchTabs from "../components/MainSearchTabs.vue";
 import SampleAuthor from "../components/SampleAuthor.vue";
 import Navbar from "../components/Navbar.vue";
+import router from "../router/index.js";
 
 const books = ref(null);
 const authors = ref(null);
@@ -37,6 +38,11 @@ const getBooks = async () => {
         }
       })
       .catch(err => {
+        if (err.response.status === 401) {
+          router.push({name: 'login'});
+          sessionStorage.removeItem('token');
+          sessionStorage.removeItem('user');
+        }
         console.log(err);
       })
       .finally(() => loading.value = false);
@@ -59,6 +65,11 @@ const getAuthors = async () => {
         }
       })
       .catch(err => {
+        if (err.response.status === 401) {
+          router.push({name: 'login'});
+          sessionStorage.removeItem('token');
+          sessionStorage.removeItem('user');
+        }
         console.log(err);
       })
       .finally(() => loading.value = false);

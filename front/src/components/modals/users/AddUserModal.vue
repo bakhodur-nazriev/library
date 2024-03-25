@@ -2,6 +2,7 @@
 import {ref} from 'vue';
 import {getFormData} from "../../../utils.js";
 import axios from "axios";
+import router from "../../../router/index.js";
 
 const emit = defineEmits(['cancel', 'reloadData']);
 const user = ref({
@@ -29,6 +30,11 @@ const addUser = async () => {
         }
       })
       .catch(err => {
+        if (err.response.status === 401) {
+          router.push({name: 'login'});
+          sessionStorage.removeItem('token');
+          sessionStorage.removeItem('user');
+        }
         console.log(err);
         alert.value = err.response.data.message;
       })

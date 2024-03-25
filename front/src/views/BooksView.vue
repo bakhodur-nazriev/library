@@ -4,6 +4,7 @@ import {onMounted, ref, watch} from "vue";
 import FilterIcon from "../components/icons/FilterIcon.vue";
 import LoupeIcon from "../components/icons/LoupeIcon.vue";
 import SampleBook from "../components/SampleBook.vue";
+import router from "../router/index.js";
 
 const books = ref(null);
 const search = ref('');
@@ -36,6 +37,11 @@ const getBooks = async () => {
         }
       })
       .catch(err => {
+        if (err.response.status === 401) {
+          router.push({name: 'login'});
+          sessionStorage.removeItem('token');
+          sessionStorage.removeItem('user');
+        }
         console.log(err);
       })
       .finally(() => loading.value = false);

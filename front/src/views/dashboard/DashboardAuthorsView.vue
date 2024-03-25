@@ -6,6 +6,7 @@ import DeleteAuthorModal from "../../components/modals/authors/DeleteAuthorModal
 import AddAuthorModal from "../../components/modals/authors/AddAuthorModal.vue";
 import axios from "axios";
 import EditAuthorModal from "../../components/modals/authors/EditAuthorModal.vue";
+import router from "../../router/index.js";
 
 const tableHeaders = computed(() => {
   return [
@@ -54,6 +55,11 @@ const getAuthors = async () => {
         }
       })
       .catch(err => {
+        if (err.response.status === 401) {
+          router.push({name: 'login'});
+          sessionStorage.removeItem('token');
+          sessionStorage.removeItem('user');
+        }
         console.log(err);
       })
       .finally(() => loading.value = false);

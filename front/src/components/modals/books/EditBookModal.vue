@@ -3,6 +3,7 @@ import {onMounted, ref, watch} from 'vue';
 import {getFormData} from "../../../utils.js";
 import axios from "axios";
 import Popup from "../../Popup.vue";
+import router from "../../../router/index.js";
 
 const emit = defineEmits(['close']);
 const props = defineProps(['selectedBook']);
@@ -69,6 +70,11 @@ const editData = async () => {
         }
       })
       .catch(err => {
+        if (err.response.status === 401) {
+          router.push({name: 'login'});
+          sessionStorage.removeItem('token');
+          sessionStorage.removeItem('user');
+        }
         console.log(err);
         showError.value = true;
         errorMessage.value = err.message;
@@ -93,6 +99,11 @@ const getAuthors = async () => {
         }
       })
       .catch(err => {
+        if (err.response.status === 401) {
+          router.push({name: 'login'});
+          sessionStorage.removeItem('token');
+          sessionStorage.removeItem('user');
+        }
         console.log(err);
       })
 };

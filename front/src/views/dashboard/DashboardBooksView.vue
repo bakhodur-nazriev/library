@@ -6,6 +6,7 @@ import SampleTable from "../../components/SampleTable.vue";
 import BookDeleteModal from "../../components/modals/books/DeleteBookModal.vue";
 import AddBookModal from "../../components/modals/books/AddBookModal.vue";
 import EditBookModal from "../../components/modals/books/EditBookModal.vue";
+import router from "../../router/index.js";
 
 const tableHeaders = computed(() => {
   return [
@@ -92,6 +93,13 @@ const getBooks = async () => {
         totalItems.value = res.data.total;
       })
       .catch(err => {
+        if (err.response.status === 401) {
+          sessionStorage.removeItem('token');
+          sessionStorage.removeItem('user');
+          router.push({name: 'login'});
+          sessionStorage.removeItem('token');
+          sessionStorage.removeItem('user');
+        }
         console.log(err);
       })
       .finally(() => loading.value = false);

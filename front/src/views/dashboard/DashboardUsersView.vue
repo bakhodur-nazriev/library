@@ -6,6 +6,7 @@ import DeleteUserModal from "../../components/modals/users/DeleteUserModal.vue";
 import AddUserModal from "../../components/modals/users/AddUserModal.vue";
 import EditUserModal from "../../components/modals/users/EditUserModal.vue";
 import axios from "axios";
+import router from "../../router/index.js";
 
 const tableHeaders = computed(() => {
   return [
@@ -48,6 +49,11 @@ const getUsers = async () => {
         }
       })
       .catch(err => {
+        if (err.response.status === 401) {
+          router.push({name: 'login'});
+          sessionStorage.removeItem('token');
+          sessionStorage.removeItem('user');
+        }
         console.log(err);
       })
 };
