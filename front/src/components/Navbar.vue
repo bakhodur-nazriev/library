@@ -261,18 +261,18 @@ onBeforeUnmount(() => {
     }
   }
 
-  .sub-header {
-    width: 100%;
-
-    img {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 400px;
-      filter: brightness(0.4);
-    }
-  }
+  //.sub-header {
+  //  width: 100%;
+  //
+  //  img {
+  //    position: absolute;
+  //    top: 0;
+  //    left: 0;
+  //    width: 100%;
+  //    height: 400px;
+  //    filter: brightness(0.4);
+  //  }
+  //}
 
   .books-header {
     width: 100%;

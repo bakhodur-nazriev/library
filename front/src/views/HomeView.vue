@@ -5,7 +5,6 @@ import SampleBook from "../components/SampleBook.vue";
 import CustomDivider from "../components/CustomDivider.vue";
 import MainSearchTabs from "../components/MainSearchTabs.vue";
 import SampleAuthor from "../components/SampleAuthor.vue";
-import Navbar from "../components/Navbar.vue";
 import router from "../router/index.js";
 import i18n from "../i18n.js";
 
@@ -140,9 +139,6 @@ onMounted(() => {
   .sub-header {
     width: 100%;
     z-index: 100;
-    position: absolute;
-    top: 0;
-    left: 0;
 
     img {
       position: absolute;

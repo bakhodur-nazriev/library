@@ -71,7 +71,7 @@ watch(searchQuery, () => {
   background-color: var(--color-white);
   border-radius: 8px;
   width: 500px;
-  z-index: 15;
+  z-index: 150;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);

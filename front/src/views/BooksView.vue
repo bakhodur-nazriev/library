@@ -60,7 +60,9 @@ onMounted(() => {
 });
 
 watch(search, () => {
-  handleSearch();
+  setTimeout(() => {
+    handleSearch();
+  }, 500)
 });
 </script>
 
