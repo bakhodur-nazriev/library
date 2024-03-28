@@ -7,6 +7,7 @@ import MainSearchTabs from "../components/MainSearchTabs.vue";
 import SampleAuthor from "../components/SampleAuthor.vue";
 import Navbar from "../components/Navbar.vue";
 import router from "../router/index.js";
+import i18n from "../i18n.js";
 
 const books = ref(null);
 const authors = ref(null);
@@ -34,14 +35,14 @@ const getBooks = async () => {
       .get(url, {headers})
       .then(res => {
         if (res.status === 200 || res.status === 201) {
-          books.value = res.data.data;
+          books.value = res.data.data || res.data;
         }
       })
       .catch(err => {
         if (err.response.status === 401) {
-          router.push({name: 'login'});
           sessionStorage.removeItem('token');
           sessionStorage.removeItem('user');
+          router.push({name: 'login'});
         }
         console.log(err);
       })
@@ -57,30 +58,37 @@ const getAuthors = async () => {
     'Authorization': `Bearer ${authToken}`
   };
 
+  let url = `/authors/?per_page=${itemsPerPage.value}&page=${currentPage.value}&order=desc`;
+
+  if (search.value.trim() !== '') {
+    url = `/authors/search/${encodeURIComponent(search.value.trim())}`;
+  }
+
   await axios
-      .get('/authors/?per_page=6&page=1&order=desc', {headers})
+      .get(url, {headers})
       .then(res => {
         if (res.status === 200 || res.status === 201) {
-          authors.value = res.data.data;
+          authors.value = res.data.data || res.data;
         }
       })
       .catch(err => {
         if (err.response.status === 401) {
-          router.push({name: 'login'});
           sessionStorage.removeItem('token');
           sessionStorage.removeItem('user');
+          router.push({name: 'login'});
         }
         console.log(err);
       })
       .finally(() => loading.value = false);
 };
-const handleSearch = () => {
+const handleBookSearch = (searchQuery) => {
+  search.value = searchQuery;
   getBooks();
-}
-
-watch(search, () => {
-  handleSearch();
-})
+};
+const handleAuthorSearch = (searchQuery) => {
+  search.value = searchQuery;
+  getAuthors();
+};
 
 onMounted(() => {
   getBooks();
@@ -95,6 +103,16 @@ onMounted(() => {
       element-loading-background="rgba(0, 0, 0, 0.7)"
       :element-loading-text="$t('loading')"
   >
+    <div v-if="`${$route.path}` === `/${i18n.global.locale}/`">
+      <section class="sub-header">
+        <img src="../assets/slide4.jpg" alt="">
+        <MainSearchTabs
+            @search-book="handleBookSearch"
+            @search-author="handleAuthorSearch"
+        />
+      </section>
+    </div>
+
     <CustomDivider :title="$t('label.books_latest')"/>
 
     <section class="books-section">
@@ -118,6 +136,23 @@ onMounted(() => {
   padding: 20px 30px;
   max-width: 1280px;
   margin: 0 auto;
+
+  .sub-header {
+    width: 100%;
+    z-index: 100;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 400px;
+      filter: brightness(0.4);
+    }
+  }
 
   .books-section {
     .books-list {

@@ -7,7 +7,6 @@ import router from "../../../router/index.js";
 const emit = defineEmits(['close', 'reloadData']);
 const props = defineProps(['selectedAuthor']);
 const loading = ref(false);
-
 const author = ref({
   initials: props.selectedAuthor.initials,
   nationality: props.selectedAuthor.nationality,
@@ -15,11 +14,17 @@ const author = ref({
   date_of_birth: props.selectedAuthor.date_of_birth,
   photo_link: props.selectedAuthor.photo_link
 });
-
+const authorNationalities = [
+  {label: 'Англичанин', value: 'Англичанин'},
+  {label: 'Француз', value: 'Француз'},
+  {label: 'Испанец', value: 'Испанец'},
+  {label: 'Немец', value: 'Немец'},
+  {label: 'Русский', value: 'Русский'},
+  {label: 'Тоҷик', value: 'Тоҷик'},
+];
 const handleFileChange = (e) => {
   author.value.photo_link = e.target.files[0];
 };
-
 const editData = async () => {
   loading.value = true;
   const payload = getFormData(author.value);
@@ -41,9 +46,9 @@ const editData = async () => {
       })
       .catch(err => {
         if (err.response.status === 401) {
-          router.push({name: 'login'});
           sessionStorage.removeItem('token');
           sessionStorage.removeItem('user');
+          router.push({name: 'login'});
         }
         console.log(err);
       })
@@ -56,58 +61,77 @@ const emitClose = () => {
 
 <template>
   <div
-      class="modal-overlay"
       @click="emitClose"
       v-loading="loading"
+      class="modal-overlay"
       :element-loading-text="$t('loading')"
+      element-loading-background="rgba(0, 0, 0, 0.7)"
   >
-    <div class="modal" @click.stop>
+    <el-form
+        label-width="auto"
+        label-position="top"
+        ref="formRef"
+        style="max-width: 600px;"
+        status-icon
+        :model="author"
+        class="modal"
+        @click.stop
+    >
       <h1 class="modal-title">{{ $t('label.edit_author') }}</h1>
-      <ul class="input-list">
-        <li class="input-list__item">
-          <input
-              v-model="author.initials"
-              type="text"
-              :placeholder="`${$t('titles.table_titles.authors.name')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              v-model="author.nationality"
-              type="text"
-              :placeholder="`${$t('titles.table_titles.authors.nationality')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <textarea
-              v-model="author.biography"
-              :placeholder="`${$t('titles.table_titles.authors.biography')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              v-model="author.date_of_birth"
-              type="date"
-              :placeholder="`${$t('titles.table_titles.authors.date_of_birth')}`"
-          />
-        </li>
-        <li class="input-list__item">
-          <input
-              @change="handleFileChange"
-              type="file"
-              :placeholder="`${$t('titles.table_titles.authors.photo_link')}`"
-          />
-        </li>
-      </ul>
-      <ul class="button-list">
-        <li class="button-list__item">
-          <button @click="editData">{{ $t('buttons.save') }}</button>
-        </li>
-        <li class="button-list__item">
-          <button @click="emitClose">{{ $t('buttons.cancel') }}</button>
-        </li>
-      </ul>
-    </div>
+      <el-form-item
+          :label="`${$t('titles.table_titles.authors.name')}`"
+          prop="initials"
+      >
+        <el-input v-model="author.initials"/>
+      </el-form-item>
+      <el-form-item
+          :label="`${$t('titles.table_titles.authors.nationality')}`"
+          prop="nationality"
+      >
+        <el-select
+            :placeholder="`${$t('titles.table_titles.authors.nationality')}`"
+            v-model="author.nationality"
+            filterable
+            clearable
+        >
+          <el-option
+              v-for="(nat, i) in authorNationalities"
+              :key="i"
+              :label="nat.label"
+              :value="nat.value"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item
+          :label="`${$t('titles.table_titles.authors.biography')}`"
+          prop="biography"
+      >
+        <el-input type="textarea" v-model="author.biography"/>
+      </el-form-item>
+      <el-form-item
+          :label="`${$t('titles.table_titles.authors.date_of_birth')}`"
+          prop="date_of_birth"
+      >
+        <el-date-picker v-model="author.date_of_birth" type="date" format="YYYY-MM-DD"/>
+      </el-form-item>
+      <el-form-item
+          prop="photo_link"
+          :label="`${$t('titles.table_titles.authors.photo_link')}`"
+      >
+        <el-upload @change="handleFileChange">
+          <el-button
+              size="small"
+              type="primary"
+          >
+            {{ $t('titles.table_titles.authors.photo_link') }}
+          </el-button>
+        </el-upload>
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="editData" :disabled="loading.value" type="primary">{{ $t('buttons.save') }}</el-button>
+        <el-button @click="emitClose">{{ $t('buttons.cancel') }}</el-button>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 
@@ -133,58 +157,26 @@ const emitClose = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 10px;
+  overflow-y: auto;
+  max-height: -webkit-fill-available;
+  max-height: -moz-available;
 
   &-title {
     font-size: 26px;
     margin: 0;
   }
 
-  .input-list,
-  .button-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .input-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    width: inherit;
-
-    &__item {
-      input, textarea {
-        background-color: var(--color-white);
-        border-radius: 8px;
-        border: 1px solid var(--color-gray);
-        box-sizing: border-box;
-        color: var(--color-gray);
-        font-size: 14px;
-        outline: none;
-        padding: 12px 15px;
-        transition: border-color .2s cubic-bezier(.645, .045, .355, 1);
-        width: 100%;
-      }
-    }
-  }
-
-  .button-list {
+  .buttons-block {
     display: flex;
     justify-content: center;
-    gap: 15px;
-
-    &__item {
-      button {
-        font-size: 16px;
-        border: none;
-        background-color: var(--color-primary);
-        border-radius: 8px;
-        padding: 8px 15px;
-        color: var(--color-white);
-        cursor: pointer;
-      }
-    }
+    width: auto;
   }
+}
+
+.el-form--label-top .el-form-item {
+  width: -webkit-fill-available;
+  width: -moz-available;
+  margin-bottom: 0;
 }
 </style>

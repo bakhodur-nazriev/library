@@ -1,16 +1,32 @@
 <script setup>
 import LoupeIcon from "./icons/LoupeIcon.vue";
-import {computed, ref} from "vue";
+import {computed, ref, watch} from "vue";
 import i18n from "../i18n.js";
 
+const emit = defineEmits(['searchBook', 'searchAuthor']);
+let currentTab = ref(0);
+const searchBook = ref('');
+const searchAuthor = ref('');
 const tabs = computed(() => {
   return [
     {title: i18n.global.t('label.books'), content: i18n.global.t('placeholders.search_book')},
     {title: i18n.global.t('label.authors'), content: i18n.global.t('placeholders.search_author')},
   ]
 });
-
-let currentTab = ref(0);
+const searchQuery = ref('');
+const handleSearch = () => {
+  const query = searchQuery.value;
+  if (currentTab.value === 0) {
+    emit('searchBook', query);
+  } else {
+    emit('searchAuthor', query);
+  }
+};
+watch(searchQuery, () => {
+  setTimeout(() => {
+    handleSearch();
+  }, 500);
+});
 </script>
 
 <template>
@@ -34,8 +50,12 @@ let currentTab = ref(0);
           :key="index"
           v-show="index === currentTab"
       >
-        <input type="search" v-model="search" :placeholder="tab.content">
-        <button type="button" class="search-btn">
+        <input
+            type="search"
+            v-model="searchQuery"
+            :placeholder="tab.content"
+        >
+        <button @click="handleSearch" type="button" class="search-btn">
           <LoupeIcon/>
         </button>
       </div>

@@ -4,7 +4,7 @@ import {getFormData} from "../../../utils.js";
 import axios from "axios";
 import Popup from "../../Popup.vue";
 import i18n from "../../../i18n.js";
-
+import router from "../../../router/index.js";
 
 const emit = defineEmits(['cancel', 'reloadData']);
 const errorMessage = ref('');
@@ -33,6 +33,21 @@ const formRules = {
     },
   ]
 };
+const languages = [
+  { label: 'English', value: 'English' },
+  { label: 'Spanish', value: 'Spanish' },
+  { label: 'French', value: 'French' },
+  { label: 'Русский', value: 'Русский' },
+  { label: 'Тоҷикӣ', value: 'Тоҷикӣ' },
+];
+const genre = [
+  { label: 'English', value: 'English' },
+  { label: 'Spanish', value: 'Spanish' },
+  { label: 'French', value: 'French' },
+  { label: 'Русский', value: 'Русский' },
+  { label: 'Тоҷикӣ', value: 'Тоҷикӣ' },
+];
+
 const handleFileChange = (e) => {
   book.value.file = e.target.files[0];
 };
@@ -57,11 +72,16 @@ const addBook = async () => {
           emitCancel();
         }
       })
-      .catch(error => {
-        console.log(error);
+      .catch(err => {
+        console.log(err);
         showError.value = true;
-        if (error.response.status !== 200) {
-          errorMessage.value = error.message;
+        if (err.response.status === 401) {
+          sessionStorage.removeItem('token');
+          sessionStorage.removeItem('user');
+          router.push({name: 'login'});
+        }
+        if (err.response.status !== 200) {
+          errorMessage.value = err.message;
         }
       })
       .finally(() => loading.value = false);
@@ -198,7 +218,19 @@ onMounted(() => {
           :label="`${$t('titles.table_titles.books.language')}`"
           prop="language"
       >
-        <el-input v-model="book.language"/>
+        <el-select
+            :label="`${$t('titles.table_titles.books.language')}`"
+            v-model="book.language"
+            clearable
+            filterable
+        >
+          <el-option
+              v-for="(lang, i) in languages"
+              :key="i"
+              :label="lang.label"
+              :value="lang.value"
+          ></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item
           :label="`${$t('titles.table_titles.books.publish_date')}`"

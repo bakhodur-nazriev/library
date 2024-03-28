@@ -13,6 +13,14 @@ const author = ref({
   photo_link: ''
 });
 const loading = ref(false);
+const authorNationalities = [
+  {label: 'Англичанин', value: 'Англичанин'},
+  {label: 'Француз', value: 'Француз'},
+  {label: 'Испанец', value: 'Испанец'},
+  {label: 'Немец', value: 'Немец'},
+  {label: 'Русский', value: 'Русский'},
+  {label: 'Тоҷик', value: 'Тоҷик'},
+];
 const handleFileChange = (e) => {
   author.value.photo_link = e.target.files[0];
 };
@@ -36,9 +44,9 @@ const addAuthor = async () => {
       })
       .catch(err => {
         if (err.response.status === 401) {
-          router.push({name: 'login'});
           sessionStorage.removeItem('token');
           sessionStorage.removeItem('user');
+          router.push({name: 'login'});
         }
         console.log(err);
       })
@@ -51,12 +59,14 @@ const emitClose = () => {
 
 <template>
   <div
-      class="modal-overlay"
       @click="emitClose"
       v-loading="loading"
+      class="modal-overlay"
       :element-loading-text="$t('loading')"
+      element-loading-background="rgba(0, 0, 0, 0.7)"
   >
     <el-form
+        label-width="auto"
         label-position="top"
         ref="formRef"
         style="max-width: 600px;"
@@ -65,23 +75,26 @@ const emitClose = () => {
         class="modal"
         @click.stop
     >
+      <h1 class="modal-title">{{ $t('label.add_author') }}</h1>
       <el-form-item :label="`${$t('titles.table_titles.authors.name')}`" prop="initials">
         <el-input v-model="author.initials"/>
       </el-form-item>
-      <el-form-item :label="`${$t('titles.table_titles.authors.nationality')}`" prop="nationality">
+      <el-form-item
+          :label="`${$t('titles.table_titles.authors.nationality')}`"
+          prop="nationality"
+      >
         <el-select
-            multiple
-            v-model="author.nationality"
             :placeholder="`${$t('titles.table_titles.authors.nationality')}`"
+            v-model="author.nationality"
             filterable
             clearable
         >
-          <!--          <el-option-->
-          <!--              v-for="author in nationalities"-->
-          <!--              :key="author.id"-->
-          <!--              :label="author.initials"-->
-          <!--              :value="author.id"-->
-          <!--          ></el-option>-->
+          <el-option
+              v-for="(nat, i) in authorNationalities"
+              :key="i"
+              :label="nat.label"
+              :value="nat.value"
+          ></el-option>
         </el-select>
       </el-form-item>
       <el-form-item :label="`${$t('titles.table_titles.authors.biography')}`" prop="biography">
@@ -91,7 +104,12 @@ const emitClose = () => {
           :label="`${$t('titles.table_titles.authors.date_of_birth')}`"
           prop="date_of_birth"
       >
-        <el-date-picker v-model="author.date_of_birth" type="date" format="YYYY-MM-DD"/>
+        <el-date-picker
+            v-model="author.date_of_birth"
+            type="date"
+            format="YYYY-MM-DD"
+            :placeholder="`${$t('buttons.pick_a_date')}`"
+        />
       </el-form-item>
       <el-form-item :label="`${$t('titles.table_titles.authors.photo_link')}`">
         <el-upload @change="handleFileChange">
@@ -127,6 +145,29 @@ const emitClose = () => {
   border-radius: 12px;
   width: 400px;
   padding: 30px;
-  gap: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  overflow-y: auto;
+  max-height: -webkit-fill-available;
+  max-height: -moz-available;
+
+  &-title {
+    font-size: 26px;
+    margin: 0;
+  }
+
+  .buttons-block {
+    display: flex;
+    justify-content: center;
+    width: auto;
+  }
+}
+
+.el-form--label-top .el-form-item {
+  width: -webkit-fill-available;
+  width: -moz-available;
+  margin-bottom: 0;
 }
 </style>

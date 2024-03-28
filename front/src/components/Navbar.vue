@@ -70,12 +70,12 @@ onBeforeUnmount(() => {
 <template>
   <div class="container">
     <!--  Home header  -->
-    <div v-if="`${$route.path}` === `/${i18n.global.locale}/`">
-      <section class="sub-header">
-        <img src="../assets/slide4.jpg" alt="">
-        <MainSearchTabs/>
-      </section>
-    </div>
+<!--    <div v-if="`${$route.path}` === `/${i18n.global.locale}/`">-->
+<!--      <section class="sub-header">-->
+<!--        <img src="../assets/slide4.jpg" alt="">-->
+<!--        <MainSearchTabs/>-->
+<!--      </section>-->
+<!--    </div>-->
     <header>
       <div class="header-top_side">
         <div class="logo">

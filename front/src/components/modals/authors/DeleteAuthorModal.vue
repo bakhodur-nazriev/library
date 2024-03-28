@@ -29,9 +29,9 @@ const deleteAuthor = async () => {
       })
       .catch(err => {
         if (err.response.status === 401) {
-          router.push({name: 'login'});
           sessionStorage.removeItem('token');
           sessionStorage.removeItem('user');
+          router.push({name: 'login'});
         }
         console.log(err);
       })

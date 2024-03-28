@@ -1,7 +1,7 @@
-<script setup xmlns="http://www.w3.org/1999/html">
-
+<script setup>
 import Navbar from "../Navbar.vue";
 import MainFooter from "../MainFooter.vue";
+
 </script>
 
 <template>

@@ -97,8 +97,6 @@ const getBooks = async () => {
           sessionStorage.removeItem('token');
           sessionStorage.removeItem('user');
           router.push({name: 'login'});
-          sessionStorage.removeItem('token');
-          sessionStorage.removeItem('user');
         }
         console.log(err);
       })

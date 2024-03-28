@@ -3,13 +3,8 @@ import MenuIcon from "./icons/MenuIcon.vue";
 import SearchInput from "./SearchInput.vue";
 import {onMounted, ref} from "vue";
 
-const user = ref(null);
-const getUser = async () => {
-}
-
-onMounted(() => {
-  getUser();
-})
+const userString = sessionStorage.getItem('user');
+const user = JSON.parse(userString);
 </script>
 
 <template>
@@ -56,12 +51,7 @@ onMounted(() => {
       <SearchInput/>
 
       <div class="user-block">
-        <router-link
-            class="link"
-            :to="`/${$i18n.locale}/dashboard/users`"
-        >
-          Bakhodur
-        </router-link>
+        <span class="link">{{ user.name }}</span>
         <img src="../assets/users/img.png" alt="">
       </div>
     </nav>
