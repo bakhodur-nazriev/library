@@ -28,7 +28,7 @@ class BookController extends Controller
         return $this->bookService->get($request->all());
     }
 
-    public function search(BookSearchRequest $request, string $searchKey): Collection|array
+    public function search(BookSearchRequest $request, string $searchKey): array
     {
         return $this->bookService->fuzzySearch($searchKey);
     }

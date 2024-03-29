@@ -30,7 +30,7 @@ class BookService
         return response()->json($authors);
     }
 
-    public function fuzzySearch(string $searchKey): Collection|array
+    public function fuzzySearch(string $searchKey): array
     {
         $searchKey = Str::lower(str_replace(' ', '', $searchKey));
         $results = $this->postgresTrigramResult($searchKey);
@@ -39,7 +39,8 @@ class BookService
         return Book::query()
             ->with('authors')
             ->whereIn('books.id', $bookIds)
-            ->get();
+            ->get()
+            ->toArray();
     }
 
     public function storeBook(array $attributes): Book|JsonResponse
