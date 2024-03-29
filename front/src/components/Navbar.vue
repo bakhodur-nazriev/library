@@ -1,16 +1,33 @@
 <script setup>
-import {onMounted, onBeforeUnmount, ref, computed} from "vue";
+import {onMounted, onBeforeUnmount, ref} from "vue";
 import LocalesDropdown from "./LocalesDropdown.vue";
 import {UserFilled} from "@element-plus/icons-vue";
 import axios from "axios";
 import router from "../router/index.js";
-import MainSearchTabs from "./MainSearchTabs.vue";
 import i18n from "../i18n.js";
 
 const userString = sessionStorage.getItem('user');
 const user = JSON.parse(userString);
-const show = ref(true);
+const show = ref(false);
 const isShowModal = ref(false);
+
+const navBarRef = ref(null);
+const headerRef = ref(null);
+const isVisible = ref(true);
+
+const toggleVisibility = () => {
+  if (navBarRef.value) {
+    navBarRef.value.style.display = isVisible.value ? 'block' : 'none';
+    isVisible.value = !isVisible.value;
+
+    if (window.innerWidth <= 991 && !isVisible.value) {
+      headerRef.value.style.background = 'rgba(0, 0, 0, 0.8)';
+    } else {
+      headerRef.value.style.background = 'transparent';
+    }
+  }
+}
+
 const handleScroll = () => {
   const navbar = document.querySelector('.main-navbar');
   if (navbar) {
@@ -54,9 +71,7 @@ const handleResize = () => {
     show.value = true;
   }
 };
-
 window.addEventListener('scroll', handleScroll);
-
 onMounted(() => {
   handleScroll();
   window.addEventListener('resize', handleResize);
@@ -70,19 +85,13 @@ onBeforeUnmount(() => {
 <template>
   <div class="container">
     <!--  Home header  -->
-<!--    <div v-if="`${$route.path}` === `/${i18n.global.locale}/`">-->
-<!--      <section class="sub-header">-->
-<!--        <img src="../assets/slide4.jpg" alt="">-->
-<!--        <MainSearchTabs/>-->
-<!--      </section>-->
-<!--    </div>-->
-    <header>
+    <header ref="headerRef">
       <div class="header-top_side">
         <div class="logo">
           <img src="../assets/main-logo-1.png" alt="лого">
         </div>
         <div class="right-block">
-          <div @click="showNav" class="toggle-btn">
+          <div @click="toggleVisibility" class="toggle-btn">
             <span></span>
             <span></span>
             <span></span>
@@ -98,7 +107,7 @@ onBeforeUnmount(() => {
           </div>
         </div>
       </div>
-      <nav v-show="show">
+      <nav ref="navBarRef">
         <ul class="navbar-list">
           <li class="navbar-list_item">
             <router-link
@@ -172,6 +181,20 @@ onBeforeUnmount(() => {
     </div>
 
     <!--  Authors header  -->
+    <div v-if="`${$route.path}` === `/${i18n.global.locale}/authors`">
+      <section class="books-header">
+        <img src="../assets/slide4.jpg" alt="">
+        <div class="title-bar">
+          <ul>
+            <li></li>
+            <li></li>
+          </ul>
+        </div>
+        <section class="main-title_section">
+          <h1>{{ $t('titles.banner.authors') }}</h1>
+        </section>
+      </section>
+    </div>
   </div>
 </template>
 
@@ -243,6 +266,7 @@ onBeforeUnmount(() => {
       align-items: center;
 
       .toggle-btn {
+        user-select: none;
         flex-direction: column;
         justify-content: space-between;
         align-items: center;
@@ -260,19 +284,6 @@ onBeforeUnmount(() => {
       }
     }
   }
-
-  //.sub-header {
-  //  width: 100%;
-  //
-  //  img {
-  //    position: absolute;
-  //    top: 0;
-  //    left: 0;
-  //    width: 100%;
-  //    height: 400px;
-  //    filter: brightness(0.4);
-  //  }
-  //}
 
   .books-header {
     width: 100%;
@@ -292,7 +303,7 @@ onBeforeUnmount(() => {
   .main-title_section {
     position: absolute;
     left: 0;
-    top: 20%;
+    top: 21%;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -373,7 +384,7 @@ onBeforeUnmount(() => {
 @media (max-width: 991px) {
   .container {
     header {
-      background: rgba(0, 0, 0, 0.8);
+      //background: rgba(0, 0, 0, 0.8);
       flex-direction: column;
       align-items: start;
       padding: 25px 25px;
@@ -389,6 +400,7 @@ onBeforeUnmount(() => {
           gap: 10px;
 
           .toggle-btn {
+            user-select: none;
             display: flex;
             right: 25px;
             cursor: pointer;
@@ -397,7 +409,7 @@ onBeforeUnmount(() => {
       }
 
       nav {
-        display: flex;
+        display: none;
         justify-content: center;
         width: inherit;
 
@@ -410,6 +422,7 @@ onBeforeUnmount(() => {
         }
       }
     }
+
     .main-title_section {
       h1 {
         font-size: 32px;

@@ -75,7 +75,7 @@ watch(searchQuery, () => {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  top: 200px;
+  top: 170px;
 
   .tabs {
     width: inherit;

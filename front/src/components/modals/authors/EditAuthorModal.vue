@@ -1,5 +1,5 @@
 <script setup>
-import {ref} from 'vue';
+import {onMounted, ref} from 'vue';
 import {getFormData} from "../../../utils.js";
 import axios from "axios";
 import router from "../../../router/index.js";
@@ -26,6 +26,14 @@ const handleFileChange = (e) => {
   author.value.photo_link = e.target.files[0];
 };
 const editData = async () => {
+  // const date = new Date(author.value.date_of_birth);
+  // const year = date.getFullYear();
+  // const month = ('0' + (date.getMonth() + 1)).slice(-2);
+  // const day = ('0' + date.getDate()).slice(-2);
+  // author.value.date_of_birth = `${year}-${month}-${day}`;
+
+  console.log("Formatted date of birth:", author.value.date_of_birth);
+
   loading.value = true;
   const payload = getFormData(author.value);
   const authToken = sessionStorage.getItem('token');
@@ -56,7 +64,7 @@ const editData = async () => {
 };
 const emitClose = () => {
   emit('close');
-}
+};
 </script>
 
 <template>
@@ -112,7 +120,8 @@ const emitClose = () => {
           :label="`${$t('titles.table_titles.authors.date_of_birth')}`"
           prop="date_of_birth"
       >
-        <el-date-picker v-model="author.date_of_birth" type="date" format="YYYY-MM-DD"/>
+<!--        <el-date-picker v-model="author.date_of_birth" type="date" format="YYYY-MM-DD"/>-->
+        <input type="date" v-model="author.date_of_birth">
       </el-form-item>
       <el-form-item
           prop="photo_link"
