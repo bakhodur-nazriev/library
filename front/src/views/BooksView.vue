@@ -149,7 +149,7 @@ watch(search, () => {
     width: 100%;
 
     .sidebar {
-      width: 200px;
+      width: 230px;
       padding: 0 15px;
       display: flex;
       flex-direction: column;
@@ -180,10 +180,15 @@ watch(search, () => {
           gap: 10px;
           margin-bottom: 45px;
 
+          svg {
+            min-width: 24px;
+          }
+
           h3 {
+            white-space: nowrap;
             margin: 0;
             font-weight: normal;
-            font-size: 24px;
+            font-size: 20px;
             color: var(--color-gray);
           }
         }
