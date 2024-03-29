@@ -69,7 +69,7 @@ class AuthorService
                     $this->attachBooks($author, $attributes['book_ids']);
                 }
 
-                $this->uploadFile($file, $author);
+                $this->uploadAuthorPhoto($file, $author);
 
                 return response()->json(['author' => $author], 201);
             });
@@ -115,6 +115,9 @@ class AuthorService
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function update(array $attributes, UploadedFile|null $file, int $id): JsonResponse
     {
         $author = Author::query()
@@ -141,7 +144,7 @@ class AuthorService
 
         (new SearchKeysService($author))->update();
 
-        $this->uploadFile($file, $author);
+        $this->uploadAuthorPhoto($file, $author);
 
         return response()->json([
             'message' => 'Author updated successfully',
@@ -149,23 +152,32 @@ class AuthorService
         ]);
     }
 
-    public function uploadFile(UploadedFile|null $file, $author): JsonResponse
+    /**
+     * @throws Exception
+     */
+    public function uploadAuthorPhoto(UploadedFile $authorPhoto, $author): JsonResponse
     {
-        if ($file?->isValid()) {
+        try {
+            if ($authorPhoto->isValid()) {
 
-            if ($author->photo_link) {
-                Log::info('author log', ['old author image was deleted: ' . Storage::delete($author->photo_link)]);
+                if ($author->photo_link) {
+                    Log::info('uploading file', ['old photo_link was deleted ' . Storage::delete($author->photo_link)]);
+                }
+
+                $link = uniqid('author_photo_link_') . '.' . $authorPhoto->getClientOriginalExtension();
+                $path = $authorPhoto->storeAs('public', $link);
+                $author->photo_link = asset('storage/' . $link);
+                $author->save();
+
+                return response()->json(['message' => 'Image uploaded successfully', 'path' => $path], 201);
+            } else {
+                Log::info('author photo file not valid');
             }
-
-            $path = $file->store('imgs');
-            $author->photo_link = config('proj_env.STORAGE_PATH') . $path;
-            $author->save();
-
-            return response()->json(['message' => 'img uploaded successfully', 'path' => $path], 201);
+        } catch (Exception $e) {
+            Log::info('uploadImage: ' . $e->getMessage());
+            throw new Exception('Image was not uploaded look in logs');
         }
-
-        Log::info('is valid file:' . $file?->isValid());
-        return response()->json(['error' => 'Invalid file'], 400);
+        return response()->json(['message' => 'somethng went wrong'], 500);
     }
 
     public function getAll(): JsonResponse
