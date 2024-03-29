@@ -84,9 +84,9 @@ class AuthorService
     private function parseDate(?string $dateString): ?string
     {
         if (
-            isset($attributes['date_of_birth']) &&
-            $attributes['date_of_birth'] != "null" &&
-            $attributes['date_of_birth'] != ""
+            isset($dateString) &&
+            $dateString != "null" &&
+            $dateString != ""
         ) {
             try {
                 if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateString)) {
