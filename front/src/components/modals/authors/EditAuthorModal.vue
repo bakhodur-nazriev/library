@@ -30,7 +30,7 @@ const editData = async () => {
   const payload = getFormData(author.value);
   const authToken = sessionStorage.getItem('token');
   const headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': 'multipart/form-data',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': '*',
     'Authorization': `Bearer ${authToken}`
