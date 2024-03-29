@@ -32,6 +32,7 @@ class AuthorController extends Controller
     public function search(string $initials): array
     {
         $attributes['initials'] = Str::lower(str_replace(' ', '', $initials));;
+
         return $this->authorService->fuzzySearch($attributes);
     }
 

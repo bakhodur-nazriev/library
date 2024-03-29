@@ -48,7 +48,8 @@ class AuthorService
 
         return Author::query()
             ->whereIn('id', $extractedNumbers)
-            ->get();
+            ->get()
+            ->toArray();
     }
 
     public function store(array $attributes, UploadedFile|null $file): JsonResponse
