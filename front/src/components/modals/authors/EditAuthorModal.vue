@@ -45,7 +45,7 @@ const editData = async () => {
   };
 
   await axios
-      .patch('/admin/authors/' + props.selectedAuthor.id, payload, {headers})
+      .post('/admin/authors/' + props.selectedAuthor.id, payload, {headers})
       .then(res => {
         if (res.status === 200 || res.status === 201) {
           emit('reloadData', true);
@@ -127,6 +127,11 @@ const emitClose = () => {
           prop="photo_link"
           :label="`${$t('titles.table_titles.authors.photo_link')}`"
       >
+        <input
+            type="file"
+            accept="image/*"
+            @change="handleFileChange"
+        />
         <el-upload @change="handleFileChange">
           <el-button
               size="small"

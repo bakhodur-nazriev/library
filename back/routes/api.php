@@ -39,7 +39,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
             Route::prefix('authors')->group(function () {
                 Route::post('', [AuthorController::class, 'store']);
-                Route::patch('/{id}', [AuthorController::class, 'update'])
+                Route::post('/{id}', [AuthorController::class, 'update'])
                     ->where('id', '[0-9]+');
                 Route::delete('/{id}', [AuthorController::class, 'destroy']);
             });
