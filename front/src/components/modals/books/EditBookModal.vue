@@ -196,9 +196,7 @@ onMounted(() => {
       >
         <el-input v-model="book.language"/>
       </el-form-item>
-      <el-form-item
-          :label="`${$t('titles.table_titles.books.cover_image')}`"
-      >
+      <el-form-item :label="`${$t('titles.table_titles.books.cover_image')}`">
         <input
             type="file"
             accept="image/*"
@@ -208,7 +206,7 @@ onMounted(() => {
       <el-form-item :label="`${$t('titles.table_titles.books.file')}`">
         <input
             type="file"
-            accept=".pdf"
+            accept=".pdf/*"
             @change="handleFileChange"
         />
       </el-form-item>

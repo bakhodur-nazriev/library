@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref} from 'vue';
+import {ref} from 'vue';
 import {getFormData} from "../../../utils.js";
 import axios from "axios";
 import router from "../../../router/index.js";
@@ -23,16 +23,16 @@ const authorNationalities = [
   {label: 'Тоҷик', value: 'Тоҷик'},
 ];
 const handleFileChange = (e) => {
+  console.log(e.target.files[0]);
   author.value.photo_link = e.target.files[0];
 };
 const editData = async () => {
-  // const date = new Date(author.value.date_of_birth);
-  // const year = date.getFullYear();
-  // const month = ('0' + (date.getMonth() + 1)).slice(-2);
-  // const day = ('0' + date.getDate()).slice(-2);
-  // author.value.date_of_birth = `${year}-${month}-${day}`;
+  const date = new Date(author.value.date_of_birth);
+  const year = date.getFullYear();
+  const month = ('0' + (date.getMonth() + 1)).slice(-2);
+  const day = ('0' + date.getDate()).slice(-2);
+  author.value.date_of_birth = `${year}-${month}-${day}`;
 
-  console.log("Formatted date of birth:", author.value.date_of_birth);
 
   loading.value = true;
   const payload = getFormData(author.value);
@@ -120,21 +120,14 @@ const emitClose = () => {
           :label="`${$t('titles.table_titles.authors.date_of_birth')}`"
           prop="date_of_birth"
       >
-<!--        <el-date-picker v-model="author.date_of_birth" type="date" format="YYYY-MM-DD"/>-->
-        <input type="date" v-model="author.date_of_birth">
+        <el-date-picker v-model="author.date_of_birth" type="date" format="YYYY-MM-DD"/>
       </el-form-item>
-      <el-form-item
-          prop="photo_link"
-          :label="`${$t('titles.table_titles.authors.photo_link')}`"
-      >
-        <el-upload @change="handleFileChange">
-          <el-button
-              size="small"
-              type="primary"
-          >
-            {{ $t('titles.table_titles.authors.photo_link') }}
-          </el-button>
-        </el-upload>
+      <el-form-item :label="`${$t('titles.table_titles.authors.photo_link')}`">
+        <input
+            type="file"
+            accept="image/*"
+            @change="handleFileChange"
+        />
       </el-form-item>
       <el-form-item>
         <el-button @click="editData" :disabled="loading.value" type="primary">{{ $t('buttons.save') }}</el-button>
