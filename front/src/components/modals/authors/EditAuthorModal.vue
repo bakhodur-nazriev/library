@@ -23,29 +23,28 @@ const authorNationalities = [
   {label: 'Тоҷик', value: 'Тоҷик'},
 ];
 const handleFileChange = (e) => {
-  console.log(e.target.files[0]);
   author.value.photo_link = e.target.files[0];
 };
 const editData = async () => {
+  loading.value = true;
+
   const date = new Date(author.value.date_of_birth);
   const year = date.getFullYear();
   const month = ('0' + (date.getMonth() + 1)).slice(-2);
   const day = ('0' + date.getDate()).slice(-2);
   author.value.date_of_birth = `${year}-${month}-${day}`;
 
-
-  loading.value = true;
   const payload = getFormData(author.value);
   const authToken = sessionStorage.getItem('token');
   const headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': 'multipart/form-data',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': '*',
     'Authorization': `Bearer ${authToken}`
   };
 
   await axios
-      .patch('/admin/authors/' + props.selectedAuthor.id, payload, {headers})
+      .post('/admin/authors/' + props.selectedAuthor.id, payload, {headers})
       .then(res => {
         if (res.status === 200 || res.status === 201) {
           emit('reloadData', true);

@@ -102,15 +102,13 @@ onMounted(() => {
       element-loading-background="rgba(0, 0, 0, 0.7)"
       :element-loading-text="$t('loading')"
   >
-    <div v-if="`${$route.path}` === `/${i18n.global.locale}/`">
-      <section class="sub-header">
-        <img src="../assets/slide4.jpg" alt="">
-        <MainSearchTabs
-            @search-book="handleBookSearch"
-            @search-author="handleAuthorSearch"
-        />
-      </section>
-    </div>
+    <section class="sub-header">
+      <img src="../assets/slide4.jpg" alt="">
+      <MainSearchTabs
+          @search-book="handleBookSearch"
+          @search-author="handleAuthorSearch"
+      />
+    </section>
 
     <CustomDivider :title="$t('label.books_latest')"/>
 

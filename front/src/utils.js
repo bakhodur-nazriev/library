@@ -7,7 +7,11 @@ export function getFormData(data) {
                 formData.append(`${key}[]`, item);
             });
         } else {
-            formData.append(key, data[key]);
+            if (key === 'photo_link' && data[key] instanceof File) {
+                formData.append(key, data[key]);
+            } else {
+                formData.append(key, data[key]);
+            }
         }
     }
 

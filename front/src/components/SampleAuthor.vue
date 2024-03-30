@@ -1,5 +1,11 @@
 <script setup>
+import {onUpdated} from "vue";
+
 const props = defineProps(['authors']);
+
+onUpdated(() => {
+  console.log(props.authors);
+});
 </script>
 
 <template>
@@ -8,7 +14,12 @@ const props = defineProps(['authors']);
       :key="i"
       class="authors-list_item"
   >
-    <img class="author-image" v-if="author.link" :src="author.link" :alt="author.name">
+    <img
+        class="author-image"
+        v-if="author.photo_link"
+        :src="author.photo_link"
+        :alt="author.name"
+    >
     <div v-else class="authors-cover-block">
       <span>{{ $t('label.author_empty_cover') }}</span>
     </div>
