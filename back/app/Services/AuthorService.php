@@ -69,8 +69,9 @@ class AuthorService
                     $this->attachBooks($author, $attributes['book_ids']);
                 }
 
-                $this->uploadAuthorPhoto($file, $author);
-
+                if ($file?->isValid()) {
+                    $this->uploadAuthorPhoto($file, $author);
+                }
                 return response()->json(['author' => $author], 201);
             });
 
@@ -144,8 +145,9 @@ class AuthorService
 
         (new SearchKeysService($author))->update();
 
-        $this->uploadAuthorPhoto($file, $author);
-
+        if ($file?->isValid()) {
+            $this->uploadAuthorPhoto($file, $author);
+        }
         return response()->json([
             'message' => 'Author updated successfully',
             'author' => $author
@@ -159,7 +161,6 @@ class AuthorService
     {
         try {
             if ($authorPhoto->isValid()) {
-
                 if ($author->photo_link) {
                     Log::info('uploading file', ['old photo_link was deleted ' . Storage::delete($author->photo_link)]);
                 }
