@@ -109,6 +109,8 @@ const getBook = async (id) => {
   gap: 15px;
   border-radius: 5px;
   transition: all 0.3s ease 0s;
+  min-height: 286px;
+  max-height: 286px;
 
   &:hover {
     border: 2px solid var(--color-active-link);

@@ -49,6 +49,8 @@ onUpdated(() => {
   border: 2px solid #d6d6d6;
   gap: 15px;
   border-radius: 5px;
+  min-height: 286px;
+  max-height: 286px;
 
   .authors-cover-block {
     background: rgba(0, 0, 0, 0.8);
