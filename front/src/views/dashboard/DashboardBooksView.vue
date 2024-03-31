@@ -93,6 +93,7 @@ const getBooks = async () => {
         totalItems.value = res.data.total;
       })
       .catch(err => {
+        console.log(err);
         if (err.response.status === 401) {
           sessionStorage.removeItem('token');
           sessionStorage.removeItem('user');

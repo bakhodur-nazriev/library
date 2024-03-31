@@ -50,6 +50,8 @@ const openDeleteModal = (bookId) => {
 
   th, td {
     padding: 12px 15px;
+    max-width: 220px;
+    overflow: auto;
   }
 
   thead tr {

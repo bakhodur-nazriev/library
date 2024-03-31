@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref, watch} from 'vue';
+import {onMounted, onUpdated, ref, watch} from 'vue';
 import {getFormData} from "../../../utils.js";
 import axios from "axios";
 import Popup from "../../Popup.vue";
@@ -9,9 +9,8 @@ const emit = defineEmits(['close']);
 const props = defineProps(['selectedBook']);
 const book = ref({
   title: props.selectedBook.title,
-  // incoming link is just path not pdf file
   file: '',
-  authors: props.selectedBook.authors,
+  author_ids: props.selectedBook.authors,
   description: props.selectedBook.description,
   ISBN: props.selectedBook.isbn,
   publisher: props.selectedBook.publisher,
@@ -22,7 +21,7 @@ const book = ref({
   cover_image: props.selectedBook.cover_image
 });
 const loading = ref(false);
-const authors = ref([]);
+const authors = ref(null);
 const formRules = {
   title: [
     {required: true, message: 'Please enter the title', trigger: 'blur'},
@@ -31,11 +30,33 @@ const formRules = {
 const formRef = ref(null);
 const showError = ref(false);
 const errorMessage = ref('');
-const selectedAuthors = ref(book.value.authors);
-
-watch(selectedAuthors, (newValue, oldValue) => {
-  console.log(newValue, oldValue);
-});
+const languages = [
+  {label: 'English', value: 'English'},
+  {label: 'Spanish', value: 'Spanish'},
+  {label: 'French', value: 'French'},
+  {label: 'Русский', value: 'Русский'},
+  {label: 'Тоҷикӣ', value: 'Тоҷикӣ'},
+];
+const genres = [
+  {label: 'Бадеи', value: 'Бадеи'},
+  {label: 'Биология', value: 'Биология'},
+  {label: 'Биофизика', value: 'Биофизика'},
+  {label: 'Гео-информатика', value: 'Гео-информатика'},
+  {label: 'Гео-мир', value: 'Гео-мир'},
+  {label: 'Гео-физика', value: 'Гео-физика'},
+  {label: 'Демография', value: 'Демография'},
+  {label: 'Естествознание', value: 'Естествознание'},
+  {label: 'История', value: 'История'},
+  {label: 'Медицина', value: 'Медицина'},
+  {label: 'Педагогика и психология', value: 'Педагогика и психология'},
+  {label: 'Политология и социология', value: 'Политология и социология'},
+  {label: 'Психология', value: 'Психология'},
+  {label: 'Учебная литература', value: 'Учебная литература'},
+  {label: 'Философия', value: 'Философия'},
+  {label: 'Химия', value: 'Химия'},
+  {label: 'Художественная', value: 'Художественная'},
+  {label: 'Языкознание', value: 'Языкознание'}
+];
 
 const handleFileChange = (e) => {
   book.value.file = e.target.files[0];
@@ -150,7 +171,7 @@ onMounted(() => {
             multiple
             clearable
             filterable
-            v-model="selectedAuthors"
+            v-model="book.author_ids"
         >
           <el-option
               v-for="author in authors"
@@ -188,13 +209,37 @@ onMounted(() => {
           :label="`${$t('titles.table_titles.books.genre')}`"
           prop="genre"
       >
-        <el-input v-model="book.genre"/>
+        <el-select
+            :label="`${$t('titles.table_titles.books.genre')}`"
+            v-model="book.genre"
+            clearable
+            filterable
+        >
+          <el-option
+              v-for="(genre, i) in genres"
+              :key="i"
+              :label="genre.label"
+              :value="genre.value"
+          ></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item
           :label="`${$t('titles.table_titles.books.language')}`"
           prop="language"
       >
-        <el-input v-model="book.language"/>
+        <el-select
+            :label="`${$t('titles.table_titles.books.language')}`"
+            v-model="book.language"
+            clearable
+            filterable
+        >
+          <el-option
+              v-for="(lang, i) in languages"
+              :key="i"
+              :label="lang.label"
+              :value="lang.value"
+          ></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item :label="`${$t('titles.table_titles.books.cover_image')}`">
         <input

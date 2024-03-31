@@ -17,7 +17,7 @@ const book = ref({
   genre: '',
   language: '',
   publisher: '',
-  author: '',
+  author_ids: '',
   pages: '',
   cover_image: '',
   file: ''
@@ -34,18 +34,31 @@ const formRules = {
   ]
 };
 const languages = [
-  { label: 'English', value: 'English' },
-  { label: 'Spanish', value: 'Spanish' },
-  { label: 'French', value: 'French' },
-  { label: 'Русский', value: 'Русский' },
-  { label: 'Тоҷикӣ', value: 'Тоҷикӣ' },
+  {label: 'English', value: 'English'},
+  {label: 'Spanish', value: 'Spanish'},
+  {label: 'French', value: 'French'},
+  {label: 'Русский', value: 'Русский'},
+  {label: 'Тоҷикӣ', value: 'Тоҷикӣ'},
 ];
-const genre = [
-  { label: 'English', value: 'English' },
-  { label: 'Spanish', value: 'Spanish' },
-  { label: 'French', value: 'French' },
-  { label: 'Русский', value: 'Русский' },
-  { label: 'Тоҷикӣ', value: 'Тоҷикӣ' },
+const genres = [
+  {label: 'Бадеи', value: 'Бадеи'},
+  {label: 'Биология', value: 'Биология'},
+  {label: 'Биофизика', value: 'Биофизика'},
+  {label: 'Гео-информатика', value: 'Гео-информатика'},
+  {label: 'Гео-мир', value: 'Гео-мир'},
+  {label: 'Гео-физика', value: 'Гео-физика'},
+  {label: 'Демография', value: 'Демография'},
+  {label: 'Естествознание', value: 'Естествознание'},
+  {label: 'История', value: 'История'},
+  {label: 'Медицина', value: 'Медицина'},
+  {label: 'Педагогика и психология', value: 'Педагогика и психология'},
+  {label: 'Политология и социология', value: 'Политология и социология'},
+  {label: 'Психология', value: 'Психология'},
+  {label: 'Учебная литература', value: 'Учебная литература'},
+  {label: 'Философия', value: 'Философия'},
+  {label: 'Химия', value: 'Химия'},
+  {label: 'Художественная', value: 'Художественная'},
+  {label: 'Языкознание', value: 'Языкознание'}
 ];
 
 const handleFileChange = (e) => {
@@ -154,7 +167,7 @@ onMounted(() => {
             multiple
             clearable
             filterable
-            v-model="book.author"
+            v-model="book.author_ids"
         >
           <el-option
               v-for="author in authors"
@@ -210,9 +223,21 @@ onMounted(() => {
       </el-form-item>
       <el-form-item
           :label="`${$t('titles.table_titles.books.genre')}`"
-          prop=""
+          prop="genre"
       >
-        <el-input v-model="book.genre"/>
+        <el-select
+            :label="`${$t('titles.table_titles.books.genre')}`"
+            v-model="book.genre"
+            clearable
+            filterable
+        >
+          <el-option
+              v-for="(genre, i) in genres"
+              :key="i"
+              :label="genre.label"
+              :value="genre.value"
+          ></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item
           :label="`${$t('titles.table_titles.books.language')}`"
