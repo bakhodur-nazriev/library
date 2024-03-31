@@ -40,7 +40,7 @@ class BookController extends Controller
 
     public function showById(int $id): JsonResponse
     {
-        return response()->json(Book::query()->find($id));
+        return response()->json(Book::query()->with('authors')->find($id));
     }
 
     /**
