@@ -1,11 +1,5 @@
 <script setup>
-import {onUpdated} from "vue";
-
 const props = defineProps(['authors']);
-
-onUpdated(() => {
-  console.log(props.authors);
-});
 </script>
 
 <template>
@@ -83,6 +77,7 @@ onUpdated(() => {
 
   .author-image {
     width: 150px;
+    border-radius: 5px;
   }
 
   .author {
