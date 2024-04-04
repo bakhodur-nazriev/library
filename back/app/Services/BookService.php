@@ -51,6 +51,7 @@ class BookService
         $book->description = $attributes['description'] ?? null;
         $book->published_at = isset($attributes['published_at']) ? $this->parseDate($attributes['published_at']) : null;
         $book->genre = $attributes['genre'] ?? null;
+        $book->pages = $attributes['pages'] ?? null;
         $book->language = $attributes['language'] ?? null;
         $book->publisher = $attributes['publisher'] ?? null;
         $book->search_key = $attributes['title'];
@@ -154,6 +155,7 @@ class BookService
         $book->description = $attributes['description'] ?? $book->description;
         $book->published_at = isset($attributes['published_at']) ? $this->parseDate($attributes['published_at']) : $book->published_at;
         $book->genre = $attributes['genre'] ?? $book->genre;
+        $book->pages = $attributes['pages'] ?? $book->pages;
         $book->language = $attributes['language'] ?? $book->language;
         $book->publisher = $attributes['publisher'] ?? $book->publisher;
         $book->search_key = $attributes['title'] ?? $book->search_key;
