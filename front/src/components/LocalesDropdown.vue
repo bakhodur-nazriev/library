@@ -165,11 +165,11 @@ export default {
     flex-direction: column;
     position: fixed;
     left: 0;
-    top: 100%;
-    background: var(--color-seashell);
+    top: 85%;
+    background: var(--color-toggle);
     box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.15);
     border-radius: 20px 20px 0 0;
-    width: 100%;
+    width: 85%;
     margin: 0;
     list-style: none;
     padding: 16px;
