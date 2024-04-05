@@ -18,15 +18,37 @@ use Spatie\PdfToImage\Pdf;
 
 class BooksPopulatingSeeder extends Seeder
 {
+
+    private string $baseDirectory = __DIR__ . '/sources/books/УЧЕБНАЯ ЛИТЕРАТУРА';
+    private int $count = 300;
+
+    private $progressBar;
     /**
-     * @throws PdfParserException
-     * @throws PageDoesNotExist
-     * @throws PdfDoesNotExist
      * @throws Exception
      */
     public function run(): void
     {
-        $directory = __DIR__ . '/sources/books/some_genre';
+         $this->progressBar = $this->command->getOutput()->createProgressBar($this->count);
+
+        try {
+            $this->processDirectory($this->baseDirectory);
+        } catch (Exception $e) {
+            Log::info('book seeder', [$e->getMessage()]);
+        }
+
+        $this->progressBar->finish();
+
+        $this->command->info("\nSeeding completed successfully!");
+    }
+
+    /**
+     * @throws PdfParserException
+     * @throws PdfDoesNotExist
+     * @throws PageDoesNotExist
+     * @throws Exception
+     */
+    private function processDirectory(string $directory): void
+    {
         $files = scandir($directory);
 
         foreach ($files as $file) {
@@ -34,57 +56,72 @@ class BooksPopulatingSeeder extends Seeder
                 continue;
             }
 
-            if (pathinfo($file, PATHINFO_EXTENSION) === 'pdf') {
-                $pageCount = $this->getPageCount($directory);
-                $bookTitle = pathinfo($file, PATHINFO_FILENAME);
-                $genre = basename(dirname($directory . '/' . $file));
+            $filePath = $directory . '/' . $file;
 
-                $pdf = new Pdf($directory . '/' . $file);
-                foreach (range(1, $pdf->getNumberOfPages()) as $pageNumber) {
+            if (is_dir($filePath)) {
+                $this->processDirectory($filePath);
+            } elseif (pathinfo($file, PATHINFO_EXTENSION) === 'pdf') {
 
-                    $bookCoverImagePath = storage_path('app/books_cover_images/' . "$bookTitle" . '_ci_' . $pageNumber . '.jpg');
-                    if (!file_exists($bookCoverImagePath)) {
-                        Storage::put($bookCoverImagePath, '');
-                    }
+                $this->progressBar->advance();
 
-                    $pdf->setPage($pageNumber)
-                        ->saveImage($bookCoverImagePath);
-
-                    break;
-                }
-
-                //
-                $book = new Book();
-                $book->title = $bookTitle;
-                $book->pages = $pageCount;
-                $book->genre = $genre;
-                $book->link =
-                $book->save();
-
-                (new SearchKeysService($book))->store();
-
-                $uploadedFileBook = new UploadedFile(
-                    $directory . '/' . $file,
-                    "$bookTitle" . '_link_' . rand(44, 9999),
-                    'application/pdf',
-                    null,
-                    true
-                );
-
-                $this->uploadFile($uploadedFileBook, $book);
-
-                //
-                $uploadedFileCI = new UploadedFile(
-                    $bookCoverImagePath,
-                    "$bookTitle" . '_ci_' . $pageNumber . '.jpg',
-                    'image/jpeg',
-                    null,
-                    true
-                );
-
-                $this->uploadCoverImage($uploadedFileCI, $book);
+                $this->processPdfFile($filePath);
+                unlink($filePath);
             }
         }
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function processPdfFile(string $filePath): void
+    {
+        $pageCount = $this->getPageCount($filePath);
+        $bookTitle = pathinfo($filePath, PATHINFO_FILENAME);
+        $genre = basename($this->baseDirectory);
+
+        try {
+            $pdf = new Pdf($filePath);
+            foreach (range(1, $pdf->getNumberOfPages()) as $pageNumber) {
+                $bookCoverImagePath = storage_path('app/books_cover_images/' . "$bookTitle" . '_ci_' . $pageNumber . '.jpg');
+                if (!file_exists($bookCoverImagePath)) {
+                    Storage::put($bookCoverImagePath, '');
+                }
+
+                $pdf->setPage($pageNumber)
+                    ->saveImage($bookCoverImagePath);
+                break;
+            }
+        } catch (Exception $e) {
+            Log::info('saveImage', [$e->getMessage()]);
+        }
+
+
+        $book = new Book();
+        $book->title = $bookTitle;
+        $book->pages = $pageCount;
+        $book->genre = $genre;
+        $book->save();
+
+        (new SearchKeysService($book))->store();
+
+        $uploadedFileBook = new UploadedFile(
+            $filePath,
+            "$bookTitle" . '_link_' . rand(44, 9999),
+            'application/pdf',
+            null,
+            true
+        );
+
+        $this->uploadFile($uploadedFileBook, $book);
+
+        $uploadedFileCI = new UploadedFile(
+            $bookCoverImagePath,
+            "$bookTitle" . '_ci_' . $pageNumber . '.jpg',
+            'image/jpeg',
+            null,
+            true
+        );
+        $this->uploadCoverImage($uploadedFileCI, $book);
     }
 
     /**
@@ -94,7 +131,7 @@ class BooksPopulatingSeeder extends Seeder
     {
         try {
             if ($coverImage->isValid()) {
-                $imageName = $book->title . '_'. rand(1000, 1000000) . '_cover_image_' . '.' . $coverImage->getClientOriginalExtension();
+                $imageName = $book->title . '_' . rand(1000, 1000000) . '_cover_image_' . '.' . $coverImage->getClientOriginalExtension();
                 $imagePath = $coverImage->storeAs('public', $imageName);
                 $book->cover_image = asset('storage/' . $imageName);
                 $book->save();
@@ -109,22 +146,16 @@ class BooksPopulatingSeeder extends Seeder
 
     }
 
-    /**
-     * @throws PdfParserException
-     */
-    private function getPageCount($directory): int
-    {
-        $pdf = new Fpdi();
-        $files = scandir($directory);
-        $totalPageCount = 0;
-        foreach ($files as $file) {
-            if ($file === '.' || $file === '..') {
-                continue;
-            }
-            $pdf->setSourceFile($directory . '/' . $file);
-            $totalPageCount += $pdf->setSourceFile($directory . '/' . $file);
-        }
 
+    private function getPageCount($file): int
+    {
+        $totalPageCount = 0;
+        try {
+            $pdf = new Fpdi();
+            $totalPageCount += $pdf->setSourceFile($file);
+        } catch (Exception $e) {
+            Log::info('getPageCount', [$e->getMessage()]);
+        }
         return $totalPageCount;
     }
 
