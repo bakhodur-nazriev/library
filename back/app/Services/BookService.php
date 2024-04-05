@@ -166,7 +166,7 @@ class BookService
             return $book;
         }
 
-        throw new Exception('updating book type mismatch exception');
+        throw new Exception('updating book type mismatch exception', 500);
     }
 
     public function downloadFile(int $id): BinaryFileResponse|JsonResponse
