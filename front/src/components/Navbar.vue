@@ -432,7 +432,7 @@ onBeforeUnmount(() => {
   }
 }
 
-@media (max-width: 778px) {
+@media (max-width: 768px) {
   .container {
 
     header {
@@ -454,7 +454,7 @@ onBeforeUnmount(() => {
     }
 
     .main-title_section {
-      top: 14%;
+      top: 28%;
 
       h1 {
         font-size: 26px;
@@ -462,7 +462,7 @@ onBeforeUnmount(() => {
     }
 
     .title-bar {
-      top: 18%;
+      top: 35%;
       max-width: 330px;
     }
   }
