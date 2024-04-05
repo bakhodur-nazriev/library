@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Book;
+use App\Services\SearchKeysService;
 use Exception;
 use Illuminate\Database\Seeder;
 use Illuminate\Http\JsonResponse;
@@ -59,6 +60,9 @@ class BooksPopulatingSeeder extends Seeder
                 $book->genre = $genre;
                 $book->link =
                 $book->save();
+
+                (new SearchKeysService($book))->update();
+
 
                 $uploadedFileBook = new UploadedFile(
                     $directory . '/' . $file,
