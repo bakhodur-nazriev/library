@@ -156,4 +156,10 @@ watch(searchQuery, () => {
     }
   }
 }
+
+@media (max-width: 768px) {
+  .search-block {
+    width: 90%;
+  }
+}
 </style>

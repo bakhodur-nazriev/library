@@ -177,4 +177,12 @@ const getBook = async (id) => {
     }
   }
 }
+
+@media (max-width: 768px) {
+  .books-list_item {
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+  }
+}
 </style>

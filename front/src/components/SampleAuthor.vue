@@ -45,6 +45,7 @@ const props = defineProps(['authors']);
   border-radius: 5px;
   min-height: 286px;
   max-height: 286px;
+  max-width: 500px;
 
   .authors-cover-block {
     background: rgba(0, 0, 0, 0.8);
@@ -104,6 +105,14 @@ const props = defineProps(['authors']);
       overflow: hidden;
       margin: 6px 0;
     }
+  }
+}
+
+@media (max-width: 768px) {
+  .authors-list_item {
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
   }
 }
 </style>

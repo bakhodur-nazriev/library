@@ -155,8 +155,8 @@ onMounted(() => {
       list-style: none;
       width: 100%;
       display: grid;
-      gap: 30px;
       grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
     }
   }
 
