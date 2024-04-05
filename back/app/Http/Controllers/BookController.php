@@ -48,7 +48,11 @@ class BookController extends Controller
      */
     public function update(BookUpdateRequest $request, int $id): JsonResponse
     {
-        return $this->bookService->update($request->all(), $request->file('file'), $id, $request->file('cover_image'));
+        try {
+            return $this->bookService->update($request->all(), $request->file('file'), $id, $request->file('cover_image'));
+        } catch (Exception $e) {
+            return response()->json($e->getMessage(), 500);
+        }
     }
 
     public function detachFromBookTheAuthor(int $bookId, int $authorId): JsonResponse
