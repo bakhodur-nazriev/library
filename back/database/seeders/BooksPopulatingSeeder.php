@@ -36,7 +36,7 @@ class BooksPopulatingSeeder extends Seeder
             if (pathinfo($file, PATHINFO_EXTENSION) === 'pdf') {
                 $pageCount = $this->getPageCount($directory);
                 $bookTitle = pathinfo($file, PATHINFO_FILENAME);
-                $genre = basename(dirname($file));
+                $genre = basename(dirname($directory . '/' . $file));
 
                 $pdf = new Pdf($directory . '/' . $file);
                 foreach (range(1, $pdf->getNumberOfPages()) as $pageNumber) {
