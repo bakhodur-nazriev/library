@@ -5,6 +5,7 @@ import {UserFilled} from "@element-plus/icons-vue";
 import axios from "axios";
 import router from "../router/index.js";
 import i18n from "../i18n.js";
+import Popup from "./Popup.vue";
 
 const userString = sessionStorage.getItem('user');
 const user = JSON.parse(userString);
@@ -203,7 +204,7 @@ onBeforeUnmount(() => {
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  z-index: 16;
+  z-index: 160;
   height: 400px;
 
   header {
@@ -384,7 +385,6 @@ onBeforeUnmount(() => {
 @media (max-width: 991px) {
   .container {
     header {
-      //background: rgba(0, 0, 0, 0.8);
       flex-direction: column;
       align-items: start;
       padding: 25px 25px;
@@ -428,6 +428,42 @@ onBeforeUnmount(() => {
         font-size: 32px;
         text-align: center;
       }
+    }
+  }
+}
+
+@media (max-width: 778px) {
+  .container {
+
+    header {
+      .logo {
+        display: flex;
+        align-items: center;
+
+        img {
+          width: 160px;
+        }
+      }
+
+      .right-block {
+        .toggle-btn {
+          width: 35px;
+          gap: 6px;
+        }
+      }
+    }
+
+    .main-title_section {
+      top: 14%;
+
+      h1 {
+        font-size: 26px;
+      }
+    }
+
+    .title-bar {
+      top: 18%;
+      max-width: 330px;
     }
   }
 }
