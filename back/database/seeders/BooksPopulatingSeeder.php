@@ -61,8 +61,7 @@ class BooksPopulatingSeeder extends Seeder
                 $book->link =
                 $book->save();
 
-                (new SearchKeysService($book))->update();
-
+                (new SearchKeysService($book))->store();
 
                 $uploadedFileBook = new UploadedFile(
                     $directory . '/' . $file,
