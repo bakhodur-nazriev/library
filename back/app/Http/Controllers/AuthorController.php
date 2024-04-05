@@ -6,6 +6,7 @@ use App\Http\Requests\AuthorRequests\AuthorStoreRequest;
 use App\Http\Requests\AuthorRequests\AuthorUpdateRequest;
 use App\Models\Author;
 use App\Services\AuthorService;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -50,6 +51,9 @@ class AuthorController extends Controller
         );
     }
 
+    /**
+     * @throws Exception
+     */
     public function update(AuthorUpdateRequest $request, int $id): JsonResponse
     {
         return $this->authorService->update($request->all(), $request->file('photo_link'), $id);
