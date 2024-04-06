@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Imagick;
 use setasign\Fpdi\PdfParser\PdfParserException;
 use setasign\Fpdi\Tcpdf\Fpdi;
 use Spatie\PdfToImage\Exceptions\PageDoesNotExist;
@@ -28,7 +29,7 @@ class BooksPopulatingSeeder extends Seeder
      */
     public function run(): void
     {
-         $this->progressBar = $this->command->getOutput()->createProgressBar($this->count);
+        $this->progressBar = $this->command->getOutput()->createProgressBar($this->count);
 
         try {
             $this->processDirectory($this->baseDirectory);
@@ -80,17 +81,19 @@ class BooksPopulatingSeeder extends Seeder
         $genre = basename($this->baseDirectory);
 
         try {
-            $pdf = new Pdf($filePath);
-            foreach (range(1, $pdf->getNumberOfPages()) as $pageNumber) {
-                $bookCoverImagePath = storage_path('app/books_cover_images/' . "$bookTitle" . '_ci_' . $pageNumber . '.jpg');
-                if (!file_exists($bookCoverImagePath)) {
-                    Storage::put($bookCoverImagePath, '');
-                }
-
-                $pdf->setPage($pageNumber)
-                    ->saveImage($bookCoverImagePath);
-                break;
+            $firstPageNumber = 1;
+            $bookCoverImagePath = storage_path('app/books_cover_images/' . "$bookTitle" . '_ci_' . $firstPageNumber . '.jpg');
+            if (!file_exists($bookCoverImagePath)) {
+                touch($bookCoverImagePath);
             }
+
+            $imagick = new Imagick();
+            $imagick->readImage("{$filePath}[0]");
+            $imagick->setImageFormat('jpg');
+            $imagick->setImageCompressionQuality(40); // Adjust as needed
+            $imagick->writeImage($bookCoverImagePath);
+            $imagick->destroy();
+
         } catch (Exception $e) {
             Log::info('saveImage', [$e->getMessage()]);
         }
@@ -116,7 +119,7 @@ class BooksPopulatingSeeder extends Seeder
 
         $uploadedFileCI = new UploadedFile(
             $bookCoverImagePath,
-            "$bookTitle" . '_ci_' . $pageNumber . '.jpg',
+            "$bookTitle" . '_ci_' . $firstPageNumber . '.jpg',
             'image/jpeg',
             null,
             true

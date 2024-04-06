@@ -102,6 +102,8 @@ class SearchKeysService
     private function searchKeys(): array
     {
         $searchKey = $this->searchKey();
+
+        $searchKey = str_replace(['-', '_'], ' ', $searchKey);
         $searchKey = str_replace('  ', ' ', $searchKey);
 
         return explode(' ', $searchKey);
