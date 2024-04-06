@@ -8,9 +8,9 @@ use Illuminate\Database\Seeder;
 
 class SeparateBookTitleFromAuthorSeeder extends Seeder
 {
-    private string $pattern = '/([а-яА-Я]+(?:ова|ов|ева|ев|вич|ьев|ьева|ин|ен|ко|арь|скии)\s*[А-Я]\.\s*[А-Я]\.)\s*(.*)/u';
+   // private string $pattern = '/([а-яА-Я]+(?:ова|ов|ева|ев|вич|ьев|ьева|ин|ен|ко|арь|скии)\s*[А-Я]\.\s*[А-Я]\.)\s*(.*)/u';
 
-//    private string $pattern = '/([а-яА-Я]+(?:ова|ов|ева|ев|вич|ьев|ьева|ин|ен|ко|арь|скии)\s*[А-Я]\.)\s*(.*)/u';
+    private string $pattern = '/([а-яА-Я]+(?:ова|ов|ева|ев|вич|ьев|ьева|ин|ен|ко|арь|скии)\s*[А-Я]\.)\s*(.*)/u';
 
     //private string $pattern = '/([а-яА-Я]+(?:ова|ов|ева|ев|вич|ьев|ьева|ин|ен|арь|скии))\s*(.*)/u';
 
