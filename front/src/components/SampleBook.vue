@@ -9,11 +9,11 @@ const props = defineProps({
 });
 const errorMessage = ref('');
 const showError = ref(false);
-const loading = ref(false);
+const loading = ref({});
 const selectedBook = ref(null);
 
 const getBook = async (id) => {
-  loading.value = true;
+  loading.value[id] = true;
   const authToken = sessionStorage.getItem('token');
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -24,7 +24,7 @@ const getBook = async (id) => {
   await axios
       .get('/books/download/' + id, {headers, responseType: 'blob'})
       .then(res => {
-        loading.value = false;
+        loading.value[id] = false;
 
         if (res.status === 200 || res.status === 201) {
 
@@ -62,7 +62,7 @@ const getBook = async (id) => {
         console.log(err);
         showError.value = true;
         errorMessage.value = err.message;
-        loading.value = false;
+        loading.value[id] = false;
       })
 }
 </script>
@@ -88,6 +88,7 @@ const getBook = async (id) => {
 
       <div>
         <button
+            v-loading="loading[book.id]"
             type="button"
             class="read-more_btn"
             @click="getBook(book.id)"
