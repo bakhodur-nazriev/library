@@ -91,30 +91,6 @@ services: #containers
     networks:
       - library_network
 
-############### redis ###########################
-
-  redis_library:
-    image: 'redis:alpine'
-    container_name: redis_library
-    ports:
-      - "6390:6379"
-    restart: unless-stopped
-    networks:
-      - library_network
-    expose:
-      - 6390
-
-####################### node #######
-
-  node:
-    image: node
-    container_name: npm_library
-    volumes:
-      - ./:/var/www/library
-    working_dir: /var/www/library
-    networks:
-      - library_network
-
 networks:
   library_network:
     external: true
