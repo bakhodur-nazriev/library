@@ -3,6 +3,7 @@ import {ref} from 'vue';
 import {getFormData} from "../../../utils.js";
 import axios from "axios";
 import router from "../../../router/index.js";
+import Popup from "../../Popup.vue";
 
 const emit = defineEmits(['cancel', 'reloadData']);
 const user = ref({
@@ -10,8 +11,11 @@ const user = ref({
   email: '',
   password: ''
 });
-const alert = ref(null);
+const errorMessage = ref('');
+const showError = ref(false);
+const loading = ref(false);
 const addUser = async () => {
+  loading.value = true;
   const payload = getFormData(user.value);
 
   const authToken = sessionStorage.getItem('token');
@@ -24,6 +28,7 @@ const addUser = async () => {
   await axios
       .post('/admin/users', payload, {headers})
       .then(res => {
+        loading.value = false;
         if (res.status === 200 || res.status === 201) {
           emit('reloadData', true);
           emitCancel();
@@ -36,16 +41,28 @@ const addUser = async () => {
           router.push({name: 'login'});
         }
         console.log(err);
-        alert.value = err.response.data.message;
+        if (err.response.status !== 200) {
+          errorMessage.value = err.message;
+        }
       })
+      .finally(() => loading.value = false);
 };
 const emitCancel = () => {
   emit('cancel');
 };
+const resetError = () => {
+  showError.value = false;
+  errorMessage.value = '';
+};
 </script>
 
 <template>
-  <div class="modal-overlay" @click="emitCancel">
+  <div class="modal-overlay"
+       @click="emitCancel"
+       v-loading="loading"
+       :element-loading-text="$t('loading')"
+       element-loading-background="rgba(0, 0, 0, 0.7)"
+  >
     <div class="modal" @click.stop>
       <h1 class="modal-title">{{ $t('label.add_user') }}</h1>
       <ul class="input-list">
@@ -80,9 +97,7 @@ const emitCancel = () => {
         </li>
       </ul>
     </div>
-    <div class="alert-block">
-      <el-alert v-if="alert" :title="alert" type="error" effect="dark"/>
-    </div>
+    <Popup v-if="showError" :message="errorMessage" @close="resetError"/>
   </div>
 </template>
 
@@ -103,7 +118,6 @@ const emitCancel = () => {
 .modal {
   background-color: var(--color-white);
   border-radius: 12px;
-  width: 400px;
   padding: 30px;
   display: flex;
   flex-direction: column;
@@ -126,7 +140,8 @@ const emitCancel = () => {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    width: inherit;
+    width: -webkit-fill-available;
+    width: -moz-available;
 
     &__item {
       input {
@@ -160,18 +175,6 @@ const emitCancel = () => {
         cursor: pointer;
       }
     }
-  }
-}
-
-.alert-block {
-  position: absolute;
-  bottom: 20px;
-  width: 400px;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
-  .el-alert {
-
   }
 }
 </style>

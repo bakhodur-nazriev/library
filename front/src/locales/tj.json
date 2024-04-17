@@ -1,5 +1,15 @@
 {
   "lang": "tj",
+  "copyrights": "Все права защищены © МСИТ",
+  "languages": {
+    "title": "Русский",
+    "name": {
+      "english": "English",
+      "russian": "Русский",
+      "tajik": "Тоҷики"
+    }
+  },
+  "loading": "Загрузка...",
   "meta_title": {
     "home": "Аcоси",
     "authors": "Муаллифон",
@@ -7,12 +17,143 @@
     "contact": "Тамос",
     "not_found": "Страница не доступна",
     "login": "Логин",
-    "registration": "Регистратсия"
+    "registration": "Регистратсия",
+    "forgot_password": "Забыли пароль",
+    "dashboard": {
+      "home": "Админ главная",
+      "authors": "Админ авторы",
+      "books": "Админ книги",
+      "users": "Админ пользователи"
+    }
   },
   "main_menu": {
     "home": "Аcоси",
     "authors": "Муаллифон",
     "books": "Китобхо",
     "contact": "Тамос"
+  },
+  "titles": {
+    "login": "Вход",
+    "registration": "Регистрация",
+    "forgot_password": "Забыли пароль ?",
+    "table_titles": {
+      "books": {
+        "id": "ID",
+        "name": "Название книги",
+        "description": "Описание",
+        "isbn": "ISBN",
+        "pages": "Страницы",
+        "publisher": "Издатель",
+        "author": "Автор",
+        "genre": "Жанр",
+        "language": "Язык",
+        "publish_date": "Дата выхода",
+        "added_date": "Дата добавление",
+        "file": "Файл",
+        "cover_image": "Обложка книги",
+        "actions": "Действия"
+      },
+      "authors": {
+        "id": "ID",
+        "name": "Имя",
+        "date_of_birth": "День рождения",
+        "biography": "Биография",
+        "nationality": "Националность",
+        "photo_link": "Фото"
+      },
+      "users": {
+        "id": "ID",
+        "name": "Имя",
+        "email": "Email",
+        "role": "Роль",
+        "password": "Пароль"
+      }
+    },
+    "banner": {
+      "books": "Выберите свою книгу и наслаждайтесь",
+      "authors": "Исследуйте известных авторов"
+    },
+    "filter": {
+      "books": {
+        "title": "Сортировать по",
+        "subtitle": "Категории",
+        "items": {
+          "music": "Музыка",
+          "marketing": "Маркетинг",
+          "politics": "Политика",
+          "creative": "Креатив",
+          "mathematics": "Математика",
+          "geography": "География",
+          "technology": "Технология"
+        }
+      }
+    },
+    "books": {
+      "search_box": "Поисковая строка"
+    }
+  },
+  "subtitles": {
+    "we_will_send_password": "Мы отправим вам сообщение для изменения пароля"
+  },
+  "placeholders": {
+    "name": "Введите ваше имя...",
+    "email": "Введите ваш email...",
+    "password": "Введите ваш пароль...",
+    "search_book": "Введите название книги",
+    "search_author": "Введите имя автора",
+    "search_publisher": "Введите название издателя"
+  },
+  "buttons": {
+    "login": "Вход",
+    "registration": "Регистрация",
+    "send": "Отправить",
+    "edit": "Изменить",
+    "delete": "Удалить",
+    "add": "+ Добавить",
+    "yes": "Да",
+    "no": "Нет",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "read_more": "Читать далее...",
+    "see_all": "Просмотреть все",
+    "choose_file": "Выбери файл",
+    "pick_a_date": "Выберите дату",
+    "logout": "Выход",
+    "print": "Печатать"
+  },
+  "label": {
+    "create_account": "Создать аккаунт",
+    "have_account": "У вас есть аккаунт ?",
+    "forgot_password": "Забыл пароль ?",
+    "home": "Главная",
+    "author": "Автор",
+    "authors": "Авторы",
+    "books": "Книги",
+    "publisher": "Издатель",
+    "users": "Ползователи",
+    "add_book": "Добавить книгу",
+    "add_author": "Добавить автора",
+    "edit_book": "Изменить книгу",
+    "edit_author": "Изменить автора",
+    "add_user": "Добавить пользователья",
+    "edit_user": "Езменить пользователья",
+    "books_latest": "Новые книги",
+    "authors_latest": "Новые авторы",
+    "book_empty_cover": "Без обложки",
+    "author_empty_cover": "Без фото",
+    "year": "год",
+    "tel": "Телефон",
+    "fax": "Факс",
+    "contact_us": "Связаться с нами"
+  },
+  "notifications": {
+    "remove_message": "Вы действительно хотите удалить этот запись ?"
+  },
+  "validation": {
+    "only_jpg_png_files_allowed": "Разрешены только файлы jpg/png.",
+    "please_enter_the_title": "Пожалуйста, введите название"
+  },
+  "footer": {
+    "title": "Медико-социальный институт Таджикистана , Республика Таджикистан, г.Душанбе, ул. Клары Сеткиной, 2."
   }
 }

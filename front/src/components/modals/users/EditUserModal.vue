@@ -3,15 +3,16 @@ import {ref} from 'vue';
 import {getFormData} from "../../../utils.js";
 import axios from "axios";
 import router from "../../../router/index.js";
+import {ElMessage} from 'element-plus';
 
 const emit = defineEmits(['close', 'reloadData']);
 const props = defineProps(['selectedUser']);
-
 const user = ref({
   name: props.selectedUser.name,
   email: props.selectedUser.email,
   password: ''
 });
+const loading = ref(false);
 
 const editData = async () => {
   const payload = getFormData(user.value);
@@ -38,6 +39,7 @@ const editData = async () => {
           router.push({name: 'login'});
         }
         console.log(err);
+        ElMessage.error(err.response.data);
       })
 };
 const emitClose = () => {
@@ -46,7 +48,13 @@ const emitClose = () => {
 </script>
 
 <template>
-  <div class="modal-overlay" @click="emitClose">
+  <div
+      class="modal-overlay"
+       @click="emitClose"
+      v-loading="loading"
+      :element-loading-text="$t('loading')"
+      element-loading-background="rgba(0, 0, 0, 0.7)"
+  >
     <div class="modal" @click.stop>
       <h1 class="modal-title">{{ $t('label.edit_user') }}</h1>
       <ul class="input-list">
@@ -101,7 +109,6 @@ const emitClose = () => {
 .modal {
   background-color: var(--color-white);
   border-radius: 12px;
-  width: 400px;
   padding: 30px;
   display: flex;
   flex-direction: column;
@@ -124,7 +131,8 @@ const emitClose = () => {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    width: inherit;
+    width: -webkit-fill-available;
+    width: -moz-available;
 
     &__item {
       input {

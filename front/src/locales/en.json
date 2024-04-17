@@ -118,7 +118,8 @@
     "see_all": "See All",
     "choose_file": "Choose file",
     "pick_a_date": "Pick a date",
-    "logout": "Logout"
+    "logout": "Logout",
+    "print": "Print"
   },
   "label": {
     "create_account": "Create account",

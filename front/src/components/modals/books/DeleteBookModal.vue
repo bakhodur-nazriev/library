@@ -6,9 +6,7 @@ import router from "../../../router/index.js";
 const emit = defineEmits(['close', 'reloadData']);
 const props = defineProps(['bookId']);
 const loading = ref(false);
-const emitClose = () => {
-  emit('close');
-};
+const emitClose = () => emit('close');
 const deleteBook = async () => {
   loading.value = true;
   const authorToken = sessionStorage.getItem('token');
