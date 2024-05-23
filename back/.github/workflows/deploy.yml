@@ -1,0 +1,13 @@
+name: Deploy to library
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  develop:
+    runs-on: [self-hosted, library]
+    steps:
+    - name: Deploy
+      run: |
+        cd /var/www/ && ./deploy_back.sh
