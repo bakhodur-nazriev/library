@@ -10,18 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Install Dependencies
-        run: composer install --no-dev --optimize-autoloader
 
       - name: Run Deployment Script
         run: |
-          cd /var/www/library || exit
-          git checkout main
-          git pull origin main
-          yes | composer du
-          echo "Yes" | php artisan migrate
-          php artisan optimize:clear
-          echo "Back deployed"
+          cd /var/www/library && ./deploy_back.sh
