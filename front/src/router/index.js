@@ -103,7 +103,7 @@ const routes = [
             {
                 path: '',
                 name: 'dashboard-home',
-                component: DashboardHomeView,
+                component: DashboardBooksView,
                 meta: {
                     title: i18n.global.t('meta_title.dashboard.home'),
                     requiresAuth: true,

@@ -118,7 +118,8 @@
     "see_all": "Просмотреть все",
     "choose_file": "Выбери файл",
     "pick_a_date": "Выберите дату",
-    "logout": "Выход"
+    "logout": "Выход",
+    "print": "Печатать"
   },
   "label": {
     "create_account": "Создать аккаунт",

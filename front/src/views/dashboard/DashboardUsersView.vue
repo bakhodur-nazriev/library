@@ -7,6 +7,7 @@ import AddUserModal from "../../components/modals/users/AddUserModal.vue";
 import EditUserModal from "../../components/modals/users/EditUserModal.vue";
 import axios from "axios";
 import router from "../../router/index.js";
+import {ElMessage} from 'element-plus';
 
 const tableHeaders = computed(() => {
   return [
@@ -25,8 +26,9 @@ const selectedUser = ref(null);
 const totalItems = ref(0);
 const itemsPerPage = ref(12);
 const currentPage = ref(1);
-
+const loading = ref(false);
 const getUsers = async () => {
+  loading.value = true;
   const authToken = sessionStorage.getItem('token');
   const headers = {
     'Content-Type': 'application/json',
@@ -36,8 +38,9 @@ const getUsers = async () => {
   };
 
   await axios
-      .get(`/admin/users?per_page=15&page=${currentPage.value}`, {headers})
+      .get(`/admin/users?per_page=${itemsPerPage.value}&page=${currentPage.value}&order=desc`, {headers})
       .then(res => {
+        loading.value = false;
         if (res.status === 200 || res.status === 201) {
           tableRows.value = res.data.data.map(user => ({
             id: user.id,
@@ -55,20 +58,21 @@ const getUsers = async () => {
           router.push({name: 'login'});
         }
         console.log(err);
+        ElMessage.error(err.response.data);
       })
 };
 const openAddUser = () => {
   showAddModal.value = true;
 };
-const openDeleteModal = (authorId) => {
-  selectedUserId.value = authorId;
+const openDeleteModal = (userId) => {
+  selectedUserId.value = userId;
   showDeleteModal.value = true;
 };
 const closeDeleteModal = () => {
   showDeleteModal.value = false;
 };
-const openEditModal = (author) => {
-  selectedUser.value = author;
+const openEditModal = (user) => {
+  selectedUser.value = user;
   showEditModal.value = true;
 };
 const closeEditModal = () => {
@@ -81,6 +85,47 @@ const handleCurrentPageChange = (newPage) => {
   currentPage.value = newPage;
   getUsers();
 };
+const sendToPrint = () => {
+  const usersDataForPrint = tableRows.value.map(user => ({
+    name: user.name,
+    email: user.email,
+    password: '********'
+  }));
+
+  printUsers(usersDataForPrint);
+}
+const printUsers = (usersData) => {
+  let printWindow = window.open('', '_blank');
+  printWindow.document.write('<html><head><title>Список пользователей</title>');
+  printWindow.document.write('<style>');
+  printWindow.document.write('.table-for-print {');
+  printWindow.document.write('width: 100%;');
+  printWindow.document.write('border-collapse: collapse;');
+  printWindow.document.write('margin-bottom: 20px;');
+  printWindow.document.write('}');
+  printWindow.document.write('.table-for-print th, .table-for-print td {');
+  printWindow.document.write('border: 1px solid #000;');
+  printWindow.document.write('padding: 6px;');
+  printWindow.document.write('text-align: left;');
+  printWindow.document.write('}');
+  printWindow.document.write('.table-for-print th {');
+  printWindow.document.write('background-color: #ccc;');
+  printWindow.document.write('}');
+  printWindow.document.write('</style>');
+  printWindow.document.write('</head><body>');
+
+  printWindow.document.write('<h1>Список пользователей</h1>');
+  printWindow.document.write('<table class="table-for-print"><tr><th>Имя</th><th>Email</th><th>Пароль</th></tr>');
+
+  usersData.forEach(user => {
+    printWindow.document.write(`<tr><td>${user.name}</td><td>${user.email}</td><td>${user.password}</td></tr>`);
+  });
+
+  printWindow.document.write('</table>');
+  printWindow.document.write('</body></html>');
+  printWindow.document.close();
+  printWindow.print();
+}
 
 onMounted(() => {
   getUsers();
@@ -91,7 +136,10 @@ onMounted(() => {
   <div class="main-authors__block">
     <h2 class="main-title">{{ $t('label.users') }}</h2>
     <button class="add-button" @click="openAddUser">{{ $t('buttons.add') }}</button>
+    <button class="print-btn" @click="sendToPrint">{{ $t('buttons.print') }}</button>
     <SampleTable
+        v-loading="loading"
+        :element-loading-text="$t('loading')"
         :rows="tableRows"
         :headers="tableHeaders"
         @openEditModal="openEditModal"
@@ -112,7 +160,7 @@ onMounted(() => {
         v-if="showDeleteModal"
         @close="closeDeleteModal"
         @reloadData="getUsers"
-        :authorId="selectedUserId"
+        :user-id="selectedUserId"
     />
 
     <div class="pagination-block">
@@ -137,7 +185,7 @@ onMounted(() => {
     margin-top: 0;
   }
 
-  .add-button {
+  .add-button, .print-btn {
     background-color: var(--color-primary);
     border: none;
     font-size: 14px;
@@ -152,6 +200,10 @@ onMounted(() => {
     &:hover {
       opacity: 0.9;
     }
+  }
+
+  .add-button {
+    margin-right: 15px;
   }
 
   .pagination-block {

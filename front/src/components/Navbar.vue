@@ -89,7 +89,7 @@ onBeforeUnmount(() => {
     <header ref="headerRef">
       <div class="header-top_side">
         <div class="logo">
-          <img src="../assets/main-logo-1.png" alt="лого">
+          <img src="../assets/logo1.png" alt="лого">
         </div>
         <div class="right-block">
           <div @click="toggleVisibility" class="toggle-btn">
@@ -218,7 +218,7 @@ onBeforeUnmount(() => {
 
     .logo {
       img {
-        width: 200px;
+        width: 250px;
       }
     }
 
