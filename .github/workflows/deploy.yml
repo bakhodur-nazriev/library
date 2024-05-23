@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Print Secret Key
-        run: echo ${{ secrets.LIBRARY_KEY }}
+        run: echo "${{ secrets.LIBRARY_KEY }}"
 
       - name: Checkout Repository
         uses: actions/checkout@v2
