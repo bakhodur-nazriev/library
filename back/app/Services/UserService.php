@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
@@ -24,16 +25,36 @@ class UserService
                 ->with(['roles', 'permissions'])
                 ->orderBy($orderBy, $order)
                 ->paginate($perPage, ['*'], 'page', $page);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::info($e->getMessage());
             return response()->json(['message' => 'error'], 500);
         }
     }
 
+    /**
+     * @throws Exception
+     */
+    private function generateUniqueLoginId(): int
+    {
+        do {
+            $loginId = random_int(10000000, 99999999);
+        } while (
+            User::query()
+                ->where('login_id', $loginId)
+                ->exists()
+        );
+
+        return $loginId;
+    }
+
+    /**
+     * @throws Exception
+     */
     public function store(array $attributes): JsonResponse
     {
         $user = User::query()
             ->create([
+                'login_id' => $this->generateUniqueLoginId(),
                 'name' => $attributes['name'],
                 'email' => $attributes['email'],
                 'password' => Hash::make($attributes['password']),
