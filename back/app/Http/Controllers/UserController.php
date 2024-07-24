@@ -36,7 +36,7 @@ class UserController extends Controller
             ->findOrFail($id)
             ->delete();
 
-        return response()->json(null, 204);
+        return response()->json(['message' => 'deleted']);
     }
 
 }
