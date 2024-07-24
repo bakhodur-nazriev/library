@@ -55,23 +55,24 @@ class AuthController extends Controller
         $login_id = $request->input('login_id');
         $password = $request->input('password');
 
-        if (Auth::attempt(['login_id' => $login_id, 'password' => $password])) {
+        if($login_id) {
+            if (Auth::attempt(['login_id' => $login_id, 'password' => $password])) {
+                $user = Auth::user();
+                $token = $user->createToken('auth_token')->plainTextToken;
+                return response()->json(['token' => $token, 'user' => ['name' => $user->name]]);
+            }
+
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        //
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
             $token = $user->createToken('auth_token')->plainTextToken;
+
             return response()->json(['token' => $token, 'user' => ['name' => $user->name]]);
+        } else {
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
-
-        return response()->json(['error' => 'Unauthorized'], 401);
-
-        //
-//        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-//            $user = Auth::user();
-//            $token = $user->createToken('auth_token')->plainTextToken;
-//
-//            return response()->json(['token' => $token, 'user' => ['name' => $user->name]]);
-//        } else {
-//            return response()->json(['error' => 'Unauthorized'], 401);
-//        }
     }
 
     public function logout(Request $request): JsonResponse
