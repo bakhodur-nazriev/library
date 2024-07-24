@@ -8,13 +8,13 @@ class AuthRegisterRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     public function rules(): array
     {
         return [
-            'email' => 'required|email|max:100',
+            //'email' => 'required|email|max:100',
             'password' => 'required|min:8',
             'name' => 'required|string|min:3|max:100'
         ];
